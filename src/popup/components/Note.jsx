@@ -17,7 +17,7 @@ export function Note({ note, onEdit, onDelete }) {
           <StyledNoteAction onClick={() => onEdit(note)} disabled>
             Edit
           </StyledNoteAction>
-          <StyledNoteAction onClick={() => onDelete(note._id)}>
+          <StyledNoteAction onClick={() => onDelete(note._id)} negative>
             Delete
           </StyledNoteAction>
         </span>
@@ -55,7 +55,8 @@ const StyledNoteAction = styled.button`
   outline: none;
   font-size: 11px;
   color: var(--fontPrimaryColor);
-  background-color: var(--borderPrimaryColor);
+  background-color: ${({ negative }) =>
+    negative ? "var(--brandColor)" : "var(--borderPrimaryColor)"};
   border-radius: 10px;
   cursor: pointer;
 `;

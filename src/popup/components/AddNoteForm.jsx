@@ -22,9 +22,6 @@ export function AddNoteForm({ onSubmit }) {
   return (
     <StyledForm onSubmit={handleSubmit}>
       <StyledFormRow>
-        <StyledTextarea name="note" placeholder="Your note..."></StyledTextarea>
-      </StyledFormRow>
-      <StyledFormRow>
         <StyledSelect name="scope">
           {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
             <option value={value} key={value}>
@@ -32,6 +29,9 @@ export function AddNoteForm({ onSubmit }) {
             </option>
           ))}
         </StyledSelect>
+      </StyledFormRow>
+      <StyledFormRow>
+        <StyledTextarea name="note" placeholder="Your note..."></StyledTextarea>
       </StyledFormRow>
       <StyledFormRow>
         <StyledButton type="reset">Reset</StyledButton>
@@ -68,6 +68,7 @@ const StyledSelect = styled.select`
   border-radius: 3px;
   padding: 5px 10px;
   box-sizing: border-box;
+  outline: none;
 `;
 
 const StyledTextarea = styled.textarea`
@@ -80,6 +81,7 @@ const StyledTextarea = styled.textarea`
   border-radius: 3px;
   padding: 10px;
   box-sizing: border-box;
+  outline: none;
 `;
 
 const StyledButton = styled.button`
@@ -91,4 +93,8 @@ const StyledButton = styled.button`
   border: 1px solid var(--borderPrimaryColor);
   border-radius: 3px;
   cursor: pointer;
+
+  &[type="submit"] {
+    background-color: var(--brandColor);
+  }
 `;

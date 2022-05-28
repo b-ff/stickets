@@ -26,8 +26,6 @@ export function App() {
     });
   }, []);
 
-  console.log(131, currentTab.location);
-
   return (
     <ApolloProvider client={client}>
       <CurrentLocationContext.Provider value={currentTab.location}>

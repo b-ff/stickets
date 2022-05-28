@@ -17,7 +17,6 @@ const StyledHeader = styled.header`
   width: 100%;
   padding: 5px 10px;
   font-size: 12px;
-  border-bottom: 1px solid var(--borderPrimaryColor);
 `;
 
 const StyledIcon = styled.span`
@@ -30,7 +29,7 @@ const StyledIcon = styled.span`
 const StyledMain = styled.main`
   flex: 1;
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
 `;
 const StyledFooter = styled.footer`
   padding: 10px;
