@@ -40,7 +40,6 @@ export function NotesContainer() {
   const [deleteNote, deleteNoteRequest] = useMutation(DELETE_NOTE);
 
   const handleNoteUpdate = useCallback(({ _id: updateId, note }) => {
-    console.log("updated note!", note);
     updateNote({
       variables: {
         updateId,
