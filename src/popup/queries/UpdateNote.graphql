@@ -1,0 +1,3 @@
+mutation UpdateNote($updateId: String!, $note: String!) {
+  update(id: $updateId, note: $note)
+}

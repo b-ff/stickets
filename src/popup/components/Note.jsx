@@ -1,26 +1,58 @@
 import { styled } from "@linaria/react";
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 
-export function Note({ note, onEdit, onDelete }) {
+export function Note({ note, onUpdate, onDelete }) {
+  const noteTextRef = useRef();
+  const [isEditing, setIsEditing] = useState(false);
+
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
   const displayedDate = Intl.DateTimeFormat().format(
     updated.getTime() > created.getTime() ? updated : created
   );
 
+  const handleCancelEdit = useCallback(() => {
+    noteTextRef.current.innerHTML = note.note;
+    setIsEditing(false);
+  }, [noteTextRef, setIsEditing]);
+
+  const handleOnUpdate = useCallback(() => {
+    onUpdate({
+      ...note,
+      note: noteTextRef.current.innerHTML.trim(),
+    });
+    setIsEditing(false);
+  }, [noteTextRef, setIsEditing]);
+
   return (
     <StyledNoteContainer>
-      <StyledNoteText>{note.note}</StyledNoteText>
+      <StyledNoteText ref={noteTextRef} contentEditable={isEditing}>
+        {note.note}
+      </StyledNoteText>
       <StyledNoteInfo>
-        <span>{displayedDate}</span>
-        <span>
-          <StyledNoteAction onClick={() => onEdit(note)} disabled>
-            Edit
-          </StyledNoteAction>
-          <StyledNoteAction onClick={() => onDelete(note._id)} negative>
-            Delete
-          </StyledNoteAction>
-        </span>
+        {!isEditing && (
+          <>
+            <span>{displayedDate}</span>
+            <span>
+              <StyledNoteAction onClick={() => setIsEditing(true)}>
+                Edit
+              </StyledNoteAction>
+              <StyledNoteAction onClick={() => onDelete(note._id)} negative>
+                Delete
+              </StyledNoteAction>
+            </span>
+          </>
+        )}
+        {isEditing && (
+          <span>
+            <StyledNoteAction onClick={handleCancelEdit}>
+              Cancel
+            </StyledNoteAction>
+            <StyledNoteAction onClick={handleOnUpdate} negative>
+              Save
+            </StyledNoteAction>
+          </span>
+        )}
       </StyledNoteInfo>
     </StyledNoteContainer>
   );
@@ -37,6 +69,7 @@ const StyledNoteText = styled.p`
   font-size: 14px;
   padding: 0;
   margin: 0 0 10px;
+  outline: none;
 `;
 
 const StyledNoteInfo = styled.div`

@@ -9,6 +9,7 @@ import { NOTE_SCOPES } from "../constants/note-scopes";
 
 import GetAllNotes from "../queries/GetAllNotes.graphql";
 import CreateNoteMutation from "../queries/CreateNote.graphql";
+import UpdateNoteMutation from "../queries/UpdateNote.graphql";
 import DeleteNoteMutation from "../queries/DeleteNote.graphql";
 import { RadioSwitch } from "../components/RadioSwitch";
 
@@ -18,6 +19,10 @@ const GET_ALL_NOTES = gql`
 
 const CREATE_NOTE = gql`
   ${CreateNoteMutation}
+`;
+
+const UPDATE_NOTE = gql`
+  ${UpdateNoteMutation}
 `;
 
 const DELETE_NOTE = gql`
@@ -31,15 +36,25 @@ export function NotesContainer() {
 
   const getAllNotesRequest = useQuery(GET_ALL_NOTES);
   const [addNote, addNoteRequest] = useMutation(CREATE_NOTE);
+  const [updateNote, updateNoteRequest] = useMutation(UPDATE_NOTE);
   const [deleteNote, deleteNoteRequest] = useMutation(DELETE_NOTE);
 
-  const handleNoteEdit = useCallback(() => {}, []);
+  const handleNoteUpdate = useCallback(({ _id: updateId, note }) => {
+    console.log("updated note!", note);
+    updateNote({
+      variables: {
+        updateId,
+        note,
+      },
+    });
+    getAllNotesRequest.refetch();
+  }, []);
 
   const handleNoteDelete = useCallback(
-    (id) => {
+    (deleteId) => {
       deleteNote({
         variables: {
-          deleteId: id,
+          deleteId,
         },
       });
       getAllNotesRequest.refetch();
@@ -145,7 +160,7 @@ export function NotesContainer() {
         {scopeToNotesMap[displayScope].map((note) => (
           <Note
             note={note}
-            onEdit={handleNoteEdit}
+            onUpdate={handleNoteUpdate}
             onDelete={handleNoteDelete}
             key={note._id}
           />
