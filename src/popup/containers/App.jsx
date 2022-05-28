@@ -14,16 +14,18 @@ export function App() {
   const [currentTab, setCurrentTab] = useState({});
 
   useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-      const location = document.createElement("a");
-      location.href = tab.url;
-      const enchancedTab = {
-        ...tab,
-        location,
-      };
+    if (chrome.tabs) {
+      chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+        const location = document.createElement("a");
+        location.href = tab.url;
+        const enchancedTab = {
+          ...tab,
+          location,
+        };
 
-      setCurrentTab(enchancedTab);
-    });
+        setCurrentTab(enchancedTab);
+      });
+    }
   }, []);
 
   return (

@@ -111,11 +111,14 @@ export function NotesContainer() {
       globalNotes.push(note);
     }
 
-    if (note.scope === NOTE_SCOPES.SITE && note.url.includes(location.origin)) {
+    if (
+      note.scope === NOTE_SCOPES.SITE &&
+      note.url.includes(location?.origin)
+    ) {
       siteNotes.push(note);
     }
 
-    if (note.scope === NOTE_SCOPES.PAGE && note.url === location.href) {
+    if (note.scope === NOTE_SCOPES.PAGE && note.url === location?.href) {
       pageNotes.push(note);
     }
   });
