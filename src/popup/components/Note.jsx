@@ -11,6 +11,11 @@ export function Note({ note, onUpdate, onDelete }) {
     updated.getTime() > created.getTime() ? updated : created
   );
 
+  const handleStartEditing = useCallback(() => {
+    setIsEditing(true);
+    setTimeout(() => noteTextRef.current.focus());
+  }, [noteTextRef, setIsEditing]);
+
   const handleCancelEdit = useCallback(() => {
     noteTextRef.current.innerHTML = note.note;
     setIsEditing(false);
@@ -26,7 +31,11 @@ export function Note({ note, onUpdate, onDelete }) {
 
   return (
     <StyledNoteContainer>
-      <StyledNoteText ref={noteTextRef} contentEditable={isEditing}>
+      <StyledNoteText
+        ref={noteTextRef}
+        contentEditable={isEditing}
+        onDoubleClick={handleStartEditing}
+      >
         {note.note}
       </StyledNoteText>
       <StyledNoteInfo>
@@ -34,7 +43,7 @@ export function Note({ note, onUpdate, onDelete }) {
           <>
             <span>{displayedDate}</span>
             <span>
-              <StyledNoteAction onClick={() => setIsEditing(true)}>
+              <StyledNoteAction onClick={handleStartEditing}>
                 Edit
               </StyledNoteAction>
               <StyledNoteAction onClick={() => onDelete(note._id)} negative>
@@ -59,7 +68,7 @@ export function Note({ note, onUpdate, onDelete }) {
 }
 
 const StyledNoteContainer = styled.article`
-  padding: 10px;
+  padding: 5px;
   background-color: var(--inputPrimaryColor);
   border-radius: 3px;
   margin-bottom: 10px;
@@ -67,9 +76,14 @@ const StyledNoteContainer = styled.article`
 
 const StyledNoteText = styled.p`
   font-size: 14px;
-  padding: 0;
-  margin: 0 0 10px;
-  outline: none;
+  padding: 5px;
+  margin: 0 0 5px;
+  box-sizing: border-box;
+  border-radius: 2px;
+
+  &[contenteditable="true"] {
+    outline: 1px solid var(--borderPrimaryColor);
+  }
 `;
 
 const StyledNoteInfo = styled.div`
@@ -78,6 +92,7 @@ const StyledNoteInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
+  padding: 0 5px 5px;
   opacity: 0.8;
 `;
 
