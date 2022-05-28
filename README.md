@@ -1,12 +1,8 @@
 # #Stickets
 
----
-
 Chrome Extension that allows you to add a notes to any webpage you visit as well as share it with whoever you want
 
----
-
-## Currently under development.
+# Currently under development.
 
 ### Getting started (for devs):
 
