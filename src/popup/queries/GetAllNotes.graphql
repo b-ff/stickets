@@ -1,0 +1,12 @@
+query GetAllNotes {
+  allNotes {
+    note
+    # author
+    url
+    share
+    scope
+    createdAt
+    updatedAt
+    _id
+  }
+}

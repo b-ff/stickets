@@ -1,0 +1,10 @@
+.idea
+.vscode
+node_modules/
+.sass-cache/
+css/
+.DS_store
+.env
+
+#ignore rollup bundle
+assets/

@@ -1,0 +1,14 @@
+{
+  "name": "Stickets!",
+  "description": "Allows to add a notes to any webpage you visit as well as share it with whoever you want",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "permissions": ["storage", "activeTab", "tabs"],
+  "background": {
+    "service_worker": "assets/background.bundle.js"
+  },
+  "action": {
+    "default_popup": "static/popup.html"
+  },
+  "options_page": "static/options.html"
+}
