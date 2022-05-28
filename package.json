@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/"
+    "url": "git+https://github.com/b-ff/stickets.git"
   },
   "author": "Slava Biryukov",
   "license": "ISC",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/b-ff/stickets/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/b-ff/stickets#readme",
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
