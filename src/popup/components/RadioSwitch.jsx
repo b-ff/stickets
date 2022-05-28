@@ -1,11 +1,12 @@
-import { styled } from "@linaria/react";
 import React, { useCallback } from "react";
+import { styled } from "@linaria/react";
+import { applyStyleIfHasProperty, noop } from "../utils";
 
 export function RadioSwitch({
   name = Date.now().toString(),
   options,
   defaultValue,
-  onChange,
+  onChange = noop,
 }) {
   const handleChange = useCallback((event) => onChange(event.target.value), []);
 
@@ -66,12 +67,15 @@ const StyledRadioLabel = styled.label`
   justify-content: center;
   flex: 1;
   margin: 0;
-  padding: 5px;
+  padding: 10px 5px;
   cursor: pointer;
-  background-color: ${({ active }) =>
-    active ? "var(--borderPrimaryColor)" : "transparent"};
-  opacity: ${({ disabled }) => (disabled ? "0.5" : "1")};
-  pointer-events: ${({ disabled }) => (disabled ? "none" : "initial")};
+  background-color: ${applyStyleIfHasProperty(
+    "active",
+    "var(--borderPrimaryColor)",
+    "transparent"
+  )}
+  opacity: ${applyStyleIfHasProperty("disabled", "0.5", "1")};
+  pointer-events: ${applyStyleIfHasProperty("disabled", "none", "initial")};
 `;
 
 const StyledCounter = styled.span`

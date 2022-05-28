@@ -1,7 +1,8 @@
-import { styled } from "@linaria/react";
 import React, { useCallback, useRef, useState } from "react";
+import { styled } from "@linaria/react";
+import { applyStyleIfHasProperty, noop } from "../utils";
 
-export function Note({ note, onUpdate, onDelete }) {
+export function Note({ note, onUpdate = noop, onDelete = noop }) {
   const noteTextRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -46,7 +47,7 @@ export function Note({ note, onUpdate, onDelete }) {
               <StyledNoteAction onClick={handleStartEditing}>
                 Edit
               </StyledNoteAction>
-              <StyledNoteAction onClick={() => onDelete(note._id)} negative>
+              <StyledNoteAction onClick={() => onDelete(note._id)}>
                 Delete
               </StyledNoteAction>
             </span>
@@ -103,8 +104,11 @@ const StyledNoteAction = styled.button`
   outline: none;
   font-size: 11px;
   color: var(--fontPrimaryColor);
-  background-color: ${({ negative }) =>
-    negative ? "var(--brandColor)" : "var(--borderPrimaryColor)"};
+  background-color: ${applyStyleIfHasProperty(
+    "negative",
+    "var(--brandColor)",
+    "var(--borderPrimaryColor)"
+  )};
   border-radius: 10px;
   cursor: pointer;
 `;

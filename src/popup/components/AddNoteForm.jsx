@@ -1,7 +1,8 @@
-import { styled } from "@linaria/react";
 import React, { useCallback } from "react";
+import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { NOTE_SCOPES } from "../constants/note-scopes";
+import { noop } from "../utils";
 
 const SCOPE_OPTIONS = {
   [NOTE_SCOPES.GLOBAL]: "All web-sites",
@@ -9,7 +10,7 @@ const SCOPE_OPTIONS = {
   [NOTE_SCOPES.PAGE]: "Current page only",
 };
 
-export function AddNoteForm({ onSubmit }) {
+export function AddNoteForm({ onSubmit = noop }) {
   const location = useCurrentLocation();
 
   const handleSubmit = useCallback((event) => {
