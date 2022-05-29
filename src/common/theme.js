@@ -3,18 +3,7 @@ import { css } from "@linaria/core";
 export const theme = css`
   :global() {
     html,
-    body,
-    #app {
-      display: flex;
-      flex-direction: column;
-      width: 300px;
-      height: 600px;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
+    body {
       --backgroundPrimaryColor: #fff;
       --borderPrimaryColor: #ddd;
       --inputPrimaryColor: #fff;
@@ -33,6 +22,27 @@ export const theme = css`
 
       background-color: var(--backgroundPrimaryColor);
       color: var(--fontPrimaryColor);
+    }
+
+    html,
+    body,
+    #app-popup,
+    #app-options {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #app-popup {
+      width: 300px;
+      height: 600px;
+    }
+
+    #app-options {
+      width: 100vw;
+      height: 100vh;
     }
   }
 `;

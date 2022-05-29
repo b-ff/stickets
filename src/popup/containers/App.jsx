@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { CurrentLocationContext } from "./CurrentLocationContext";
-import { theme } from "../theme";
+import { theme } from "../../common/theme";
 import { config } from "../../../config";
 import { NotesContainer } from "./NotesContainer";
 
