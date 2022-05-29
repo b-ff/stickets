@@ -5,12 +5,12 @@ import { Note } from "../components/Note";
 import { PopupLayout } from "../components/PopupLayout";
 import { AddNoteForm } from "../components/AddNoteForm";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
-import { NOTE_SCOPES } from "../constants/note-scopes";
+import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 
-import GetAllNotes from "../queries/GetAllNotes.graphql";
-import CreateNoteMutation from "../queries/CreateNote.graphql";
-import UpdateNoteMutation from "../queries/UpdateNote.graphql";
-import DeleteNoteMutation from "../queries/DeleteNote.graphql";
+import GetAllNotes from "../../common/queries/GetAllNotes.graphql";
+import CreateNoteMutation from "../../common/queries/CreateNote.graphql";
+import UpdateNoteMutation from "../../common/queries/UpdateNote.graphql";
+import DeleteNoteMutation from "../../common/queries/DeleteNote.graphql";
 import { RadioSwitch } from "../components/RadioSwitch";
 
 const GET_ALL_NOTES = gql`

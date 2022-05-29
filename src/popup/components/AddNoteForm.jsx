@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
-import { NOTE_SCOPES } from "../constants/note-scopes";
+import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 import { noop } from "../utils";
 
 const SCOPE_OPTIONS = {
