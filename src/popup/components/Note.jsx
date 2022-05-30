@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { styled } from "@linaria/react";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { applyStyleIfHasProperty, noop } from "../../common/utils";
 
 export function Note({ note, onUpdate = noop, onDelete = noop }) {
@@ -8,8 +9,9 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
 
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
-  const displayedDate = Intl.DateTimeFormat().format(
-    updated.getTime() > created.getTime() ? updated : created
+  const displayedDate = formatDistanceToNow(
+    updated.getTime() > created.getTime() ? updated : created,
+    { addSuffix: true, includeSeconds: true }
   );
 
   const handleStartEditing = useCallback(() => {

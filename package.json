@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/b-ff/stickets#readme",
   "devDependencies": {
+    "@apollo/client": "^3.6.5",
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.17.12",
@@ -37,6 +38,7 @@
     "base-64": "^1.0.0",
     "deepmerge": "^4.2.2",
     "dotenv": "^6.2.0",
+    "graphql": "^16.5.0",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -47,8 +49,9 @@
     "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-string": "^3.0.0",
     "rollup-plugin-svelte": "^7.0.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "@apollo/client": "^3.6.5",
-    "graphql": "^16.5.0"
+    "rollup-plugin-terser": "^7.0.0"
+  },
+  "dependencies": {
+    "date-fns": "^2.28.0"
   }
 }
