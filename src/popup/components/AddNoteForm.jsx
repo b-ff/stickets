@@ -22,19 +22,22 @@ export function AddNoteForm({ onSubmit = noop }) {
     event.target.reset();
   }, []);
 
-  const handleKeyUp = useCallback((event) => {
-    const isTextaeraEmpty = !event.target.value.length;
+  const handleKeyUp = useCallback(
+    (event) => {
+      const isTextaeraEmpty = !event.target.value.length;
 
-    if (
-      event.ctrlKey &&
-      event.key.toLowerCase() === "enter" &&
-      !isTextaeraEmpty
-    ) {
-      submitRef.current.click();
-    }
+      if (
+        event.ctrlKey &&
+        event.key.toLowerCase() === "enter" &&
+        !isTextaeraEmpty
+      ) {
+        submitRef.current.click();
+      }
 
-    setNoteEmpty(isTextaeraEmpty);
-  });
+      setNoteEmpty(isTextaeraEmpty);
+    },
+    [submitRef, setNoteEmpty]
+  );
 
   return (
     <StyledForm onSubmit={handleSubmit}>

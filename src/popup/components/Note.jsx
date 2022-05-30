@@ -6,6 +6,7 @@ import { applyStyleIfHasProperty, noop } from "../../common/utils";
 export function Note({ note, onUpdate = noop, onDelete = noop }) {
   const noteTextRef = useRef();
   const [isEditing, setIsEditing] = useState(false);
+  const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
 
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
@@ -18,6 +19,16 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
     setIsEditing(true);
     setTimeout(() => noteTextRef.current.focus());
   }, [noteTextRef, setIsEditing]);
+
+  const handleNoteTextChange = useCallback(
+    (event) => {
+      if (isEditing) {
+        const isEmpty = !event.target.innerHTML.length;
+        setNoteEmpty(isEmpty);
+      }
+    },
+    [isEditing, setNoteEmpty]
+  );
 
   const handleCancelEdit = useCallback(() => {
     noteTextRef.current.innerHTML = note.note;
@@ -38,6 +49,7 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
         ref={noteTextRef}
         contentEditable={isEditing}
         onDoubleClick={handleStartEditing}
+        onKeyUp={handleNoteTextChange}
       >
         {note.note}
       </StyledNoteText>
@@ -60,7 +72,11 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
             <StyledNoteAction onClick={handleCancelEdit}>
               Cancel
             </StyledNoteAction>
-            <StyledNoteAction onClick={handleOnUpdate} negative>
+            <StyledNoteAction
+              onClick={handleOnUpdate}
+              disabled={noteEmpty}
+              negative
+            >
               Save
             </StyledNoteAction>
           </span>
@@ -113,4 +129,10 @@ const StyledNoteAction = styled.button`
   )};
   border-radius: 10px;
   cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 `;
