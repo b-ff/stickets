@@ -11,7 +11,7 @@ const StyledAuthContainer = styled.section`
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   padding: 15px;
   box-sizing: border-box;

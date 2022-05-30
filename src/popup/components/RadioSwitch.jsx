@@ -7,6 +7,7 @@ export function RadioSwitch({
   options,
   defaultValue,
   onChange = noop,
+  disableEmpty = false,
 }) {
   const handleChange = useCallback((event) => onChange(event.target.value), []);
 
@@ -15,7 +16,7 @@ export function RadioSwitch({
       {options.map(({ label, value, count }) => {
         const key = `${name}__${value}`;
         const defaultChecked = defaultValue === value;
-        const disabled = count === 0;
+        const disabled = disableEmpty && count === 0;
         return (
           <StyledRadioLabel
             for={key}
@@ -83,7 +84,7 @@ const StyledCounter = styled.span`
   width: 16px;
   height: 16px;
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 16px;
   text-align: center;
   margin-left: 5px;

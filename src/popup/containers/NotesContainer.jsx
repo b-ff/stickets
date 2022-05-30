@@ -1,17 +1,19 @@
 import React, { useCallback, useState } from "react";
 import { styled } from "@linaria/react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { Note } from "../components/Note";
+import { groupNotesByScope } from "../../common/utils";
+import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { PopupLayout } from "../components/PopupLayout";
 import { AddNoteForm } from "../components/AddNoteForm";
-import { useCurrentLocation } from "../hooks/useCurrentLocation";
+import { RadioSwitch } from "../components/RadioSwitch";
+import { NotesList } from "../components/NotesList";
+import { ContentCenter } from "../components/ContentCenter";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 
 import GetAllNotes from "../../common/queries/GetAllNotes.graphql";
 import CreateNoteMutation from "../../common/queries/CreateNote.graphql";
 import UpdateNoteMutation from "../../common/queries/UpdateNote.graphql";
 import DeleteNoteMutation from "../../common/queries/DeleteNote.graphql";
-import { RadioSwitch } from "../components/RadioSwitch";
 
 const GET_ALL_NOTES = gql`
   ${GetAllNotes}
@@ -32,7 +34,7 @@ const DELETE_NOTE = gql`
 export function NotesContainer() {
   const location = useCurrentLocation();
 
-  const [displayScope, setDisplayScope] = useState(NOTE_SCOPES.GLOBAL);
+  const [displayScope, setDisplayScope] = useState(NOTE_SCOPES.PAGE);
 
   const getAllNotesRequest = useQuery(GET_ALL_NOTES);
   const [addNote, addNoteRequest] = useMutation(CREATE_NOTE);
@@ -63,22 +65,7 @@ export function NotesContainer() {
 
   const handleNoteAdd = useCallback(
     ({ note, scope }) => {
-      let url = "";
-
-      switch (scope) {
-        case NOTE_SCOPES.GLOBAL:
-          url = "";
-          break;
-        case NOTE_SCOPES.SITE:
-          url = location.origin;
-          break;
-        case NOTE_SCOPES.PAGE:
-          url = location.href;
-          break;
-        default:
-          url = "";
-          break;
-      }
+      let url = scope !== NOTE_SCOPES.GLOBAL ? location.href : "";
 
       addNote({
         variables: {
@@ -100,51 +87,25 @@ export function NotesContainer() {
     getAllNotesRequest.data;
 
   const notes = isOK ? getAllNotesRequest.data.allNotes : [];
-
-  const globalNotes = [];
-  const siteNotes = [];
-  const pageNotes = [];
-
-  notes.forEach((note) => {
-    if (note.scope === NOTE_SCOPES.GLOBAL) {
-      globalNotes.push(note);
-    }
-
-    if (
-      note.scope === NOTE_SCOPES.SITE &&
-      note.url.includes(location?.origin)
-    ) {
-      siteNotes.push(note);
-    }
-
-    if (note.scope === NOTE_SCOPES.PAGE && note.url === location?.href) {
-      pageNotes.push(note);
-    }
-  });
+  const groupedNotes = groupNotesByScope(notes, location);
 
   const switchOptions = [
     {
-      label: "All",
-      value: NOTE_SCOPES.GLOBAL,
-      count: globalNotes.length,
+      label: "Page",
+      value: NOTE_SCOPES.PAGE,
+      count: groupedNotes[NOTE_SCOPES.PAGE].length,
     },
     {
       label: "Site",
       value: NOTE_SCOPES.SITE,
-      count: siteNotes.length,
+      count: groupedNotes[NOTE_SCOPES.SITE].length,
     },
     {
-      label: "Page",
-      value: NOTE_SCOPES.PAGE,
-      count: pageNotes.length,
+      label: "All sites",
+      value: NOTE_SCOPES.GLOBAL,
+      count: groupedNotes[NOTE_SCOPES.GLOBAL].length,
     },
   ];
-
-  const scopeToNotesMap = {
-    [NOTE_SCOPES.GLOBAL]: globalNotes,
-    [NOTE_SCOPES.SITE]: siteNotes,
-    [NOTE_SCOPES.PAGE]: pageNotes,
-  };
 
   return (
     <PopupLayout footer={footer}>
@@ -155,19 +116,16 @@ export function NotesContainer() {
         onChange={setDisplayScope}
       />
       <StyledNotesContainer>
-        {Boolean(getAllNotesRequest.loading) && <p>Loading...</p>}
-        {Boolean(getAllNotesRequest.error) && (
-          <p>Oops! Something went wrong!</p>
-        )}
-        {scopeToNotesMap[displayScope].map((note) => (
-          <Note
-            note={note}
+        {Boolean(getAllNotesRequest.error) ? (
+          <ContentCenter>Oops! Something went wrong!</ContentCenter>
+        ) : (
+          <NotesList
+            isLoading={getAllNotesRequest.loading}
+            notes={groupedNotes[displayScope]}
             onUpdate={handleNoteUpdate}
             onDelete={handleNoteDelete}
-            key={note._id}
           />
-        ))}
-        {!notes.length && <p>You don't have notes. Yet...</p>}
+        )}
       </StyledNotesContainer>
     </PopupLayout>
   );
