@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
@@ -11,6 +11,7 @@ const SCOPE_OPTIONS = {
 };
 
 export function AddNoteForm({ onSubmit = noop }) {
+  const submitRef = useRef();
   const location = useCurrentLocation();
 
   const handleSubmit = useCallback((event) => {
@@ -19,6 +20,12 @@ export function AddNoteForm({ onSubmit = noop }) {
     event.preventDefault();
     event.target.reset();
   }, []);
+
+  const handleKeyUp = useCallback((event) => {
+    if (event.ctrlKey && event.key.toLowerCase() === "enter") {
+      submitRef.current.click();
+    }
+  });
 
   return (
     <StyledForm onSubmit={handleSubmit}>
@@ -32,11 +39,17 @@ export function AddNoteForm({ onSubmit = noop }) {
         </StyledSelect>
       </StyledFormRow>
       <StyledFormRow>
-        <StyledTextarea name="note" placeholder="Your note..."></StyledTextarea>
+        <StyledTextarea
+          name="note"
+          placeholder="Your note..."
+          onKeyUp={handleKeyUp}
+        ></StyledTextarea>
       </StyledFormRow>
       <StyledFormRow>
         <StyledButton type="reset">Reset</StyledButton>
-        <StyledButton type="submit">Add note</StyledButton>
+        <StyledButton type="submit" ref={submitRef}>
+          Add note
+        </StyledButton>
       </StyledFormRow>
     </StyledForm>
   );
