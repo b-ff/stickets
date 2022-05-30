@@ -14,12 +14,10 @@ export function App() {
   }, [setCurrentLocation]);
 
   return (
-    <div className={theme}>
-      <CurrentLocationContext.Provider value={currentLocation}>
-        <BrowserRouter>
-          <AuthContainer />
-        </BrowserRouter>
-      </CurrentLocationContext.Provider>
-    </div>
+    <CurrentLocationContext.Provider value={currentLocation}>
+      <BrowserRouter>
+        <AuthContainer className={theme} />
+      </BrowserRouter>
+    </CurrentLocationContext.Provider>
   );
 }
