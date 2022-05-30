@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
@@ -13,6 +13,7 @@ const SCOPE_OPTIONS = {
 export function AddNoteForm({ onSubmit = noop }) {
   const submitRef = useRef();
   const location = useCurrentLocation();
+  const [noteEmpty, setNoteEmpty] = useState(true);
 
   const handleSubmit = useCallback((event) => {
     const formData = Object.fromEntries(new FormData(event.target));
@@ -22,9 +23,17 @@ export function AddNoteForm({ onSubmit = noop }) {
   }, []);
 
   const handleKeyUp = useCallback((event) => {
-    if (event.ctrlKey && event.key.toLowerCase() === "enter") {
+    const isTextaeraEmpty = !event.target.value.length;
+
+    if (
+      event.ctrlKey &&
+      event.key.toLowerCase() === "enter" &&
+      !isTextaeraEmpty
+    ) {
       submitRef.current.click();
     }
+
+    setNoteEmpty(isTextaeraEmpty);
   });
 
   return (
@@ -46,8 +55,10 @@ export function AddNoteForm({ onSubmit = noop }) {
         ></StyledTextarea>
       </StyledFormRow>
       <StyledFormRow>
-        <StyledButton type="reset">Reset</StyledButton>
-        <StyledButton type="submit" ref={submitRef}>
+        <StyledButton type="reset" disabled={noteEmpty}>
+          Reset
+        </StyledButton>
+        <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
           Add note
         </StyledButton>
       </StyledFormRow>
@@ -107,6 +118,12 @@ const StyledButton = styled.button`
   border: 1px solid var(--borderPrimaryColor);
   border-radius: 3px;
   cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 
   &[type="submit"] {
     background-color: var(--brandColor);
