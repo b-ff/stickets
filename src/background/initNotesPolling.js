@@ -34,7 +34,7 @@ export function initNotesPolling(client) {
             groupedNotes[NOTE_SCOPES.PAGE].length +
             groupedNotes[NOTE_SCOPES.SITE].length;
 
-          chrome.storage.local.set({ notes: JSON.stringify(notes) });
+          chrome.storage.local.set({ notes });
 
           drawBadgeCount(tabId, count);
 

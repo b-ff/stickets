@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { styled } from "@linaria/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { applyStyleIfHasProperty, noop } from "../../common/utils";
+import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 
 export function Note({ note, onUpdate = noop, onDelete = noop }) {
   const noteTextRef = useRef();
@@ -10,10 +11,11 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
 
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
-  const displayedDate = formatDistanceToNow(
-    updated.getTime() > created.getTime() ? updated : created,
-    { addSuffix: true, includeSeconds: true }
-  );
+  const latestDate = updated.getTime() > created.getTime() ? updated : created;
+  const displayedDate = formatDistanceToNow(latestDate, {
+    addSuffix: true,
+    includeSeconds: true,
+  });
 
   const handleStartEditing = useCallback(() => {
     setIsEditing(true);
@@ -43,6 +45,12 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
     setIsEditing(false);
   }, [noteTextRef, setIsEditing]);
 
+  const handleOpenNoteURL = useCallback(() => {
+    if (note.url) {
+      window.open(note.url);
+    }
+  }, [note]);
+
   return (
     <StyledNoteContainer>
       <StyledNoteText
@@ -58,6 +66,11 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
           <>
             <span>{displayedDate}</span>
             <span>
+              {note.scope !== NOTE_SCOPES.PAGE && note.url && (
+                <StyledNoteAction title={note.url} onClick={handleOpenNoteURL}>
+                  Open URL
+                </StyledNoteAction>
+              )}
               <StyledNoteAction onClick={handleStartEditing}>
                 Edit
               </StyledNoteAction>
