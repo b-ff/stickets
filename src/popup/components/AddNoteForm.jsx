@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
-import { noop } from "../utils";
+import { noop } from "../../common/utils";
 
 const SCOPE_OPTIONS = {
   [NOTE_SCOPES.GLOBAL]: "All web-sites",

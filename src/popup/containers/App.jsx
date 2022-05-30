@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { BrowserRouter } from "react-router-dom";
 import { CurrentLocationContext } from "./CurrentLocationContext";
+import { AuthContainer } from "./AuthContainer";
 import { theme } from "../../common/theme";
-import { config } from "../../config";
-import { NotesContainer } from "./NotesContainer";
-
-const client = new ApolloClient({
-  uri: config.api,
-  cache: new InMemoryCache(),
-});
 
 export function App() {
   const [currentLocation, setCurrentLocation] = useState({});
 
   useEffect(() => {
-    if (chrome.tabs) {
-      chrome.tabs.query({ active: true, currentWindow: true }, ([{ url }]) => {
-        setCurrentLocation(new URL(url));
-      });
-    }
+    chrome.tabs.query({ active: true, currentWindow: true }, ([{ url }]) => {
+      setCurrentLocation(new URL(url));
+    });
   }, [setCurrentLocation]);
 
   return (
-    <ApolloProvider client={client}>
+    <div className={theme}>
       <CurrentLocationContext.Provider value={currentLocation}>
-        <NotesContainer className={theme} />
+        <BrowserRouter>
+          <AuthContainer />
+        </BrowserRouter>
       </CurrentLocationContext.Provider>
-    </ApolloProvider>
+    </div>
   );
 }

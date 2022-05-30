@@ -1,23 +1,14 @@
 import { gql } from "@apollo/client";
-import { ApolloClient } from "@apollo/client/core";
-import { InMemoryCache } from "@apollo/client/cache";
-import { config } from "../config";
-
 import CreateNoteMutation from "../common/queries/CreateNote.graphql";
 import { NOTE_SCOPES } from "../common/constants/note-scopes";
 
 const MENU_ITEM_ID_PREFIX = "stickets__add-note";
 
-const client = new ApolloClient({
-  uri: config.api,
-  cache: new InMemoryCache(),
-});
-
 const CREATE_NOTE = gql`
   ${CreateNoteMutation}
 `;
 
-export default () => {
+export function initContextMenu(client) {
   chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
       id: `${MENU_ITEM_ID_PREFIX}:${NOTE_SCOPES.GLOBAL}`,
@@ -62,4 +53,4 @@ export default () => {
       }
     );
   });
-};
+}

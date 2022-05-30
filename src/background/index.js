@@ -1,8 +1,15 @@
 console.log("Service Worker Launched!", chrome);
 
-import contextMenu from "./contextMenu";
+import { initApolloClient } from "./initApolloClient";
+import { initContextMenu } from "./initContextMenu";
 
-contextMenu();
+initApolloClient()
+  .then((client) => {
+    initContextMenu(client);
+  })
+  .catch((error) =>
+    console.error("Cannot initialize background API client", error)
+  );
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   const color = "#ff006f";

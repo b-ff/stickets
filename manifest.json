@@ -1,9 +1,21 @@
 {
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmyH+qRfrN5BjVU3as4b5mamYYY/CYQhy2biEQcms8TwFmPRjWGkjue/vzaRJAufl99a56ufT5pYO9r/Mm/xocMANE6QlvH7/jtT2BRRsoIDiWv/nr4odIz+gpa3z00u9PTqow3TGKW/mddnSvsbxNDImQxWgRoEkaXkpGw1f7mceWNZixn6FEOcBBVmxIMlVrVJjLAIz95EoMP7p49pOrl5ntm+RJcrK6oUWonpnLGRS8EMmBvpSFu5FcTOpaOFKc2VWg4pfYnJWbmHV4ZAbOG+K4d2W/5brf/BPTGSYmdPux7OGNm3ZauzARoZL3/d6NjkN3DhqKuBlAM9MpNLiKQIDAQAB",
   "name": "Stickets!",
   "description": "Allows to add a notes to any webpage you visit as well as share it with whoever you want",
   "version": "0.1.0",
   "manifest_version": 3,
-  "permissions": ["storage", "activeTab", "tabs", "contextMenus"],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "contextMenus",
+    "storage",
+    "identity",
+    "identity.email"
+  ],
+  "oauth2": {
+    "client_id": "179899962630-kseirf3s5unie7caq226ghm2sqbdck7b.apps.googleusercontent.com",
+    "scopes": ["profile", "email"]
+  },
   "background": {
     "service_worker": "assets/background.bundle.js"
   },

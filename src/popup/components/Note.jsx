@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { styled } from "@linaria/react";
-import { applyStyleIfHasProperty, noop } from "../utils";
+import { applyStyleIfHasProperty, noop } from "../../common/utils";
 
 export function Note({ note, onUpdate = noop, onDelete = noop }) {
   const noteTextRef = useRef();
