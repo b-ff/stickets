@@ -6,7 +6,7 @@ import { config } from "../config";
 export function initApolloClient() {
   return chrome.storage.sync.get("token").then(({ token }) => {
     const httpLink = createHttpLink({
-      uri: config.api,
+      uri: config.api.host,
     });
 
     const authLink = setContext((_, { headers }) => {
@@ -21,6 +21,10 @@ export function initApolloClient() {
     const client = new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache(),
+    });
+
+    chrome.runtime.onSuspend.addListener(() => {
+      client.stop();
     });
 
     return client;

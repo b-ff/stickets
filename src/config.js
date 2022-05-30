@@ -1,3 +1,6 @@
 export const config = {
-  api: "https://chrotes-api.herokuapp.com/",
+  api: {
+    host: "https://chrotes-api.herokuapp.com/",
+    pollingIntervalMS: 60 * 1000,
+  },
 };

@@ -23,7 +23,7 @@ export function AuthContainer() {
   }, [setStoredToken, setTokenLoaded]);
 
   const httpLink = createHttpLink({
-    uri: config.api,
+    uri: config.api.host,
   });
 
   const authLink = setContext((_, { headers }) => {
