@@ -23,6 +23,7 @@ export function initNotesPolling(client) {
     client
       .query({
         query: GET_ALL_NOTES,
+        fetchPolicy: "no-cache",
       })
       .then(({ data }) => {
         const { allNotes: notes } = data;

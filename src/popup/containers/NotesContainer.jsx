@@ -31,15 +31,27 @@ const DELETE_NOTE = gql`
   ${DeleteNoteMutation}
 `;
 
+const noCache = { fetchPolicy: "no-cache" };
+const refetchGetAllNotes = { refetchQueries: [GET_ALL_NOTES] };
+
 export function NotesContainer() {
   const location = useCurrentLocation();
 
   const [displayScope, setDisplayScope] = useState(NOTE_SCOPES.PAGE);
 
-  const getAllNotesRequest = useQuery(GET_ALL_NOTES);
-  const [addNote, addNoteRequest] = useMutation(CREATE_NOTE);
-  const [updateNote, updateNoteRequest] = useMutation(UPDATE_NOTE);
-  const [deleteNote, deleteNoteRequest] = useMutation(DELETE_NOTE);
+  const getAllNotesRequest = useQuery(GET_ALL_NOTES, noCache);
+  const [addNote, addNoteRequest] = useMutation(
+    CREATE_NOTE,
+    refetchGetAllNotes
+  );
+  const [updateNote, updateNoteRequest] = useMutation(
+    UPDATE_NOTE,
+    refetchGetAllNotes
+  );
+  const [deleteNote, deleteNoteRequest] = useMutation(
+    DELETE_NOTE,
+    refetchGetAllNotes
+  );
 
   const handleNoteUpdate = useCallback(({ _id: updateId, note }) => {
     updateNote({
