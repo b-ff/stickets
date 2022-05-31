@@ -124,6 +124,7 @@ const StyledNoteText = styled.p`
 
   &[contenteditable="true"] {
     overflow: auto;
+    background-color: var(--inputPrimaryColor);
     outline: 1px solid var(--borderPrimaryColor);
   }
 
