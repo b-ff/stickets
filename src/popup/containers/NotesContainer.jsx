@@ -148,7 +148,7 @@ const StyledNotesContainer = styled.section`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 10px 10px 15px;
+  padding: 10px 10px 25px;
   box-sizing: border-box;
   overflow-y: auto;
 `;

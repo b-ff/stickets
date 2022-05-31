@@ -1,8 +1,14 @@
 import React, { useCallback, useRef, useState } from "react";
 import { styled } from "@linaria/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import { applyStyleIfHasProperty, noop } from "../../common/utils";
+import {
+  applyStyleIfHasProperty,
+  noop,
+  stripTags,
+  urlify,
+} from "../../common/utils";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
+import { SmartTextarea } from "./SmartTextarea";
 
 export function Note({ note, onUpdate = noop, onDelete = noop }) {
   const noteTextRef = useRef();
@@ -35,15 +41,15 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
   const handleCancelEdit = useCallback(() => {
     noteTextRef.current.innerHTML = note.note;
     setIsEditing(false);
-  }, [noteTextRef, setIsEditing]);
+  }, [note, noteTextRef, setIsEditing]);
 
   const handleOnUpdate = useCallback(() => {
     onUpdate({
       ...note,
-      note: noteTextRef.current.innerHTML.trim(),
+      note: stripTags(noteTextRef.current.innerHTML.trim()),
     });
     setIsEditing(false);
-  }, [noteTextRef, setIsEditing]);
+  }, [note, noteTextRef, setIsEditing]);
 
   const handleOpenNoteURL = useCallback(() => {
     if (note.url) {
@@ -53,14 +59,16 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
 
   return (
     <StyledNoteContainer>
-      <StyledNoteText
+      <SmartTextarea
         ref={noteTextRef}
         contentEditable={isEditing}
         onDoubleClick={handleStartEditing}
         onKeyUp={handleNoteTextChange}
+        placeholder="Your note..."
+        style={{ maxHeight: isEditing ? "200px" : "auto" }}
       >
-        {note.note}
-      </StyledNoteText>
+        {urlify(note.note)}
+      </SmartTextarea>
       <StyledNoteInfo>
         {!isEditing && (
           <>
@@ -124,7 +132,7 @@ const StyledNoteInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
-  padding: 0 5px 5px;
+  padding: 5px;
   opacity: 0.8;
 `;
 

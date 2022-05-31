@@ -3,6 +3,7 @@ import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 import { noop } from "../../common/utils";
+import { SmartTextarea } from "./SmartTextarea";
 
 const SCOPE_OPTIONS = {
   [NOTE_SCOPES.GLOBAL]: "All web-sites",
@@ -11,16 +12,28 @@ const SCOPE_OPTIONS = {
 };
 
 export function AddNoteForm({ onSubmit = noop }) {
+  const formRef = useRef();
+  const textareaRef = useRef();
   const submitRef = useRef();
+
   const location = useCurrentLocation();
+
   const [noteEmpty, setNoteEmpty] = useState(true);
 
-  const handleSubmit = useCallback((event) => {
-    const formData = Object.fromEntries(new FormData(event.target));
-    onSubmit(formData);
-    event.preventDefault();
-    event.target.reset();
-  }, []);
+  const handleReset = useCallback(() => {
+    formRef.current.reset();
+    textareaRef.current.innerHTML = "";
+  }, [formRef, textareaRef]);
+
+  const handleSubmit = useCallback(
+    (event) => {
+      const formData = Object.fromEntries(new FormData(event.target));
+      onSubmit(formData);
+      event.preventDefault();
+      handleReset();
+    },
+    [onSubmit, handleReset]
+  );
 
   const handleKeyUp = useCallback(
     (event) => {
@@ -40,7 +53,7 @@ export function AddNoteForm({ onSubmit = noop }) {
   );
 
   return (
-    <StyledForm onSubmit={handleSubmit}>
+    <StyledForm ref={formRef} onSubmit={handleSubmit}>
       <StyledFormRow>
         <StyledSelect name="scope">
           {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
@@ -52,13 +65,20 @@ export function AddNoteForm({ onSubmit = noop }) {
       </StyledFormRow>
       <StyledFormRow>
         <StyledTextarea
+          isEditing
           name="note"
           placeholder="Your note..."
           onKeyUp={handleKeyUp}
+          ref={textareaRef}
         ></StyledTextarea>
+        {/* <StyledTextarea
+          name="note"
+          placeholder="Your note..."
+          onKeyUp={handleKeyUp}
+        ></StyledTextarea> */}
       </StyledFormRow>
       <StyledFormRow>
-        <StyledButton type="reset" disabled={noteEmpty}>
+        <StyledButton type="reset" onClick={handleReset} disabled={noteEmpty}>
           Reset
         </StyledButton>
         <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
@@ -99,17 +119,17 @@ const StyledSelect = styled.select`
   outline: none;
 `;
 
-const StyledTextarea = styled.textarea`
+const StyledTextarea = styled(SmartTextarea)`
   width: 100%;
-  height: 70px;
-  resize: none;
-  color: var(--fontPrimaryColor);
-  background-color: var(--inputPrimaryColor);
-  border: 1px solid var(--borderPrimaryColor);
+  min-height: 70px;
+  max-height: 200px;
   border-radius: 3px;
-  padding: 10px;
   box-sizing: border-box;
   outline: none;
+
+  &[contenteditable="true"] {
+    outline: none;
+  }
 `;
 
 const StyledButton = styled.button`
