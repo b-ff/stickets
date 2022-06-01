@@ -1,10 +1,8 @@
-mutation CreateNote($url: String!, $note: String!, $scope: String!) {
+mutation CreateNote($url: String!, $note: String!, $scope: NoteScope!) {
   create(url: $url, note: $note, scope: $scope) {
     _id
-    # author
     url
     note
-    share
     scope
     createdAt
     updatedAt
