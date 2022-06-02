@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
 import { NOTE_SCOPES } from "../common/constants/note-scopes";
 import GetAllNotes from "../common/queries/GetAllNotes.graphql";
 import { groupNotesByScope } from "../common/utils";
@@ -8,7 +8,7 @@ const GET_ALL_NOTES = gql`
   ${GetAllNotes}
 `;
 
-const drawBadgeCount = (tabId, count) => {
+const drawBadgeCount = (tabId: number, count: number): void => {
   const color = "#ff006f";
   const text = count ? (count >= 1000 ? "999+" : `${count}`) : "";
 
@@ -16,10 +16,12 @@ const drawBadgeCount = (tabId, count) => {
   chrome.action.setBadgeText({ tabId, text });
 };
 
-export function initNotesPolling(client) {
-  let timeoutId;
+export function initNotesPolling(
+  client: ApolloClient<NormalizedCacheObject>
+): void {
+  let timeoutId: NodeJS.Timeout;
 
-  const makePollRequest = (location, tabId) => {
+  const makePollRequest = (location: URL, tabId: number) => {
     client
       .query({
         query: GET_ALL_NOTES,
@@ -49,12 +51,14 @@ export function initNotesPolling(client) {
       .catch(console.error);
   };
 
-  chrome.tabs.onActivated.addListener(({ tabId }) => {
-    chrome.tabs.get(tabId, ({ url, pendingUrl }) => {
-      clearTimeout(timeoutId);
-      makePollRequest(new URL(url || pendingUrl), tabId);
-    });
-  });
+  chrome.tabs.onActivated.addListener(
+    ({ tabId }: chrome.tabs.TabActiveInfo) => {
+      chrome.tabs.get(tabId, ({ url, pendingUrl }: chrome.tabs.Tab) => {
+        clearTimeout(timeoutId);
+        makePollRequest(new URL((url || pendingUrl) as string), tabId);
+      });
+    }
+  );
 
   chrome.runtime.onSuspend.addListener(() => {
     clearTimeout(timeoutId);

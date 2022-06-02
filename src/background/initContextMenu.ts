@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
 import CreateNoteMutation from "../common/queries/CreateNote.graphql";
 import { NOTE_SCOPES } from "../common/constants/note-scopes";
 
@@ -8,7 +8,7 @@ const CREATE_NOTE = gql`
   ${CreateNoteMutation}
 `;
 
-export function initContextMenu(client) {
+export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
   chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
       id: `${MENU_ITEM_ID_PREFIX}:${NOTE_SCOPES.GLOBAL}`,
@@ -29,8 +29,12 @@ export function initContextMenu(client) {
     });
 
     chrome.contextMenus.onClicked.addListener(
-      ({ pageUrl: url, selectionText: note, menuItemId }) => {
-        const scope = menuItemId.split(":").pop();
+      ({
+        pageUrl: url,
+        selectionText: note,
+        menuItemId,
+      }: chrome.contextMenus.OnClickData) => {
+        const scope = `${menuItemId}`.split(":").pop();
 
         client
           .mutate({

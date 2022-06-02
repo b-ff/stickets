@@ -1,12 +1,24 @@
 query GetAllNotes {
   allNotes {
-    note
-    # author
-    url
-    share
+    _id
+    uid
+    creator {
+      _id
+      name
+      email
+      avatar
+    }
+    shared
+    sharedWith {
+      _id
+      email
+      name
+      avatar
+    }
     scope
+    url
+    note
     createdAt
     updatedAt
-    _id
   }
 }
