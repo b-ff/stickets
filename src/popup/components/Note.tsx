@@ -17,11 +17,14 @@ import {
   urlify,
 } from "../../common/utils";
 import { SmartTextarea } from "./SmartTextarea";
-import { Scope } from "../../common/enums/Scope";
+import {
+  Note as NoteType,
+  NoteScope,
+} from "../../common/graphql/__generated__/graphql";
 
 type NoteProps = {
-  note: INote;
-  onUpdate: (note: INote) => void;
+  note: NoteType;
+  onUpdate: (note: NoteType) => void;
   onDelete: (id: string) => void;
 };
 
@@ -102,7 +105,7 @@ export const Note: FC<NoteProps> = ({
           <>
             <span>{displayedDate}</span>
             <span>
-              {note.scope !== Scope.Page && note.url && (
+              {note.scope !== NoteScope.Page && note.url && (
                 <StyledNoteAction title={note.url} onClick={handleOpenNoteURL}>
                   Open URL
                 </StyledNoteAction>

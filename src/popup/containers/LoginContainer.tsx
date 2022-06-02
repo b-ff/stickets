@@ -1,13 +1,8 @@
 import React, { FC, ReactElement, useCallback } from "react";
-import { gql, useMutation } from "@apollo/client";
-import Login from "../../common/queries/Login.graphql";
 import { noop } from "../../common/utils";
 import { ContentCenter } from "../components/ContentCenter";
 import { LoginForm } from "../components/LoginForm";
-
-const LOGIN = gql`
-  ${Login}
-`;
+import { useLoginMutation } from "../../common/graphql/__generated__/graphql";
 
 type LoginContainerProps = {
   onLoginSuccess: (token: string) => void;
@@ -16,7 +11,7 @@ type LoginContainerProps = {
 export const LoginContainer: FC<LoginContainerProps> = ({
   onLoginSuccess = noop,
 }): ReactElement => {
-  const [doLogin, { loading, error, data }] = useMutation(LOGIN);
+  const [doLogin, { loading, error, data }] = useLoginMutation();
 
   const handleSignIn = useCallback(() => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {

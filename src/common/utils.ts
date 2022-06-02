@@ -1,5 +1,9 @@
 import { PAGE_QUERY_PARAM_NAME } from "./constants/page-query-param-name";
-import { Scope } from "./enums/Scope";
+import { Note, NoteScope } from "./graphql/__generated__/graphql";
+
+declare type TNotesGroupedByScope = {
+  [key in NoteScope]: Note[];
+};
 
 export const noop = (): void => {};
 
@@ -30,30 +34,34 @@ export const makeHrefToPage = (
 };
 
 export const groupNotesByScope = (
-  notes: INote[],
+  notes: Note[],
   location?: URL | null
 ): TNotesGroupedByScope => {
   const groupedNotes: TNotesGroupedByScope = {
-    [Scope.Global]: [],
-    [Scope.Site]: [],
-    [Scope.Page]: [],
+    [NoteScope.Global]: [],
+    [NoteScope.Site]: [],
+    [NoteScope.Page]: [],
   };
 
   notes.forEach((note) => {
-    if (note.scope === Scope.Global) {
-      groupedNotes[Scope.Global].push(note);
+    if (note.scope === NoteScope.Global) {
+      groupedNotes[NoteScope.Global].push(note);
     }
 
     if (
-      note.scope === Scope.Site &&
+      note.scope === NoteScope.Site &&
       location &&
       note.url.includes(location.origin)
     ) {
-      groupedNotes[Scope.Site].push(note);
+      groupedNotes[NoteScope.Site].push(note);
     }
 
-    if (note.scope === Scope.Page && location && note.url === location.href) {
-      groupedNotes[Scope.Page].push(note);
+    if (
+      note.scope === NoteScope.Page &&
+      location &&
+      note.url === location.href
+    ) {
+      groupedNotes[NoteScope.Page].push(note);
     }
   });
 

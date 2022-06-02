@@ -1,6 +1,6 @@
 import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
-import CreateNoteMutation from "../common/queries/CreateNote.graphql";
-import { Scope } from "../common/enums/Scope";
+import CreateNoteMutation from "../common/graphql/mutations/CreateNote.graphql";
+import { NoteScope } from "../common/graphql/__generated__/graphql";
 
 const MENU_ITEM_ID_PREFIX = "stickets__add-note";
 
@@ -11,19 +11,19 @@ const CREATE_NOTE = gql`
 export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
   chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
-      id: `${MENU_ITEM_ID_PREFIX}:${Scope.Global}`,
+      id: `${MENU_ITEM_ID_PREFIX}:${NoteScope.Global}`,
       title: 'Add to "All" notes',
       contexts: ["selection"],
     });
 
     chrome.contextMenus.create({
-      id: `${MENU_ITEM_ID_PREFIX}:${Scope.Site}`,
+      id: `${MENU_ITEM_ID_PREFIX}:${NoteScope.Site}`,
       title: "Add to site notes",
       contexts: ["selection"],
     });
 
     chrome.contextMenus.create({
-      id: `${MENU_ITEM_ID_PREFIX}:${Scope.Page}`,
+      id: `${MENU_ITEM_ID_PREFIX}:${NoteScope.Page}`,
       title: "Add to page notes",
       contexts: ["selection"],
     });

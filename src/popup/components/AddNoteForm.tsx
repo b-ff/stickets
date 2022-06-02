@@ -10,16 +10,16 @@ import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { noop } from "../../common/utils";
 import { SmartTextarea } from "./SmartTextarea";
-import { Scope } from "../../common/enums/Scope";
+import { Note, NoteScope } from "../../common/graphql/__generated__/graphql";
 
 const SCOPE_OPTIONS = {
-  [Scope.Global]: "All web-sites",
-  [Scope.Site]: "This web-site {host}",
-  [Scope.Page]: "Current page only",
+  [NoteScope.Global]: "All web-sites",
+  [NoteScope.Site]: "This web-site {host}",
+  [NoteScope.Page]: "Current page only",
 };
 
 type AddNoteFormProps = {
-  onSubmit: (note: Partial<INote>) => void;
+  onSubmit: (note: Partial<Note>) => void;
 };
 
 export const AddNoteForm: FC<AddNoteFormProps> = ({

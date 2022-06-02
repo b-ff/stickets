@@ -1,0 +1,16 @@
+overwrite: true
+schema: "https://chrotes-api.herokuapp.com/"
+documents: "src/common/graphql/**/*.graphql"
+generates:
+  src/common/graphql/__generated__/graphql.d.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+      - "typescript-graphql-files-modules"
+      - "typescript-document-nodes"
+      - "fragment-matcher"
+      - "urql-introspection"
+  src/common/graphql/__generated__/graphql.schema.json:
+    plugins:
+      - "introspection"

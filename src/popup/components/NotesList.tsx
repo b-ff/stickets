@@ -3,10 +3,11 @@ import { noop } from "../../common/utils";
 import { Note } from "./Note";
 import { ContentCenter } from "./ContentCenter";
 import { styled } from "@linaria/react";
+import { Note as NoteType } from "../../common/graphql/__generated__/graphql";
 
 type NotesListProps = {
-  notes: INote[];
-  onUpdate: (note: INote) => void;
+  notes: NoteType[];
+  onUpdate: (note: NoteType) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
 };
@@ -22,7 +23,7 @@ export const NotesList: FC<NotesListProps> = ({
     <ContentCenter {...props}>Loading...</ContentCenter>
   ) : notes.length ? (
     <>
-      {notes.map((note: INote) => (
+      {notes.map((note: NoteType) => (
         <Note
           note={note}
           onUpdate={onUpdate}
