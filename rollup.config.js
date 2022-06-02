@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import image from "@rollup/plugin-image";
@@ -20,93 +19,6 @@ function serve() {
     writeBundle() {},
   };
 }
-
-const getBundleFor = (name, indexFile) => ({
-  input: indexFile,
-  output: {
-    sourcemap: true,
-    format: "iife",
-    name: name,
-    file: `assets/${name}.bundle.js`,
-  },
-  plugins: [
-    json(),
-    string({
-      include: "**/*.graphql",
-    }),
-    image(),
-    // we'll extract any component CSS out into
-    // a separate file - better for performance
-    css({ output: `${name}.bundle.css` }),
-
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration -
-    // consult the documentation for details:
-    // https://github.com/rollup/plugins/tree/master/packages/commonjs
-    resolve({
-      browser: true,
-    }),
-    commonjs(),
-
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
-    !production && serve(),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
-    production && terser(),
-  ],
-  watch: {
-    clearScreen: false,
-  },
-});
-
-const getReactBundleFor = (name, indexFile) => ({
-  input: indexFile,
-  output: {
-    sourcemap: true,
-    format: "iife",
-    name: name,
-    file: `assets/${name}.bundle.js`,
-  },
-  plugins: [
-    json(),
-    replace({
-      "process.env.NODE_ENV": JSON.stringify("production"),
-    }),
-    resolve({
-      browser: true,
-      extensions: [".js", ".json", ".jsx", ".mjs"],
-    }),
-    commonjs(),
-    string({
-      include: "**/*.graphql",
-    }),
-    image(),
-    linaria({
-      sourceMap: !production,
-    }),
-    // we'll extract any component CSS out into
-    // a separate file - better for performance
-    css({ output: `${name}.bundle.css` }),
-
-    babel({
-      babelrc: true,
-    }),
-
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
-    !production && serve(),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
-    production && terser(),
-  ],
-  watch: {
-    clearScreen: false,
-  },
-});
 
 const getTypescriptBundleFor = (name, indexFile) => ({
   input: indexFile,
@@ -193,9 +105,6 @@ const getReactTypescriptBundleFor = (name, indexFile) => ({
 
 export default [
   //react app
-  // getBundleFor("background", "src/background/index.js"),
-  // getReactBundleFor("popup", "src/popup/index.jsx"),
-  // getReactBundleFor("options", "src/options/index.jsx"),
   getTypescriptBundleFor("background", "src/background/index.ts"),
   getReactTypescriptBundleFor("options", "src/options/index.tsx"),
   getReactTypescriptBundleFor("popup", "src/popup/index.tsx"),

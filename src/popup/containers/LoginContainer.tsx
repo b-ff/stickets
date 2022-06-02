@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { FC, ReactElement, useCallback } from "react";
 import { gql, useMutation } from "@apollo/client";
 import Login from "../../common/queries/Login.graphql";
 import { noop } from "../../common/utils";
@@ -9,7 +9,13 @@ const LOGIN = gql`
   ${Login}
 `;
 
-export function LoginContainer({ onLoginSuccess = noop }) {
+type LoginContainerProps = {
+  onLoginSuccess: (token: string) => void;
+};
+
+export const LoginContainer: FC<LoginContainerProps> = ({
+  onLoginSuccess = noop,
+}): ReactElement => {
   const [doLogin, { loading, error, data }] = useMutation(LOGIN);
 
   const handleSignIn = useCallback(() => {
@@ -31,4 +37,4 @@ export function LoginContainer({ onLoginSuccess = noop }) {
   ) : (
     <LoginForm onSubmit={handleSignIn} />
   );
-}
+};

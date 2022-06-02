@@ -1,21 +1,20 @@
 import React, {
   FC,
-  MutableRefObject,
   ReactElement,
+  Ref,
   useCallback,
   useRef,
   useState,
 } from "react";
 import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
-import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 import { noop } from "../../common/utils";
 import { SmartTextarea } from "./SmartTextarea";
 
 const SCOPE_OPTIONS = {
-  [NOTE_SCOPES.GLOBAL]: "All web-sites",
-  [NOTE_SCOPES.SITE]: "This web-site {host}",
-  [NOTE_SCOPES.PAGE]: "Current page only",
+  [Scope.Global]: "All web-sites",
+  [Scope.Site]: "This web-site {host}",
+  [Scope.Page]: "Current page only",
 };
 
 type AddNoteFormProps = {
@@ -25,10 +24,9 @@ type AddNoteFormProps = {
 export const AddNoteForm: FC<AddNoteFormProps> = ({
   onSubmit = noop,
 }): ReactElement => {
-  const formRef: MutableRefObject<HTMLFormElement | null> = useRef(null);
-  const textareaRef: MutableRefObject<HTMLParagraphElement | null> =
-    useRef(null);
-  const submitRef: MutableRefObject<HTMLButtonElement | null> = useRef(null);
+  const formRef: Ref<HTMLFormElement> = useRef(null);
+  const textareaRef: Ref<HTMLParagraphElement> = useRef(null);
+  const submitRef: Ref<HTMLButtonElement> = useRef(null);
 
   const location = useCurrentLocation();
 
@@ -84,18 +82,13 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
         </StyledSelect>
       </StyledFormRow>
       <StyledFormRow>
-        <StyledTextarea
+        <StyledSmartTextarea
           isEditing
           name="note"
           placeholder="Your note..."
           onKeyUp={handleKeyUp}
           ref={textareaRef}
-        ></StyledTextarea>
-        {/* <StyledTextarea
-          name="note"
-          placeholder="Your note..."
-          onKeyUp={handleKeyUp}
-        ></StyledTextarea> */}
+        ></StyledSmartTextarea>
       </StyledFormRow>
       <StyledFormRow>
         <StyledButton type="reset" onClick={handleReset} disabled={noteEmpty}>
@@ -139,7 +132,7 @@ const StyledSelect = styled.select`
   outline: none;
 `;
 
-const StyledTextarea = styled(SmartTextarea)`
+const StyledSmartTextarea = styled(SmartTextarea)`
   width: 100%;
   min-height: 70px;
   max-height: 200px;

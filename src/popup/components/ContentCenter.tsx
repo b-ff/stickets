@@ -1,9 +1,14 @@
 import { styled } from "@linaria/react";
-import React from "react";
+import React, { FC, ReactElement } from "react";
 
-export function ContentCenter({ children, ...props }) {
+type ContentCenterProps = React.HTMLAttributes<HTMLElement>;
+
+export const ContentCenter: FC<ContentCenterProps> = ({
+  children,
+  ...props
+}): ReactElement => {
   return <StyledAuthContainer {...props}>{children}</StyledAuthContainer>;
-}
+};
 
 const StyledAuthContainer = styled.section`
   display: flex;

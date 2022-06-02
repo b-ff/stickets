@@ -1,112 +1,107 @@
 import React, {
-  ForwardedRef,
   forwardRef,
-  ForwardRefExoticComponent,
-  MutableRefObject,
+  HTMLAttributes,
   ReactElement,
+  Ref,
   useCallback,
   useLayoutEffect,
   useRef,
+  ForwardedRef,
+  MutableRefObject,
 } from "react";
 import { styled } from "@linaria/react";
 import { noop, stripTags } from "../../common/utils";
 import DOMPurify from "dompurify";
 
-type SmartTextareaProps = {
-  name: string;
-  placeholder: string;
+type SmartTextareaProps = HTMLAttributes<HTMLParagraphElement> & {
+  name?: string;
+  placeholder?: string;
   isEditing: boolean;
-  className: string;
-  style: React.CSSProperties;
-  onKeyUp: React.KeyboardEventHandler;
-  onChange: React.FormEventHandler;
+  onKeyUp?: React.KeyboardEventHandler;
+  onChange?: React.FormEventHandler;
   children?: React.ReactNode;
-  dangerouslySetInnerHTML: {
-    __html: string;
-  };
 };
 
-export const SmartTextarea: ForwardRefExoticComponent<SmartTextareaProps> =
-  forwardRef(
-    (
-      {
-        name,
-        placeholder,
-        isEditing,
-        className,
-        style = {},
-        onKeyUp = noop,
-        onChange = noop,
-        ...props
-      },
-      ref: ForwardedRef<HTMLParagraphElement>
-    ): ReactElement => {
-      const inputRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
+export const SmartTextarea = forwardRef<
+  HTMLParagraphElement,
+  SmartTextareaProps
+>(
+  (
+    {
+      name,
+      placeholder,
+      isEditing,
+      className,
+      style = {},
+      onKeyUp = noop,
+      onChange = noop,
+      ...props
+    },
+    ref: ForwardedRef<HTMLParagraphElement>
+  ): ReactElement => {
+    const inputRef: Ref<HTMLInputElement> = useRef(null);
 
-      if (typeof props.children === "string") {
-        props.dangerouslySetInnerHTML = {
-          __html: DOMPurify.sanitize(props.children, {
-            ADD_ATTR: ["target"],
-          }),
-        };
-        props.children = undefined;
-      }
-
-      useLayoutEffect(() => {
-        if (inputRef.current && ref?.current) {
-          inputRef.current.value = stripTags(ref.current.innerHTML);
-        }
-      }, [inputRef, ref]);
-
-      const handleKeyUp = useCallback(
-        (event: React.KeyboardEvent<HTMLInputElement>) => {
-          const target = event.target as HTMLInputElement;
-          const sanitizedValue = stripTags(target.innerHTML);
-          target.value = sanitizedValue;
-
-          if (inputRef.current) {
-            inputRef.current.value = sanitizedValue;
-          }
-          onKeyUp(event);
-        },
-        [inputRef, onKeyUp]
-      );
-
-      const {
-        width,
-        minWidth,
-        maxWidth,
-        height,
-        minHeight,
-        maxHeight,
-        resize,
-      } = style;
-
-      return (
-        <StyledContainer className={className} style={style}>
-          <input ref={inputRef} type="hidden" name={name} />
-          <StyledNoteText
-            ref={ref}
-            contentEditable={isEditing}
-            onKeyUp={handleKeyUp}
-            style={{
-              width,
-              minWidth,
-              maxWidth,
-              height,
-              minHeight,
-              maxHeight,
-              resize,
-            }}
-            {...props}
-          ></StyledNoteText>
-          {Boolean(placeholder) && (
-            <StyledPlaceholder>{placeholder}</StyledPlaceholder>
-          )}
-        </StyledContainer>
-      );
+    if (typeof props.children === "string") {
+      props.dangerouslySetInnerHTML = {
+        __html: DOMPurify.sanitize(props.children, {
+          ADD_ATTR: ["target"],
+        }),
+      };
+      props.children = undefined;
     }
-  );
+
+    useLayoutEffect(() => {
+      const editableParagraph = ref as MutableRefObject<HTMLParagraphElement>;
+
+      if (inputRef.current && editableParagraph?.current) {
+        inputRef.current.value = stripTags(
+          editableParagraph?.current.innerHTML
+        );
+      }
+    }, [inputRef, ref]);
+
+    const handleKeyUp = useCallback(
+      (event: React.KeyboardEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement;
+        const sanitizedValue = stripTags(target.innerHTML);
+        target.value = sanitizedValue;
+
+        if (inputRef.current) {
+          inputRef.current.value = sanitizedValue;
+        }
+        onKeyUp(event);
+      },
+      [inputRef, onKeyUp]
+    );
+
+    const { width, minWidth, maxWidth, height, minHeight, maxHeight, resize } =
+      style;
+
+    return (
+      <StyledContainer className={className} style={style}>
+        <input ref={inputRef} type="hidden" name={name} />
+        <StyledNoteText
+          ref={ref}
+          contentEditable={isEditing}
+          onKeyUp={handleKeyUp}
+          style={{
+            width,
+            minWidth,
+            maxWidth,
+            height,
+            minHeight,
+            maxHeight,
+            resize,
+          }}
+          {...props}
+        ></StyledNoteText>
+        {Boolean(placeholder) && (
+          <StyledPlaceholder>{placeholder}</StyledPlaceholder>
+        )}
+      </StyledContainer>
+    );
+  }
+);
 
 const StyledContainer = styled.div`
   position: relative;

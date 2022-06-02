@@ -15,7 +15,7 @@ export const applyStyleIfHasProperty =
 export const makeHrefToPage = (
   urlSearchParams: URLSearchParams,
   page: string,
-  params: { [key: string]: string }
+  params?: { [key: string]: string }
 ): string => {
   const p = new URLSearchParams(urlSearchParams);
   p.set(PAGE_QUERY_PARAM_NAME, page);

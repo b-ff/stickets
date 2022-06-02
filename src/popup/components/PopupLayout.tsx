@@ -1,18 +1,23 @@
-import React from "react";
+import React, { FC, ReactElement, ReactNode } from "react";
 import { styled } from "@linaria/react";
 import { AppLink } from "../../common/components/AppLink";
 
-export function PopupLayout({ children, footer }) {
-  return (
-    <>
-      <StyledHeader>
-        <StyledIcon>#</StyledIcon>Stickets
-      </StyledHeader>
-      <StyledMain>{children}</StyledMain>
-      <StyledFooter>{footer}</StyledFooter>
-    </>
-  );
-}
+type PopupLayoutProps = React.HTMLAttributes<HTMLElement> & {
+  footer: ReactNode;
+};
+
+export const PopupLayout: FC<PopupLayoutProps> = ({
+  children,
+  footer,
+}): ReactElement => (
+  <>
+    <StyledHeader>
+      <StyledIcon>#</StyledIcon>Stickets
+    </StyledHeader>
+    <StyledMain>{children}</StyledMain>
+    <StyledFooter>{footer}</StyledFooter>
+  </>
+);
 
 const StyledHeader = styled.header`
   width: 100%;

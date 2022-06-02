@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useCallback } from "react";
+import React, { FC, HTMLAttributes, ReactElement, useCallback } from "react";
 import { styled } from "@linaria/react";
 import { applyStyleIfHasProperty, noop } from "../../common/utils";
 
@@ -8,6 +8,11 @@ type RadioSwitchProps = {
   name?: string;
   defaultValue?: string;
   disableEmpty?: boolean;
+};
+
+type StyledRadioLabelProps = HTMLAttributes<HTMLLabelElement> & {
+  active?: boolean;
+  disabled?: boolean;
 };
 
 export const RadioSwitch: FC<RadioSwitchProps> = ({
@@ -73,7 +78,7 @@ const StyledRadioSwitchContainer = styled.fieldset`
   }
 `;
 
-const StyledRadioLabel = styled.label`
+const StyledRadioLabel = styled.label<StyledRadioLabelProps>`
   position: relative;
   display: flex;
   align-items: center;

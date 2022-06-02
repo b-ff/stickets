@@ -1,7 +1,9 @@
 import React, {
   FC,
-  LegacyRef,
+  ForwardedRef,
+  HTMLAttributes,
   ReactElement,
+  Ref,
   useCallback,
   useRef,
   useState,
@@ -23,12 +25,16 @@ type NoteProps = {
   onDelete: (id: string) => void;
 };
 
+type StyledNoteActionProps = HTMLAttributes<HTMLButtonElement> & {
+  negative?: boolean;
+};
+
 export const Note: FC<NoteProps> = ({
   note,
   onUpdate = noop,
   onDelete = noop,
 }): ReactElement => {
-  const noteTextRef: LegacyRef<HTMLParagraphElement | undefined> = useRef();
+  const noteTextRef: Ref<HTMLParagraphElement> = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
 
@@ -46,9 +52,10 @@ export const Note: FC<NoteProps> = ({
   }, [noteTextRef, setIsEditing]);
 
   const handleNoteTextChange = useCallback(
-    (event) => {
+    (event: React.KeyboardEvent<HTMLParagraphElement>) => {
       if (isEditing) {
-        const isEmpty = !event.target.innerHTML.length;
+        const isEmpty = !(event.target as HTMLParagraphElement).innerHTML
+          .length;
         setNoteEmpty(isEmpty);
       }
     },
@@ -82,7 +89,7 @@ export const Note: FC<NoteProps> = ({
     <StyledNoteContainer>
       <SmartTextarea
         ref={noteTextRef}
-        contentEditable={isEditing}
+        isEditing={isEditing}
         onDoubleClick={handleStartEditing}
         onKeyUp={handleNoteTextChange}
         placeholder="Your note..."
@@ -157,7 +164,7 @@ const StyledNoteInfo = styled.div`
   opacity: 0.8;
 `;
 
-const StyledNoteAction = styled.button`
+const StyledNoteAction = styled.button<StyledNoteActionProps>`
   padding: 4px 7px;
   margin: 0 0 0 5px;
   border: none;

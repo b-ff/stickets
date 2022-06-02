@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  FC,
+  HTMLAttributes,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   ApolloClient,
   InMemoryCache,
@@ -11,9 +18,9 @@ import { LoginContainer } from "./LoginContainer";
 import { ContentCenter } from "../components/ContentCenter";
 import AppRoute from "../../common/containers/AppRoute";
 
-export function AuthContainer() {
-  const [storedToken, setStoredToken] = useState(null);
-  const [tokenLoaded, setTokenLoaded] = useState(false);
+export const AuthContainer: FC<HTMLAttributes<Element>> = (): ReactElement => {
+  const [storedToken, setStoredToken] = useState<string | null>();
+  const [tokenLoaded, setTokenLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     chrome.storage.sync.get("token").then(({ token }) => {
@@ -40,10 +47,13 @@ export function AuthContainer() {
     cache: new InMemoryCache(),
   });
 
-  const handleLoginSuccess = useCallback((token) => {
-    chrome.storage.sync.set({ token });
-    setStoredToken(token);
-  });
+  const handleLoginSuccess = useCallback(
+    (token: string) => {
+      chrome.storage.sync.set({ token });
+      setStoredToken(token);
+    },
+    [setStoredToken]
+  );
 
   return (
     <ApolloProvider client={client}>
@@ -58,4 +68,4 @@ export function AuthContainer() {
       )}
     </ApolloProvider>
   );
-}
+};
