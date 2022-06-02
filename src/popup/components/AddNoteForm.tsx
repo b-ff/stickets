@@ -1,15 +1,16 @@
 import React, {
   FC,
-  LegacyRef,
   MutableRefObject,
   ReactElement,
   useCallback,
   useRef,
+  useState,
 } from "react";
 import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 import { noop } from "../../common/utils";
+import { SmartTextarea } from "./SmartTextarea";
 
 const SCOPE_OPTIONS = {
   [NOTE_SCOPES.GLOBAL]: "All web-sites",
@@ -24,8 +25,22 @@ type AddNoteFormProps = {
 export const AddNoteForm: FC<AddNoteFormProps> = ({
   onSubmit = noop,
 }): ReactElement => {
+  const formRef: MutableRefObject<HTMLFormElement | null> = useRef(null);
+  const textareaRef: MutableRefObject<HTMLParagraphElement | null> =
+    useRef(null);
   const submitRef: MutableRefObject<HTMLButtonElement | null> = useRef(null);
+
   const location = useCurrentLocation();
+
+  const [noteEmpty, setNoteEmpty] = useState(true);
+
+  const handleReset = useCallback(() => {
+    formRef.current?.reset();
+
+    if (textareaRef.current) {
+      textareaRef.current.innerHTML = "";
+    }
+  }, [formRef, textareaRef]);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,22 +49,31 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
       );
       onSubmit(formData);
       event.preventDefault();
-      (event.target as HTMLFormElement).reset();
+      handleReset();
     },
-    []
+    [onSubmit, handleReset]
   );
 
   const handleKeyUp = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.ctrlKey && event.key.toLowerCase() === "enter") {
-        submitRef.current?.click();
+      const isTextaeraEmpty = !(event.target as HTMLInputElement).value.length;
+
+      if (
+        event.ctrlKey &&
+        event.key.toLowerCase() === "enter" &&
+        !isTextaeraEmpty &&
+        submitRef.current
+      ) {
+        submitRef.current.click();
       }
+
+      setNoteEmpty(isTextaeraEmpty);
     },
-    [submitRef]
+    [submitRef, setNoteEmpty]
   );
 
   return (
-    <StyledForm onSubmit={handleSubmit}>
+    <StyledForm ref={formRef} onSubmit={handleSubmit}>
       <StyledFormRow>
         <StyledSelect name="scope">
           {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
@@ -61,14 +85,23 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
       </StyledFormRow>
       <StyledFormRow>
         <StyledTextarea
+          isEditing
           name="note"
           placeholder="Your note..."
           onKeyUp={handleKeyUp}
+          ref={textareaRef}
         ></StyledTextarea>
+        {/* <StyledTextarea
+          name="note"
+          placeholder="Your note..."
+          onKeyUp={handleKeyUp}
+        ></StyledTextarea> */}
       </StyledFormRow>
       <StyledFormRow>
-        <StyledButton type="reset">Reset</StyledButton>
-        <StyledButton type="submit" ref={submitRef}>
+        <StyledButton type="reset" onClick={handleReset} disabled={noteEmpty}>
+          Reset
+        </StyledButton>
+        <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
           Add note
         </StyledButton>
       </StyledFormRow>
@@ -106,17 +139,17 @@ const StyledSelect = styled.select`
   outline: none;
 `;
 
-const StyledTextarea = styled.textarea`
+const StyledTextarea = styled(SmartTextarea)`
   width: 100%;
-  height: 70px;
-  resize: none;
-  color: var(--fontPrimaryColor);
-  background-color: var(--inputPrimaryColor);
-  border: 1px solid var(--borderPrimaryColor);
+  min-height: 70px;
+  max-height: 200px;
   border-radius: 3px;
-  padding: 10px;
   box-sizing: border-box;
   outline: none;
+
+  &[contenteditable="true"] {
+    outline: none;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -128,6 +161,12 @@ const StyledButton = styled.button`
   border: 1px solid var(--borderPrimaryColor);
   border-radius: 3px;
   cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 
   &[type="submit"] {
     background-color: var(--brandColor);

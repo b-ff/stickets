@@ -7,4 +7,4 @@ css/
 .env
 
 #ignore rollup bundle
-assets/
+assets/*.bundle.**

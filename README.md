@@ -1,3 +1,5 @@
+![#Stickets icon](https://raw.githubusercontent.com/b-ff/stickets/master/assets/icons/128.png)
+
 # #Stickets
 
 Chrome Extension that allows you to add a notes to any webpage you visit as well as share it with whoever you want

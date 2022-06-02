@@ -8,7 +8,14 @@ import React, {
 } from "react";
 import { styled } from "@linaria/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import { applyStyleIfHasProperty, noop } from "../../common/utils";
+import {
+  applyStyleIfHasProperty,
+  noop,
+  stripTags,
+  urlify,
+} from "../../common/utils";
+import { NOTE_SCOPES } from "../../common/constants/note-scopes";
+import { SmartTextarea } from "./SmartTextarea";
 
 type NoteProps = {
   note: INote;
@@ -23,50 +30,76 @@ export const Note: FC<NoteProps> = ({
 }): ReactElement => {
   const noteTextRef: LegacyRef<HTMLParagraphElement | undefined> = useRef();
   const [isEditing, setIsEditing] = useState(false);
+  const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
 
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
-  const displayedDate = formatDistanceToNow(
-    updated.getTime() > created.getTime() ? updated : created,
-    { addSuffix: true, includeSeconds: true }
-  );
+  const latestDate = updated.getTime() > created.getTime() ? updated : created;
+  const displayedDate = formatDistanceToNow(latestDate, {
+    addSuffix: true,
+    includeSeconds: true,
+  });
 
   const handleStartEditing = useCallback(() => {
     setIsEditing(true);
     setTimeout(() => noteTextRef.current?.focus());
   }, [noteTextRef, setIsEditing]);
 
+  const handleNoteTextChange = useCallback(
+    (event) => {
+      if (isEditing) {
+        const isEmpty = !event.target.innerHTML.length;
+        setNoteEmpty(isEmpty);
+      }
+    },
+    [isEditing, setNoteEmpty]
+  );
+
   const handleCancelEdit = useCallback(() => {
     if (noteTextRef.current) {
       noteTextRef.current.innerHTML = note.note;
     }
     setIsEditing(false);
-  }, [noteTextRef, setIsEditing]);
+  }, [note, noteTextRef, setIsEditing]);
 
   const handleOnUpdate = useCallback(() => {
     onUpdate({
       ...note,
       note: noteTextRef.current
-        ? noteTextRef.current.innerHTML.trim()
+        ? stripTags(noteTextRef.current.innerHTML.trim())
         : note.note,
     });
     setIsEditing(false);
-  }, [noteTextRef, setIsEditing]);
+  }, [note, noteTextRef, setIsEditing]);
+
+  const handleOpenNoteURL = useCallback(() => {
+    if (note.url) {
+      window.open(note.url);
+    }
+  }, [note]);
 
   return (
     <StyledNoteContainer>
-      <StyledNoteText
+      <SmartTextarea
         ref={noteTextRef}
         contentEditable={isEditing}
         onDoubleClick={handleStartEditing}
+        onKeyUp={handleNoteTextChange}
+        placeholder="Your note..."
+        style={{ maxHeight: isEditing ? "200px" : "auto" }}
       >
-        {note.note}
-      </StyledNoteText>
+        {urlify(note.note)}
+      </SmartTextarea>
       <StyledNoteInfo>
         {!isEditing && (
           <>
             <span>{displayedDate}</span>
             <span>
+              {note.scope !== NOTE_SCOPES.PAGE && note.url && (
+                <StyledNoteAction title={note.url} onClick={handleOpenNoteURL}>
+                  Open URL
+                </StyledNoteAction>
+              )}
               <StyledNoteAction onClick={handleStartEditing}>
                 Edit
               </StyledNoteAction>
@@ -81,7 +114,11 @@ export const Note: FC<NoteProps> = ({
             <StyledNoteAction onClick={handleCancelEdit}>
               Cancel
             </StyledNoteAction>
-            <StyledNoteAction onClick={handleOnUpdate} negative>
+            <StyledNoteAction
+              onClick={handleOnUpdate}
+              disabled={noteEmpty}
+              negative
+            >
               Save
             </StyledNoteAction>
           </span>
@@ -116,7 +153,7 @@ const StyledNoteInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
-  padding: 0 5px 5px;
+  padding: 5px;
   opacity: 0.8;
 `;
 
@@ -134,4 +171,10 @@ const StyledNoteAction = styled.button`
   )};
   border-radius: 10px;
   cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 `;
