@@ -9,6 +9,7 @@ import css from "rollup-plugin-css-only";
 import { string } from "rollup-plugin-string";
 import replace from "rollup-plugin-replace";
 import typescript from "@rollup/plugin-typescript";
+import babel from "@rollup/plugin-babel";
 
 dotenv.config();
 
@@ -90,6 +91,9 @@ const getReactTypescriptBundleFor = (name, indexFile) => ({
     // a separate file - better for performance
     css({ output: `${name}.bundle.css` }),
     typescript(),
+    babel({
+      babelrc: true,
+    }),
     // In dev mode, call `npm run start` once
     // the bundle has been generated
     !production && serve(),

@@ -10,6 +10,7 @@ import { styled } from "@linaria/react";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { noop } from "../../common/utils";
 import { SmartTextarea } from "./SmartTextarea";
+import { Scope } from "../../common/enums/Scope";
 
 const SCOPE_OPTIONS = {
   [Scope.Global]: "All web-sites",

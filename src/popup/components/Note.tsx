@@ -16,8 +16,8 @@ import {
   stripTags,
   urlify,
 } from "../../common/utils";
-import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 import { SmartTextarea } from "./SmartTextarea";
+import { Scope } from "../../common/enums/Scope";
 
 type NoteProps = {
   note: INote;
@@ -102,7 +102,7 @@ export const Note: FC<NoteProps> = ({
           <>
             <span>{displayedDate}</span>
             <span>
-              {note.scope !== NOTE_SCOPES.PAGE && note.url && (
+              {note.scope !== Scope.Page && note.url && (
                 <StyledNoteAction title={note.url} onClick={handleOpenNoteURL}>
                   Open URL
                 </StyledNoteAction>

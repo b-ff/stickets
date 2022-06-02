@@ -1,5 +1,5 @@
-import { NOTE_SCOPES } from "./constants/note-scopes";
 import { PAGE_QUERY_PARAM_NAME } from "./constants/page-query-param-name";
+import { Scope } from "./enums/Scope";
 
 export const noop = (): void => {};
 

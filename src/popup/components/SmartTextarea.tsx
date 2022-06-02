@@ -151,6 +151,7 @@ const StyledNoteText = styled.p`
   box-sizing: border-box;
   border-radius: 3px;
   z-index: 2;
+  background-color: red;
 
   &[contenteditable="true"] {
     overflow: auto;

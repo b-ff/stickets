@@ -8,7 +8,7 @@ import { AddNoteForm } from "../components/AddNoteForm";
 import { RadioSwitch } from "../components/RadioSwitch";
 import { NotesList } from "../components/NotesList";
 import { ContentCenter } from "../components/ContentCenter";
-import { NOTE_SCOPES } from "../../common/constants/note-scopes";
+import { Scope } from "../../common/enums/Scope";
 
 import GetAllNotes from "../../common/queries/GetAllNotes.graphql";
 import CreateNoteMutation from "../../common/queries/CreateNote.graphql";
@@ -36,7 +36,7 @@ const refetchGetAllNotes = { refetchQueries: [GET_ALL_NOTES] };
 export function NotesContainer() {
   const location: URL | null = useCurrentLocation();
 
-  const [displayScope, setDisplayScope] = useState(NOTE_SCOPES.PAGE);
+  const [displayScope, setDisplayScope] = useState(Scope.Page);
 
   const getAllNotesRequest = useQuery(GET_ALL_NOTES);
   const [addNote, addNoteRequest] = useMutation(
@@ -76,7 +76,7 @@ export function NotesContainer() {
 
   const handleNoteAdd = useCallback(
     ({ note, scope }: Partial<INote>) => {
-      let url = scope !== NOTE_SCOPES.GLOBAL && location ? location.href : "";
+      let url = scope !== Scope.Global && location ? location.href : "";
 
       addNote({
         variables: {
@@ -103,18 +103,18 @@ export function NotesContainer() {
   const switchOptions = [
     {
       label: "Page",
-      value: NOTE_SCOPES.PAGE,
-      count: groupedNotes[NOTE_SCOPES.PAGE].length,
+      value: Scope.Page,
+      count: groupedNotes[Scope.Page].length,
     },
     {
       label: "Site",
-      value: NOTE_SCOPES.SITE,
-      count: groupedNotes[NOTE_SCOPES.SITE].length,
+      value: Scope.Site,
+      count: groupedNotes[Scope.Site].length,
     },
     {
       label: "All sites",
-      value: NOTE_SCOPES.GLOBAL,
-      count: groupedNotes[NOTE_SCOPES.GLOBAL].length,
+      value: Scope.Global,
+      count: groupedNotes[Scope.Global].length,
     },
   ];
 

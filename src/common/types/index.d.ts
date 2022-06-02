@@ -1,9 +1,3 @@
-enum Scope {
-  Global = "global",
-  Site = "site",
-  Page = "page",
-}
-
 declare interface IEntityWithId {
   _id: string;
 }

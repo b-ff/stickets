@@ -3,7 +3,7 @@ query GetAllNotes {
     _id
     uid
     creator {
-      _idx
+      _id
       name
       email
       avatar

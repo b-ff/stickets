@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "es6",
+    "target": "esnext",
+    "module": "esnext",
     "jsx": "react",
     "sourceMap": true,
     "strict": true,
@@ -16,7 +16,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
-    // "outDir": "./dist",
-    "preserveConstEnums": true
+    "preserveConstEnums": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "allowJs": true
   }
 }

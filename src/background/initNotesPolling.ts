@@ -1,5 +1,5 @@
 import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
-import { NOTE_SCOPES } from "../common/constants/note-scopes";
+import { Scope } from "../common/enums/Scope";
 import GetAllNotes from "../common/queries/GetAllNotes.graphql";
 import { groupNotesByScope } from "../common/utils";
 import { config } from "../config";
@@ -33,8 +33,7 @@ export function initNotesPolling(
         if (notes) {
           const groupedNotes = groupNotesByScope(notes, location);
           const count =
-            groupedNotes[NOTE_SCOPES.PAGE].length +
-            groupedNotes[NOTE_SCOPES.SITE].length;
+            groupedNotes[Scope.Page].length + groupedNotes[Scope.Site].length;
 
           chrome.storage.local.set({ notes });
 
