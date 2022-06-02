@@ -1,4 +1,4 @@
-![#Stickets icon](https://raw.githubusercontent.com/b-ff/stickets/master/assets/icons/128.png)
+![#Stickets icon](https://raw.githubusercontent.com/b-ff/stickets/master/static/icons/128.png)
 
 # #Stickets
 
