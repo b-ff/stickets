@@ -1,8 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 import { styled } from "@linaria/react";
 import { ContentCenter } from "./ContentCenter";
 
-export function LoginForm({ onSubmit, props }) {
+type LoginFormProps = {
+  onSubmit: () => void;
+};
+
+export const LoginForm: FC<LoginFormProps> = ({ onSubmit, ...props }) => {
   return (
     <ContentCenter {...props}>
       <StyledHeading>
@@ -17,7 +21,7 @@ export function LoginForm({ onSubmit, props }) {
       <StyledButton onClick={onSubmit}>Sign-in with Google</StyledButton>
     </ContentCenter>
   );
-}
+};
 
 const StyledHeading = styled.h1`
   font-size: 20px;

@@ -5,12 +5,15 @@ import { AuthContainer } from "./AuthContainer";
 import { theme } from "../../common/theme";
 
 export function App() {
-  const [currentLocation, setCurrentLocation] = useState({});
+  const [currentLocation, setCurrentLocation] = useState<URL | null>(null);
 
   useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, ([{ url }]) => {
-      setCurrentLocation(new URL(url));
-    });
+    chrome.tabs.query(
+      { active: true, currentWindow: true },
+      ([{ url }]: chrome.tabs.Tab[]) => {
+        setCurrentLocation(new URL(url as string));
+      }
+    );
   }, [setCurrentLocation]);
 
   return (

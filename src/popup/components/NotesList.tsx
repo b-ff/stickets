@@ -1,34 +1,44 @@
-import React from "react";
+import React, { FC, ReactElement } from "react";
 import { noop } from "../../common/utils";
 import { Note } from "./Note";
 import { ContentCenter } from "./ContentCenter";
 import { styled } from "@linaria/react";
+import { Note as NoteType } from "../../common/graphql/__generated__/graphql";
 
-export function NotesList({
+type NotesListProps = {
+  notes: NoteType[];
+  onUpdate: (note: NoteType) => void;
+  onDelete: (id: string) => void;
+  isLoading: boolean;
+};
+
+export const NotesList: FC<NotesListProps> = ({
   notes = [],
   onUpdate = noop,
   onDelete = noop,
   isLoading = false,
   ...props
-}) {
+}): ReactElement => {
   return isLoading ? (
     <ContentCenter {...props}>Loading...</ContentCenter>
   ) : notes.length ? (
-    notes.map((note) => (
-      <Note
-        note={note}
-        onUpdate={onUpdate}
-        onDelete={onDelete}
-        key={note._id}
-      />
-    ))
+    <>
+      {notes.map((note: NoteType) => (
+        <Note
+          note={note}
+          onUpdate={onUpdate}
+          onDelete={onDelete}
+          key={note._id}
+        />
+      ))}
+    </>
   ) : (
     <ContentCenter {...props}>
       <StyledHeading>You have no notes on this tab. Yet.</StyledHeading>
       <StyledText>Wanna add some?</StyledText>
     </ContentCenter>
   );
-}
+};
 
 const StyledHeading = styled.h3`
   font-size: 15px;

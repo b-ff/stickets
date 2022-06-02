@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import image from "@rollup/plugin-image";
@@ -9,6 +8,8 @@ import linaria from "@linaria/rollup";
 import css from "rollup-plugin-css-only";
 import { string } from "rollup-plugin-string";
 import replace from "rollup-plugin-replace";
+import typescript from "@rollup/plugin-typescript";
+import babel from "@rollup/plugin-babel";
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ function serve() {
   };
 }
 
-const getBundleFor = (name, indexFile) => ({
+const getTypescriptBundleFor = (name, indexFile) => ({
   input: indexFile,
   output: {
     sourcemap: true,
@@ -47,7 +48,7 @@ const getBundleFor = (name, indexFile) => ({
       browser: true,
     }),
     commonjs(),
-
+    typescript(),
     // In dev mode, call `npm run start` once
     // the bundle has been generated
     !production && serve(),
@@ -61,7 +62,7 @@ const getBundleFor = (name, indexFile) => ({
   },
 });
 
-const getReactBundleFor = (name, indexFile) => ({
+const getReactTypescriptBundleFor = (name, indexFile) => ({
   input: indexFile,
   output: {
     sourcemap: true,
@@ -76,7 +77,7 @@ const getReactBundleFor = (name, indexFile) => ({
     }),
     resolve({
       browser: true,
-      extensions: [".js", ".json", ".jsx", ".mjs"],
+      extensions: [".ts", ".tsx", ".json"],
     }),
     commonjs(),
     string({
@@ -89,11 +90,12 @@ const getReactBundleFor = (name, indexFile) => ({
     // we'll extract any component CSS out into
     // a separate file - better for performance
     css({ output: `${name}.bundle.css` }),
-
+    typescript(),
     babel({
       babelrc: true,
+      babelHelpers: "bundled",
+      exclude: "src/common/graphql/__generated__/**.ts",
     }),
-
     // In dev mode, call `npm run start` once
     // the bundle has been generated
     !production && serve(),
@@ -109,7 +111,7 @@ const getReactBundleFor = (name, indexFile) => ({
 
 export default [
   //react app
-  getBundleFor("background", "src/background/index.js"),
-  getReactBundleFor("popup", "src/popup/index.jsx"),
-  getReactBundleFor("options", "src/options/index.jsx"),
+  getTypescriptBundleFor("background", "src/background/index.ts"),
+  getReactTypescriptBundleFor("options", "src/options/index.tsx"),
+  getReactTypescriptBundleFor("popup", "src/popup/index.tsx"),
 ];

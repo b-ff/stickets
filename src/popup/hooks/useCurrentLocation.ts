@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { Context, useContext } from "react";
 import { CurrentLocationContext } from "../containers/CurrentLocationContext";
 
-export const useCurrentLocation = () => {
+export const useCurrentLocation = (): URL | null => {
   return useContext(CurrentLocationContext);
 };

@@ -1,23 +1,45 @@
-import React, { forwardRef, useCallback, useLayoutEffect, useRef } from "react";
+import React, {
+  forwardRef,
+  HTMLAttributes,
+  ReactElement,
+  Ref,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  ForwardedRef,
+  MutableRefObject,
+} from "react";
 import { styled } from "@linaria/react";
 import { noop, stripTags } from "../../common/utils";
 import DOMPurify from "dompurify";
 
-export const SmartTextarea = forwardRef(
+type SmartTextareaProps = HTMLAttributes<HTMLParagraphElement> & {
+  name?: string;
+  placeholder?: string;
+  isEditing: boolean;
+  onKeyUp?: React.KeyboardEventHandler;
+  onChange?: React.FormEventHandler;
+  children?: React.ReactNode;
+};
+
+export const SmartTextarea = forwardRef<
+  HTMLParagraphElement,
+  SmartTextareaProps
+>(
   (
     {
       name,
       placeholder,
       isEditing,
-      style = {},
       className,
+      style = {},
       onKeyUp = noop,
       onChange = noop,
       ...props
     },
-    ref
-  ) => {
-    const inputRef = useRef();
+    ref: ForwardedRef<HTMLParagraphElement>
+  ): ReactElement => {
+    const inputRef: Ref<HTMLInputElement> = useRef(null);
 
     if (typeof props.children === "string") {
       props.dangerouslySetInnerHTML = {
@@ -29,16 +51,24 @@ export const SmartTextarea = forwardRef(
     }
 
     useLayoutEffect(() => {
-      if (inputRef.current && ref?.current) {
-        inputRef.current.value = stripTags(ref.current.innerHTML);
+      const editableParagraph = ref as MutableRefObject<HTMLParagraphElement>;
+
+      if (inputRef.current && editableParagraph?.current) {
+        inputRef.current.value = stripTags(
+          editableParagraph?.current.innerHTML
+        );
       }
     }, [inputRef, ref]);
 
     const handleKeyUp = useCallback(
-      (event) => {
-        const sanitizedValue = stripTags(event.target.innerHTML);
-        inputRef.current.value = sanitizedValue;
-        event.target.value = sanitizedValue;
+      (event: React.KeyboardEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement;
+        const sanitizedValue = stripTags(target.innerHTML);
+        target.value = sanitizedValue;
+
+        if (inputRef.current) {
+          inputRef.current.value = sanitizedValue;
+        }
         onKeyUp(event);
       },
       [inputRef, onKeyUp]

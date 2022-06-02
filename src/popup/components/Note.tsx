@@ -1,4 +1,13 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {
+  FC,
+  ForwardedRef,
+  HTMLAttributes,
+  ReactElement,
+  Ref,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { styled } from "@linaria/react";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import {
@@ -7,11 +16,28 @@ import {
   stripTags,
   urlify,
 } from "../../common/utils";
-import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 import { SmartTextarea } from "./SmartTextarea";
+import {
+  Note as NoteType,
+  NoteScope,
+} from "../../common/graphql/__generated__/graphql";
 
-export function Note({ note, onUpdate = noop, onDelete = noop }) {
-  const noteTextRef = useRef();
+type NoteProps = {
+  note: NoteType;
+  onUpdate: (note: NoteType) => void;
+  onDelete: (id: string) => void;
+};
+
+type StyledNoteActionProps = HTMLAttributes<HTMLButtonElement> & {
+  negative?: boolean;
+};
+
+export const Note: FC<NoteProps> = ({
+  note,
+  onUpdate = noop,
+  onDelete = noop,
+}): ReactElement => {
+  const noteTextRef: Ref<HTMLParagraphElement> = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
 
@@ -25,13 +51,14 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
 
   const handleStartEditing = useCallback(() => {
     setIsEditing(true);
-    setTimeout(() => noteTextRef.current.focus());
+    setTimeout(() => noteTextRef.current?.focus());
   }, [noteTextRef, setIsEditing]);
 
   const handleNoteTextChange = useCallback(
-    (event) => {
+    (event: React.KeyboardEvent<HTMLParagraphElement>) => {
       if (isEditing) {
-        const isEmpty = !event.target.innerHTML.length;
+        const isEmpty = !(event.target as HTMLParagraphElement).innerHTML
+          .length;
         setNoteEmpty(isEmpty);
       }
     },
@@ -39,14 +66,18 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
   );
 
   const handleCancelEdit = useCallback(() => {
-    noteTextRef.current.innerHTML = note.note;
+    if (noteTextRef.current) {
+      noteTextRef.current.innerHTML = note.note;
+    }
     setIsEditing(false);
   }, [note, noteTextRef, setIsEditing]);
 
   const handleOnUpdate = useCallback(() => {
     onUpdate({
       ...note,
-      note: stripTags(noteTextRef.current.innerHTML.trim()),
+      note: noteTextRef.current
+        ? stripTags(noteTextRef.current.innerHTML.trim())
+        : note.note,
     });
     setIsEditing(false);
   }, [note, noteTextRef, setIsEditing]);
@@ -61,7 +92,7 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
     <StyledNoteContainer>
       <SmartTextarea
         ref={noteTextRef}
-        contentEditable={isEditing}
+        isEditing={isEditing}
         onDoubleClick={handleStartEditing}
         onKeyUp={handleNoteTextChange}
         placeholder="Your note..."
@@ -74,7 +105,7 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
           <>
             <span>{displayedDate}</span>
             <span>
-              {note.scope !== NOTE_SCOPES.PAGE && note.url && (
+              {note.scope !== NoteScope.Page && note.url && (
                 <StyledNoteAction title={note.url} onClick={handleOpenNoteURL}>
                   Open URL
                 </StyledNoteAction>
@@ -105,7 +136,7 @@ export function Note({ note, onUpdate = noop, onDelete = noop }) {
       </StyledNoteInfo>
     </StyledNoteContainer>
   );
-}
+};
 
 const StyledNoteContainer = styled.article`
   padding: 5px;
@@ -136,7 +167,7 @@ const StyledNoteInfo = styled.div`
   opacity: 0.8;
 `;
 
-const StyledNoteAction = styled.button`
+const StyledNoteAction = styled.button<StyledNoteActionProps>`
   padding: 4px 7px;
   margin: 0 0 0 5px;
   border: none;

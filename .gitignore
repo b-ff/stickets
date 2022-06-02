@@ -5,6 +5,8 @@ node_modules/
 css/
 .DS_store
 .env
+yarn-error.log
 
 #ignore rollup bundle
 assets/*.bundle.**
+src/common/graphql/__generated__

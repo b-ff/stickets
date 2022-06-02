@@ -1,5 +1,5 @@
 import { NotesContainer } from "./containers/NotesContainer";
-import { NotFound } from "../common/containers/NotFound";
+import { NotFound } from "../common/containers/NotFound.jsx";
 import { PAGE_QUERY_PARAM_NAME } from "../common/constants/page-query-param-name";
 import { ROUTES } from "./constants/routes";
 
@@ -14,7 +14,7 @@ export const PAGES = {
   },
 };
 
-export const calcCurrentPage = (urlSearchParams) => {
+export const calcCurrentPage = (urlSearchParams: URLSearchParams) => {
   const page = urlSearchParams.get(PAGE_QUERY_PARAM_NAME);
 
   if (!page) {

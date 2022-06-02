@@ -2,8 +2,14 @@ query GetAllNotes {
   allNotes {
     _id
     uid
+    creator {
+      _id
+      name
+      email
+      avatar
+    }
     shared
-    share {
+    sharedWith {
       _id
       email
       name

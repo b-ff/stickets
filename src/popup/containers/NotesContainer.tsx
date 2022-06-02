@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { styled } from "@linaria/react";
-import { gql, useMutation, useQuery } from "@apollo/client";
 import { groupNotesByScope } from "../../common/utils";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { PopupLayout } from "../components/PopupLayout";
@@ -8,52 +7,29 @@ import { AddNoteForm } from "../components/AddNoteForm";
 import { RadioSwitch } from "../components/RadioSwitch";
 import { NotesList } from "../components/NotesList";
 import { ContentCenter } from "../components/ContentCenter";
-import { NOTE_SCOPES } from "../../common/constants/note-scopes";
 
-import GetAllNotes from "../../common/queries/GetAllNotes.graphql";
-import CreateNoteMutation from "../../common/queries/CreateNote.graphql";
-import UpdateNoteMutation from "../../common/queries/UpdateNote.graphql";
-import DeleteNoteMutation from "../../common/queries/DeleteNote.graphql";
+import {
+  useGetAllNotesQuery,
+  useCreateNoteMutation,
+  useUpdateNoteMutation,
+  useDeleteNoteMutation,
+  Note,
+  NoteScope,
+} from "../../common/graphql/__generated__/graphql";
 
-const GET_ALL_NOTES = gql`
-  ${GetAllNotes}
-`;
-
-const CREATE_NOTE = gql`
-  ${CreateNoteMutation}
-`;
-
-const UPDATE_NOTE = gql`
-  ${UpdateNoteMutation}
-`;
-
-const DELETE_NOTE = gql`
-  ${DeleteNoteMutation}
-`;
-
-const noCache = { fetchPolicy: "no-cache" };
-const refetchGetAllNotes = { refetchQueries: [GET_ALL_NOTES] };
+const refetchGetAllNotes = { refetchQueries: ["GetAllNotes"] };
 
 export function NotesContainer() {
-  const location = useCurrentLocation();
+  const location: URL | null = useCurrentLocation();
 
-  const [displayScope, setDisplayScope] = useState(NOTE_SCOPES.PAGE);
+  const [displayScope, setDisplayScope] = useState(NoteScope.Page);
 
-  const getAllNotesRequest = useQuery(GET_ALL_NOTES, noCache);
-  const [addNote, addNoteRequest] = useMutation(
-    CREATE_NOTE,
-    refetchGetAllNotes
-  );
-  const [updateNote, updateNoteRequest] = useMutation(
-    UPDATE_NOTE,
-    refetchGetAllNotes
-  );
-  const [deleteNote, deleteNoteRequest] = useMutation(
-    DELETE_NOTE,
-    refetchGetAllNotes
-  );
+  const getAllNotesRequest = useGetAllNotesQuery();
+  const [addNote] = useCreateNoteMutation(refetchGetAllNotes);
+  const [updateNote] = useUpdateNoteMutation(refetchGetAllNotes);
+  const [deleteNote] = useDeleteNoteMutation(refetchGetAllNotes);
 
-  const handleNoteUpdate = useCallback(({ _id: updateId, note }) => {
+  const handleNoteUpdate = useCallback(({ _id: updateId, note }: Note) => {
     updateNote({
       variables: {
         updateId,
@@ -64,7 +40,7 @@ export function NotesContainer() {
   }, []);
 
   const handleNoteDelete = useCallback(
-    (deleteId) => {
+    (deleteId: string) => {
       deleteNote({
         variables: {
           deleteId,
@@ -76,8 +52,8 @@ export function NotesContainer() {
   );
 
   const handleNoteAdd = useCallback(
-    ({ note, scope }) => {
-      let url = scope !== NOTE_SCOPES.GLOBAL ? location.href : "";
+    ({ note = "", scope = NoteScope.Global }: Partial<Note>) => {
+      let url = scope !== NoteScope.Global && location ? location.href : "";
 
       addNote({
         variables: {
@@ -98,24 +74,24 @@ export function NotesContainer() {
     !getAllNotesRequest.error &&
     getAllNotesRequest.data;
 
-  const notes = isOK ? getAllNotesRequest.data.allNotes : [];
-  const groupedNotes = groupNotesByScope(notes, location);
+  const notes = isOK ? getAllNotesRequest.data?.allNotes : [];
+  const groupedNotes = groupNotesByScope(notes as Note[], location);
 
   const switchOptions = [
     {
       label: "Page",
-      value: NOTE_SCOPES.PAGE,
-      count: groupedNotes[NOTE_SCOPES.PAGE].length,
+      value: NoteScope.Page,
+      count: groupedNotes[NoteScope.Page].length,
     },
     {
       label: "Site",
-      value: NOTE_SCOPES.SITE,
-      count: groupedNotes[NOTE_SCOPES.SITE].length,
+      value: NoteScope.Site,
+      count: groupedNotes[NoteScope.Site].length,
     },
     {
       label: "All sites",
-      value: NOTE_SCOPES.GLOBAL,
-      count: groupedNotes[NOTE_SCOPES.GLOBAL].length,
+      value: NoteScope.Global,
+      count: groupedNotes[NoteScope.Global].length,
     },
   ];
 
@@ -125,7 +101,7 @@ export function NotesContainer() {
         name="notes-display"
         options={switchOptions}
         defaultValue={displayScope}
-        onChange={setDisplayScope}
+        onChange={(value) => setDisplayScope(value as NoteScope)}
       />
       <StyledNotesContainer>
         {Boolean(getAllNotesRequest.error) ? (

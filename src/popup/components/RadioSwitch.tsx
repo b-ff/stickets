@@ -1,15 +1,32 @@
-import React, { useCallback } from "react";
+import React, { FC, HTMLAttributes, ReactElement, useCallback } from "react";
 import { styled } from "@linaria/react";
 import { applyStyleIfHasProperty, noop } from "../../common/utils";
 
-export function RadioSwitch({
-  name = Date.now().toString(),
+type RadioSwitchProps = {
+  options: ISwitchOption[];
+  onChange: (value: string) => void;
+  name?: string;
+  defaultValue?: string;
+  disableEmpty?: boolean;
+};
+
+type StyledRadioLabelProps = HTMLAttributes<HTMLLabelElement> & {
+  active?: boolean;
+  disabled?: boolean;
+};
+
+export const RadioSwitch: FC<RadioSwitchProps> = ({
   options,
   defaultValue,
   onChange = noop,
   disableEmpty = false,
-}) {
-  const handleChange = useCallback((event) => onChange(event.target.value), []);
+  name = Date.now().toString(),
+}): ReactElement => {
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) =>
+      onChange(event.target.value),
+    []
+  );
 
   return (
     <StyledRadioSwitchContainer>
@@ -19,7 +36,7 @@ export function RadioSwitch({
         const disabled = disableEmpty && count === 0;
         return (
           <StyledRadioLabel
-            for={key}
+            htmlFor={key}
             key={key}
             active={defaultChecked}
             disabled={disabled}
@@ -42,7 +59,7 @@ export function RadioSwitch({
       })}
     </StyledRadioSwitchContainer>
   );
-}
+};
 
 const StyledRadioSwitchContainer = styled.fieldset`
   display: flex;
@@ -61,7 +78,7 @@ const StyledRadioSwitchContainer = styled.fieldset`
   }
 `;
 
-const StyledRadioLabel = styled.label`
+const StyledRadioLabel = styled.label<StyledRadioLabelProps>`
   position: relative;
   display: flex;
   align-items: center;
