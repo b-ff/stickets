@@ -1,8 +1,8 @@
-import { ApolloClient, gql, NormalizedCacheObject } from "@apollo/client";
-import CreateNoteMutation from "../common/graphql/mutations/CreateNote.graphql";
-import { NoteScope } from "../common/graphql/__generated__/graphql";
+import { ApolloClient, gql, NormalizedCacheObject } from '@apollo/client';
+import CreateNoteMutation from '../common/graphql/mutations/CreateNote.graphql';
+import { NoteScope } from '../common/graphql/__generated__/graphql';
 
-const MENU_ITEM_ID_PREFIX = "stickets__add-note";
+const MENU_ITEM_ID_PREFIX = 'stickets__add-note';
 
 const CREATE_NOTE = gql`
   ${CreateNoteMutation}
@@ -13,28 +13,24 @@ export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
     chrome.contextMenus.create({
       id: `${MENU_ITEM_ID_PREFIX}:${NoteScope.Global}`,
       title: 'Add to "All" notes',
-      contexts: ["selection"],
+      contexts: ['selection'],
     });
 
     chrome.contextMenus.create({
       id: `${MENU_ITEM_ID_PREFIX}:${NoteScope.Site}`,
-      title: "Add to site notes",
-      contexts: ["selection"],
+      title: 'Add to site notes',
+      contexts: ['selection'],
     });
 
     chrome.contextMenus.create({
       id: `${MENU_ITEM_ID_PREFIX}:${NoteScope.Page}`,
-      title: "Add to page notes",
-      contexts: ["selection"],
+      title: 'Add to page notes',
+      contexts: ['selection'],
     });
 
     chrome.contextMenus.onClicked.addListener(
-      ({
-        pageUrl: url,
-        selectionText: note,
-        menuItemId,
-      }: chrome.contextMenus.OnClickData) => {
-        const scope = `${menuItemId}`.split(":").pop();
+      ({ pageUrl: url, selectionText: note, menuItemId }: chrome.contextMenus.OnClickData) => {
+        const scope = `${menuItemId}`.split(':').pop();
 
         client
           .mutate({
@@ -46,7 +42,7 @@ export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
             },
           })
           .then((result) => {
-            console.log("Added note from context menu:", {
+            console.log('Added note from context menu:', {
               url,
               note,
               scope,
@@ -54,7 +50,7 @@ export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
             });
           })
           .catch(console.error);
-      }
+      },
     );
   });
 }

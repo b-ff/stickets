@@ -1,9 +1,9 @@
-import React, { FC, ReactElement } from "react";
-import { noop } from "../../common/utils";
-import { Note } from "./Note";
-import { ContentCenter } from "./ContentCenter";
-import { styled } from "@linaria/react";
-import { Note as NoteType } from "../../common/graphql/__generated__/graphql";
+import React, { FC, ReactElement } from 'react';
+import { noop } from '../../common/utils';
+import { Note } from './Note';
+import { ContentCenter } from './ContentCenter';
+import { styled } from '@linaria/react';
+import { Note as NoteType } from '../../common/graphql/__generated__/graphql';
 
 type NotesListProps = {
   notes: NoteType[];
@@ -24,12 +24,7 @@ export const NotesList: FC<NotesListProps> = ({
   ) : notes.length ? (
     <>
       {notes.map((note: NoteType) => (
-        <Note
-          note={note}
-          onUpdate={onUpdate}
-          onDelete={onDelete}
-          key={note._id}
-        />
+        <Note note={note} onUpdate={onUpdate} onDelete={onDelete} key={note._id} />
       ))}
     </>
   ) : (

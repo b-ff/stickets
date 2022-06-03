@@ -1,5 +1,5 @@
-import { PAGE_QUERY_PARAM_NAME } from "./constants/page-query-param-name";
-import { Note, NoteScope } from "./graphql/__generated__/graphql";
+import { PAGE_QUERY_PARAM_NAME } from './constants/page-query-param-name';
+import { Note, NoteScope } from './graphql/__generated__/graphql';
 
 declare type TNotesGroupedByScope = {
   [key in NoteScope]: Note[];
@@ -7,19 +7,17 @@ declare type TNotesGroupedByScope = {
 
 export const noop = (): void => {};
 
+/* eslint-disable */
 export const applyStyleIfHasProperty =
-  <ComponentProps>(
-    propertyName: keyof ComponentProps,
-    css: string,
-    otherwise: string = "inherit"
-  ): ((props: ComponentProps) => string) =>
-  (props: ComponentProps): string =>
+  <T>(propertyName: keyof T, css: string, otherwise = 'inherit') =>
+  (props: T): string =>
     props[propertyName] ? css : otherwise;
+/* eslint-enable */
 
 export const makeHrefToPage = (
   urlSearchParams: URLSearchParams,
   page: string,
-  params?: { [key: string]: string }
+  params?: { [key: string]: string },
 ): string => {
   const p = new URLSearchParams(urlSearchParams);
   p.set(PAGE_QUERY_PARAM_NAME, page);
@@ -30,13 +28,10 @@ export const makeHrefToPage = (
     });
   }
 
-  return location.pathname + "?" + p.toString();
+  return `${window.location.pathname}?${p.toString()}`;
 };
 
-export const groupNotesByScope = (
-  notes: Note[],
-  location?: URL | null
-): TNotesGroupedByScope => {
+export const groupNotesByScope = (notes: Note[], location?: URL | null): TNotesGroupedByScope => {
   const groupedNotes: TNotesGroupedByScope = {
     [NoteScope.Global]: [],
     [NoteScope.Site]: [],
@@ -48,19 +43,11 @@ export const groupNotesByScope = (
       groupedNotes[NoteScope.Global].push(note);
     }
 
-    if (
-      note.scope === NoteScope.Site &&
-      location &&
-      note.url.includes(location.origin)
-    ) {
+    if (note.scope === NoteScope.Site && location && note.url.includes(location.origin)) {
       groupedNotes[NoteScope.Site].push(note);
     }
 
-    if (
-      note.scope === NoteScope.Page &&
-      location &&
-      note.url === location.href
-    ) {
+    if (note.scope === NoteScope.Page && location && note.url === location.href) {
       groupedNotes[NoteScope.Page].push(note);
     }
   });
@@ -72,7 +59,7 @@ export const stripTags = (html: string, allowed: string[] = []): string => {
   const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
   const openingTag = /<([a-z][a-z0-9]*)\b[^>]*>/gi;
 
-  const blockTextTags = ["br", "div", "p"];
+  const blockTextTags = ['br', 'div', 'p'];
 
   return html.replace(tags, (tag, tagName) => {
     const isOpeningTag = openingTag.test(tag);
@@ -80,11 +67,12 @@ export const stripTags = (html: string, allowed: string[] = []): string => {
 
     if (isAllowed) {
       return tag;
-    } else if (isOpeningTag && blockTextTags.includes(tagName)) {
-      return "\n";
+    }
+    if (isOpeningTag && blockTextTags.includes(tagName)) {
+      return '\n';
     }
 
-    return "";
+    return '';
   });
 };
 

@@ -1,6 +1,6 @@
-import React, { FC, HTMLAttributes, ReactElement, useCallback } from "react";
-import { styled } from "@linaria/react";
-import { applyStyleIfHasProperty, noop } from "../../common/utils";
+import React, { FC, HTMLAttributes, ReactElement, useCallback } from 'react';
+import { styled } from '@linaria/react';
+import { applyStyleIfHasProperty, noop } from '../../common/utils';
 
 type RadioSwitchProps = {
   options: ISwitchOption[];
@@ -22,11 +22,7 @@ export const RadioSwitch: FC<RadioSwitchProps> = ({
   disableEmpty = false,
   name = Date.now().toString(),
 }): ReactElement => {
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(event.target.value),
-    []
-  );
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value), []);
 
   return (
     <StyledRadioSwitchContainer>
@@ -35,12 +31,7 @@ export const RadioSwitch: FC<RadioSwitchProps> = ({
         const defaultChecked = defaultValue === value;
         const disabled = disableEmpty && count === 0;
         return (
-          <StyledRadioLabel
-            htmlFor={key}
-            key={key}
-            active={defaultChecked}
-            disabled={disabled}
-          >
+          <StyledRadioLabel htmlFor={key} key={key} active={defaultChecked} disabled={disabled}>
             <StyledRadioInput
               type="radio"
               id={key}
@@ -51,9 +42,7 @@ export const RadioSwitch: FC<RadioSwitchProps> = ({
               disabled={disabled}
             ></StyledRadioInput>
             {label}
-            {typeof count === "number" && (
-              <StyledCounter>{count}</StyledCounter>
-            )}
+            {typeof count === 'number' && <StyledCounter>{count}</StyledCounter>}
           </StyledRadioLabel>
         );
       })}
@@ -87,13 +76,9 @@ const StyledRadioLabel = styled.label<StyledRadioLabelProps>`
   margin: 0;
   padding: 10px 5px;
   cursor: pointer;
-  opacity: ${applyStyleIfHasProperty("disabled", "0.5", "1")};
-  pointer-events: ${applyStyleIfHasProperty("disabled", "none", "initial")};
-  background-color: ${applyStyleIfHasProperty(
-    "active",
-    "var(--borderPrimaryColor)",
-    "transparent"
-  )};
+  opacity: ${applyStyleIfHasProperty('disabled', '0.5', '1')};
+  pointer-events: ${applyStyleIfHasProperty('disabled', 'none', 'initial')};
+  background-color: ${applyStyleIfHasProperty('active', 'var(--borderPrimaryColor)', 'transparent')};
 `;
 
 const StyledCounter = styled.span`

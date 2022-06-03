@@ -1,15 +1,12 @@
-import React, { FC, ReactElement, ReactNode } from "react";
-import { styled } from "@linaria/react";
-import { AppLink } from "../../common/components/AppLink";
+import React, { FC, ReactElement, ReactNode } from 'react';
+import { styled } from '@linaria/react';
+import { AppLink } from '../../common/components/AppLink';
 
 type PopupLayoutProps = React.HTMLAttributes<HTMLElement> & {
   footer: ReactNode;
 };
 
-export const PopupLayout: FC<PopupLayoutProps> = ({
-  children,
-  footer,
-}): ReactElement => (
+export const PopupLayout: FC<PopupLayoutProps> = ({ children, footer }): ReactElement => (
   <>
     <StyledHeader>
       <StyledIcon>#</StyledIcon>Stickets

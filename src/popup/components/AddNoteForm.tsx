@@ -1,30 +1,21 @@
-import React, {
-  FC,
-  ReactElement,
-  Ref,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
-import { styled } from "@linaria/react";
-import { useCurrentLocation } from "../hooks/useCurrentLocation";
-import { noop } from "../../common/utils";
-import { SmartTextarea } from "./SmartTextarea";
-import { Note, NoteScope } from "../../common/graphql/__generated__/graphql";
+import React, { FC, ReactElement, Ref, useCallback, useRef, useState } from 'react';
+import { styled } from '@linaria/react';
+import { useCurrentLocation } from '../hooks/useCurrentLocation';
+import { noop } from '../../common/utils';
+import { SmartTextarea } from './SmartTextarea';
+import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
 
 const SCOPE_OPTIONS = {
-  [NoteScope.Global]: "All web-sites",
-  [NoteScope.Site]: "This web-site {host}",
-  [NoteScope.Page]: "Current page only",
+  [NoteScope.Global]: 'All web-sites',
+  [NoteScope.Site]: 'This web-site {host}',
+  [NoteScope.Page]: 'Current page only',
 };
 
 type AddNoteFormProps = {
   onSubmit: (note: Partial<Note>) => void;
 };
 
-export const AddNoteForm: FC<AddNoteFormProps> = ({
-  onSubmit = noop,
-}): ReactElement => {
+export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactElement => {
   const formRef: Ref<HTMLFormElement> = useRef(null);
   const textareaRef: Ref<HTMLParagraphElement> = useRef(null);
   const submitRef: Ref<HTMLButtonElement> = useRef(null);
@@ -37,38 +28,31 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
     formRef.current?.reset();
 
     if (textareaRef.current) {
-      textareaRef.current.innerHTML = "";
+      textareaRef.current.innerHTML = '';
     }
   }, [formRef, textareaRef]);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
-      const formData = Object.fromEntries(
-        new FormData(event.target as HTMLFormElement) as any
-      );
+      const formData = Object.fromEntries(new FormData(event.target as HTMLFormElement) as any);
       onSubmit(formData);
       event.preventDefault();
       handleReset();
     },
-    [onSubmit, handleReset]
+    [onSubmit, handleReset],
   );
 
   const handleKeyUp = useCallback(
     (event: React.KeyboardEvent) => {
       const isTextaeraEmpty = !(event.target as HTMLInputElement).value.length;
 
-      if (
-        event.ctrlKey &&
-        event.key.toLowerCase() === "enter" &&
-        !isTextaeraEmpty &&
-        submitRef.current
-      ) {
+      if (event.ctrlKey && event.key.toLowerCase() === 'enter' && !isTextaeraEmpty && submitRef.current) {
         submitRef.current.click();
       }
 
       setNoteEmpty(isTextaeraEmpty);
     },
-    [submitRef, setNoteEmpty]
+    [submitRef, setNoteEmpty],
   );
 
   return (
@@ -77,7 +61,7 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
         <StyledSelect name="scope">
           {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
             <option value={value} key={value}>
-              {text.replace("{host}", location ? `(${location.host})` : "")}
+              {text.replace('{host}', location ? `(${location.host})` : '')}
             </option>
           ))}
         </StyledSelect>
@@ -141,7 +125,7 @@ const StyledSmartTextarea = styled(SmartTextarea)`
   box-sizing: border-box;
   outline: none;
 
-  &[contenteditable="true"] {
+  &[contenteditable='true'] {
     outline: none;
   }
 `;
@@ -162,7 +146,7 @@ const StyledButton = styled.button`
     pointer-events: none;
   }
 
-  &[type="submit"] {
+  &[type='submit'] {
     background-color: var(--brandColor);
   }
 `;

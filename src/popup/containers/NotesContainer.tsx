@@ -1,12 +1,12 @@
-import React, { useCallback, useState } from "react";
-import { styled } from "@linaria/react";
-import { groupNotesByScope } from "../../common/utils";
-import { useCurrentLocation } from "../hooks/useCurrentLocation";
-import { PopupLayout } from "../components/PopupLayout";
-import { AddNoteForm } from "../components/AddNoteForm";
-import { RadioSwitch } from "../components/RadioSwitch";
-import { NotesList } from "../components/NotesList";
-import { ContentCenter } from "../components/ContentCenter";
+import React, { useCallback, useState } from 'react';
+import { styled } from '@linaria/react';
+import { groupNotesByScope } from '../../common/utils';
+import { useCurrentLocation } from '../hooks/useCurrentLocation';
+import { PopupLayout } from '../components/PopupLayout';
+import { AddNoteForm } from '../components/AddNoteForm';
+import { RadioSwitch } from '../components/RadioSwitch';
+import { NotesList } from '../components/NotesList';
+import { ContentCenter } from '../components/ContentCenter';
 
 import {
   useGetAllNotesQuery,
@@ -15,9 +15,9 @@ import {
   useDeleteNoteMutation,
   Note,
   NoteScope,
-} from "../../common/graphql/__generated__/graphql";
+} from '../../common/graphql/__generated__/graphql';
 
-const refetchGetAllNotes = { refetchQueries: ["GetAllNotes"] };
+const refetchGetAllNotes = { refetchQueries: ['GetAllNotes'] };
 
 export function NotesContainer() {
   const location: URL | null = useCurrentLocation();
@@ -48,12 +48,12 @@ export function NotesContainer() {
       });
       getAllNotesRequest.refetch();
     },
-    [deleteNote]
+    [deleteNote],
   );
 
   const handleNoteAdd = useCallback(
-    ({ note = "", scope = NoteScope.Global }: Partial<Note>) => {
-      let url = scope !== NoteScope.Global && location ? location.href : "";
+    ({ note = '', scope = NoteScope.Global }: Partial<Note>) => {
+      let url = scope !== NoteScope.Global && location ? location.href : '';
 
       addNote({
         variables: {
@@ -64,32 +64,29 @@ export function NotesContainer() {
       });
       getAllNotesRequest.refetch();
     },
-    [location, addNote]
+    [location, addNote],
   );
 
   const footer = Boolean(location) && <AddNoteForm onSubmit={handleNoteAdd} />;
 
-  const isOK =
-    !getAllNotesRequest.loading &&
-    !getAllNotesRequest.error &&
-    getAllNotesRequest.data;
+  const isOK = !getAllNotesRequest.loading && !getAllNotesRequest.error && getAllNotesRequest.data;
 
   const notes = isOK ? getAllNotesRequest.data?.allNotes : [];
   const groupedNotes = groupNotesByScope(notes as Note[], location);
 
   const switchOptions = [
     {
-      label: "Page",
+      label: 'Page',
       value: NoteScope.Page,
       count: groupedNotes[NoteScope.Page].length,
     },
     {
-      label: "Site",
+      label: 'Site',
       value: NoteScope.Site,
       count: groupedNotes[NoteScope.Site].length,
     },
     {
-      label: "All sites",
+      label: 'All sites',
       value: NoteScope.Global,
       count: groupedNotes[NoteScope.Global].length,
     },

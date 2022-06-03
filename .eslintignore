@@ -1,0 +1,3 @@
+node_modules
+assets
+src/common/graphql/__generated__

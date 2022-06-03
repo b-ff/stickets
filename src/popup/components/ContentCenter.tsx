@@ -1,12 +1,9 @@
-import { styled } from "@linaria/react";
-import React, { FC, ReactElement } from "react";
+import { styled } from '@linaria/react';
+import React, { FC, ReactElement } from 'react';
 
 type ContentCenterProps = React.HTMLAttributes<HTMLElement>;
 
-export const ContentCenter: FC<ContentCenterProps> = ({
-  children,
-  ...props
-}): ReactElement => {
+export const ContentCenter: FC<ContentCenterProps> = ({ children, ...props }): ReactElement => {
   return <StyledAuthContainer {...props}>{children}</StyledAuthContainer>;
 };
 

@@ -1,7 +1,7 @@
-import React from "react";
-import { styled } from "@linaria/react";
-import { AppLink } from "../components/AppLink";
-import { ROUTES } from "../../popup/constants/routes";
+import React from 'react';
+import { styled } from '@linaria/react';
+import { AppLink } from '../components/AppLink';
+import { ROUTES } from '../../popup/constants/routes';
 
 export function NotFound() {
   return (

@@ -1,26 +1,9 @@
-import React, {
-  FC,
-  ForwardedRef,
-  HTMLAttributes,
-  ReactElement,
-  Ref,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
-import { styled } from "@linaria/react";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import {
-  applyStyleIfHasProperty,
-  noop,
-  stripTags,
-  urlify,
-} from "../../common/utils";
-import { SmartTextarea } from "./SmartTextarea";
-import {
-  Note as NoteType,
-  NoteScope,
-} from "../../common/graphql/__generated__/graphql";
+import React, { FC, ForwardedRef, HTMLAttributes, ReactElement, Ref, useCallback, useRef, useState } from 'react';
+import { styled } from '@linaria/react';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { applyStyleIfHasProperty, noop, stripTags, urlify } from '../../common/utils';
+import { SmartTextarea } from './SmartTextarea';
+import { Note as NoteType, NoteScope } from '../../common/graphql/__generated__/graphql';
 
 type NoteProps = {
   note: NoteType;
@@ -32,11 +15,7 @@ type StyledNoteActionProps = HTMLAttributes<HTMLButtonElement> & {
   negative?: boolean;
 };
 
-export const Note: FC<NoteProps> = ({
-  note,
-  onUpdate = noop,
-  onDelete = noop,
-}): ReactElement => {
+export const Note: FC<NoteProps> = ({ note, onUpdate = noop, onDelete = noop }): ReactElement => {
   const noteTextRef: Ref<HTMLParagraphElement> = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
@@ -57,12 +36,11 @@ export const Note: FC<NoteProps> = ({
   const handleNoteTextChange = useCallback(
     (event: React.KeyboardEvent<HTMLParagraphElement>) => {
       if (isEditing) {
-        const isEmpty = !(event.target as HTMLParagraphElement).innerHTML
-          .length;
+        const isEmpty = !(event.target as HTMLParagraphElement).innerHTML.length;
         setNoteEmpty(isEmpty);
       }
     },
-    [isEditing, setNoteEmpty]
+    [isEditing, setNoteEmpty],
   );
 
   const handleCancelEdit = useCallback(() => {
@@ -75,9 +53,7 @@ export const Note: FC<NoteProps> = ({
   const handleOnUpdate = useCallback(() => {
     onUpdate({
       ...note,
-      note: noteTextRef.current
-        ? stripTags(noteTextRef.current.innerHTML.trim())
-        : note.note,
+      note: noteTextRef.current ? stripTags(noteTextRef.current.innerHTML.trim()) : note.note,
     });
     setIsEditing(false);
   }, [note, noteTextRef, setIsEditing]);
@@ -96,7 +72,7 @@ export const Note: FC<NoteProps> = ({
         onDoubleClick={handleStartEditing}
         onKeyUp={handleNoteTextChange}
         placeholder="Your note..."
-        style={{ maxHeight: isEditing ? "200px" : "auto" }}
+        style={{ maxHeight: isEditing ? '200px' : 'auto' }}
       >
         {urlify(note.note)}
       </SmartTextarea>
@@ -110,25 +86,15 @@ export const Note: FC<NoteProps> = ({
                   Open URL
                 </StyledNoteAction>
               )}
-              <StyledNoteAction onClick={handleStartEditing}>
-                Edit
-              </StyledNoteAction>
-              <StyledNoteAction onClick={() => onDelete(note._id)}>
-                Delete
-              </StyledNoteAction>
+              <StyledNoteAction onClick={handleStartEditing}>Edit</StyledNoteAction>
+              <StyledNoteAction onClick={() => onDelete(note._id)}>Delete</StyledNoteAction>
             </span>
           </>
         )}
         {isEditing && (
           <span>
-            <StyledNoteAction onClick={handleCancelEdit}>
-              Cancel
-            </StyledNoteAction>
-            <StyledNoteAction
-              onClick={handleOnUpdate}
-              disabled={noteEmpty}
-              negative
-            >
+            <StyledNoteAction onClick={handleCancelEdit}>Cancel</StyledNoteAction>
+            <StyledNoteAction onClick={handleOnUpdate} disabled={noteEmpty} negative>
               Save
             </StyledNoteAction>
           </span>
@@ -152,7 +118,7 @@ const StyledNoteText = styled.p`
   box-sizing: border-box;
   border-radius: 2px;
 
-  &[contenteditable="true"] {
+  &[contenteditable='true'] {
     outline: 1px solid var(--borderPrimaryColor);
   }
 `;
@@ -174,11 +140,7 @@ const StyledNoteAction = styled.button<StyledNoteActionProps>`
   outline: none;
   font-size: 11px;
   color: var(--fontPrimaryColor);
-  background-color: ${applyStyleIfHasProperty(
-    "negative",
-    "var(--brandColor)",
-    "var(--borderPrimaryColor)"
-  )};
+  background-color: ${applyStyleIfHasProperty('negative', 'var(--brandColor)', 'var(--borderPrimaryColor)')};
   border-radius: 10px;
   cursor: pointer;
   transition: opacity 0.2s ease-in-out;
