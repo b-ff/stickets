@@ -1,27 +1,70 @@
 import { css } from '@linaria/core';
+import { getCSSVariablesDefinitionFromTheme } from './utils';
 
-export const theme = css`
+export const theme: IThemeObject = {
+  light: {
+    backgroundPrimaryColor: '#ffffff',
+    textPrimaryColor: '#202124',
+    textSecondaryColor: '#61646d',
+    textTertiaryColor: '#a9b3bb',
+    controlPrimaryColor: '#dbe2e8',
+    controlSecondaryColor: '#f4f6f6',
+    buttonPrimaryColor: '#c30046',
+    buttonSecondaryColor: '#ff512f',
+    iconPrimaryColor: '#ea115f',
+  },
+  dark: {
+    backgroundPrimaryColor: '#202124',
+    textPrimaryColor: '#ffffff',
+    textSecondaryColor: '#a9b3bb',
+    textTertiaryColor: '#61646d',
+    controlPrimaryColor: '#3a3d44',
+    controlSecondaryColor: '#303135',
+    buttonPrimaryColor: '#c30046',
+    buttonSecondaryColor: '#ff512f',
+    iconPrimaryColor: '#ea115f',
+  },
+};
+
+const lightCSSVariables = getCSSVariablesDefinitionFromTheme(theme.light);
+const darkCSSVariables = getCSSVariablesDefinitionFromTheme(theme.dark);
+
+export const themeStyles = css`
   :global() {
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      margin: 0;
+      padding: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-weight: 600;
+    }
+
     html,
     body {
-      --backgroundPrimaryColor: #fff;
-      --borderPrimaryColor: #ddd;
-      --inputPrimaryColor: #fff;
-      --fontPrimaryColor: #000;
-      --brandColor: #ff006f;
-
-      @media (prefers-color-scheme: dark) {
-        --backgroundPrimaryColor: rgb(32, 33, 36);
-        --borderPrimaryColor: rgba(255, 255, 255, 0.05);
-        --inputPrimaryColor: rgba(255, 255, 255, 0.0125);
-        --fontPrimaryColor: #fff;
-
-        background-color: var(--backgroundPrimaryColor);
-        color: var(--fontPrimaryColor);
-      }
+      ${lightCSSVariables}
 
       background-color: var(--backgroundPrimaryColor);
-      color: var(--fontPrimaryColor);
+      color: var(--textPrimaryColor);
+      font-family: 'Helvetica';
+      font-size: 14px;
+      font-weight: normal;
+
+      @media (prefers-color-scheme: dark) {
+        ${darkCSSVariables}
+
+        background-color: var(--backgroundPrimaryColor);
+        color: var(--textPrimaryColor);
+      }
     }
 
     html,
@@ -36,7 +79,7 @@ export const theme = css`
     }
 
     #app-popup {
-      width: 300px;
+      width: 800px;
       height: 600px;
     }
 

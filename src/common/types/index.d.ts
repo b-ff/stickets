@@ -13,3 +13,20 @@ declare interface ISwitchOption {
   label: string;
   count?: number;
 }
+
+declare interface IThemeColors {
+  backgroundPrimaryColor: string;
+  textPrimaryColor: string;
+  textSecondaryColor: string;
+  textTertiaryColor: string;
+  controlPrimaryColor: string;
+  controlSecondaryColor: string;
+  buttonPrimaryColor: string;
+  buttonSecondaryColor: string;
+  iconPrimaryColor: string;
+}
+
+declare interface IThemeObject {
+  light: IThemeColors;
+  dark: IThemeColors;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { CurrentLocationContext } from './CurrentLocationContext';
 import { AuthContainer } from './AuthContainer';
-import { theme } from '../../common/theme';
+import { themeStyles } from '../../common/theme';
 
 export function App() {
   const [currentLocation, setCurrentLocation] = useState<URL | null>(null);
@@ -16,7 +16,7 @@ export function App() {
   return (
     <CurrentLocationContext.Provider value={currentLocation}>
       <BrowserRouter>
-        <AuthContainer className={theme} />
+        <AuthContainer className={themeStyles} />
       </BrowserRouter>
     </CurrentLocationContext.Provider>
   );
