@@ -8,10 +8,10 @@ import React, {
   useRef,
   ForwardedRef,
   MutableRefObject,
-} from "react";
-import { styled } from "@linaria/react";
-import { noop, stripTags } from "../../common/utils";
-import DOMPurify from "dompurify";
+} from 'react';
+import { styled } from '@linaria/react';
+import { noop, stripTags } from '../../common/utils';
+import DOMPurify from 'dompurify';
 
 type SmartTextareaProps = HTMLAttributes<HTMLParagraphElement> & {
   name?: string;
@@ -22,29 +22,17 @@ type SmartTextareaProps = HTMLAttributes<HTMLParagraphElement> & {
   children?: React.ReactNode;
 };
 
-export const SmartTextarea = forwardRef<
-  HTMLParagraphElement,
-  SmartTextareaProps
->(
+export const SmartTextarea = forwardRef<HTMLParagraphElement, SmartTextareaProps>(
   (
-    {
-      name,
-      placeholder,
-      isEditing,
-      className,
-      style = {},
-      onKeyUp = noop,
-      onChange = noop,
-      ...props
-    },
-    ref: ForwardedRef<HTMLParagraphElement>
+    { name, placeholder, isEditing, className, style = {}, onKeyUp = noop, onChange = noop, ...props },
+    ref: ForwardedRef<HTMLParagraphElement>,
   ): ReactElement => {
     const inputRef: Ref<HTMLInputElement> = useRef(null);
 
-    if (typeof props.children === "string") {
+    if (typeof props.children === 'string') {
       props.dangerouslySetInnerHTML = {
         __html: DOMPurify.sanitize(props.children, {
-          ADD_ATTR: ["target"],
+          ADD_ATTR: ['target'],
         }),
       };
       props.children = undefined;
@@ -54,9 +42,7 @@ export const SmartTextarea = forwardRef<
       const editableParagraph = ref as MutableRefObject<HTMLParagraphElement>;
 
       if (inputRef.current && editableParagraph?.current) {
-        inputRef.current.value = stripTags(
-          editableParagraph?.current.innerHTML
-        );
+        inputRef.current.value = stripTags(editableParagraph?.current.innerHTML);
       }
     }, [inputRef, ref]);
 
@@ -71,11 +57,10 @@ export const SmartTextarea = forwardRef<
         }
         onKeyUp(event);
       },
-      [inputRef, onKeyUp]
+      [inputRef, onKeyUp],
     );
 
-    const { width, minWidth, maxWidth, height, minHeight, maxHeight, resize } =
-      style;
+    const { width, minWidth, maxWidth, height, minHeight, maxHeight, resize } = style;
 
     return (
       <StyledContainer className={className} style={style}>
@@ -95,12 +80,10 @@ export const SmartTextarea = forwardRef<
           }}
           {...props}
         ></StyledNoteText>
-        {Boolean(placeholder) && (
-          <StyledPlaceholder>{placeholder}</StyledPlaceholder>
-        )}
+        {Boolean(placeholder) && <StyledPlaceholder>{placeholder}</StyledPlaceholder>}
       </StyledContainer>
     );
-  }
+  },
 );
 
 const StyledContainer = styled.div`
@@ -111,7 +94,7 @@ const StyledContainer = styled.div`
   margin: 0;
   padding: 0;
 
-  input[type="hidden"] {
+  input[type='hidden'] {
     position: absolute;
   }
 
@@ -152,7 +135,7 @@ const StyledNoteText = styled.p`
   border-radius: 3px;
   z-index: 2;
 
-  &[contenteditable="true"] {
+  &[contenteditable='true'] {
     overflow: auto;
     background-color: var(--inputPrimaryColor);
     outline: 1px solid var(--borderPrimaryColor);

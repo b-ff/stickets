@@ -1,6 +1,6 @@
-import React, { FC } from "react";
-import { styled } from "@linaria/react";
-import { ContentCenter } from "./ContentCenter";
+import React, { FC } from 'react';
+import { styled } from '@linaria/react';
+import { ContentCenter } from './ContentCenter';
 
 type LoginFormProps = {
   onSubmit: () => void;
@@ -15,8 +15,7 @@ export const LoginForm: FC<LoginFormProps> = ({ onSubmit, ...props }) => {
         with Google
       </StyledHeading>
       <StyledText>
-        This will allow you to keep your notes private as well as other people
-        to share their notes with you
+        This will allow you to keep your notes private as well as other people to share their notes with you
       </StyledText>
       <StyledButton onClick={onSubmit}>Sign-in with Google</StyledButton>
     </ContentCenter>

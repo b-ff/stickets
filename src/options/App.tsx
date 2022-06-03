@@ -1,6 +1,6 @@
-import React from "react";
-import { styled } from "@linaria/react";
-import { theme } from "../common/theme";
+import React from 'react';
+import { styled } from '@linaria/react';
+import { theme } from '../common/theme';
 
 export function App() {
   return (
