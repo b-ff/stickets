@@ -4,6 +4,9 @@
 
 Chrome Extension that allows you to add a notes to any webpage you visit as well as share it with whoever you want
 
+- Backend repo — https://github.com/rtf6x/stickets-api
+- Chrome Web Store — *In Progress...*
+
 # Currently under development.
 
 ### Getting started (for devs):
