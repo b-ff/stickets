@@ -94,7 +94,6 @@ const getReactTypescriptBundleFor = (name, indexFile) => ({
     babel({
       babelrc: true,
       babelHelpers: "bundled",
-      exclude: "src/common/graphql/__generated__/**.ts",
     }),
     // In dev mode, call `npm run start` once
     // the bundle has been generated
