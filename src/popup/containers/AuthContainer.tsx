@@ -21,14 +21,12 @@ export const AuthContainer: FC<HTMLAttributes<Element>> = (): ReactElement => {
     uri: config.api.host,
   });
 
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        authorization: storedToken ? storedToken : '',
-      },
-    };
-  });
+  const authLink = setContext((_, { headers }) => ({
+    headers: {
+      ...headers,
+      authorization: storedToken || '',
+    },
+  }));
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
@@ -46,11 +44,7 @@ export const AuthContainer: FC<HTMLAttributes<Element>> = (): ReactElement => {
   return (
     <ApolloProvider client={client}>
       {tokenLoaded ? (
-        storedToken ? (
-          <AppRoute />
-        ) : (
-          <LoginContainer onLoginSuccess={handleLoginSuccess} />
-        )
+        (storedToken && <AppRoute />) || <LoginContainer onLoginSuccess={handleLoginSuccess} />
       ) : (
         <ContentCenter>Loading...</ContentCenter>
       )}
