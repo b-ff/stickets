@@ -1,12 +1,7 @@
-import { ApolloClient, gql, NormalizedCacheObject } from '@apollo/client';
-import CreateNoteMutation from '../common/graphql/mutations/CreateNote.graphql';
-import { NoteScope } from '../common/graphql/__generated__/graphql';
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import { CreateNoteDocument, NoteScope } from '../common/graphql/__generated__/graphql';
 
 const MENU_ITEM_ID_PREFIX = 'stickets__add-note';
-
-const CREATE_NOTE = gql`
-  ${CreateNoteMutation}
-`;
 
 export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
   chrome.runtime.onInstalled.addListener(() => {
@@ -34,7 +29,7 @@ export function initContextMenu(client: ApolloClient<NormalizedCacheObject>) {
 
         client
           .mutate({
-            mutation: CREATE_NOTE,
+            mutation: CreateNoteDocument,
             variables: {
               scope,
               note,

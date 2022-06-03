@@ -1,16 +1,11 @@
-import { ApolloClient, gql, NormalizedCacheObject } from '@apollo/client';
-import GetAllNotes from '../common/graphql/queries/GetAllNotes.graphql';
-import { NoteScope } from '../common/graphql/__generated__/graphql';
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import { GetAllNotesDocument, NoteScope } from '../common/graphql/__generated__/graphql';
 import { groupNotesByScope } from '../common/utils';
 import { config } from '../config';
 
-const GET_ALL_NOTES = gql`
-  ${GetAllNotes}
-`;
-
-const drawBadgeCount = (tabId: number, count = 0): void => {
+const drawBadgeCount = (tabId: number, count: number): void => {
   const color = '#ff006f';
-  const text = count >= 1000 ? '999+' : `${count}`;
+  const text = (count && (count >= 1000 ? '999+' : `${count}`)) || '';
 
   chrome.action.setBadgeBackgroundColor({ tabId, color });
   chrome.action.setBadgeText({ tabId, text });
@@ -22,7 +17,7 @@ export function initNotesPolling(client: ApolloClient<NormalizedCacheObject>): v
   const makePollRequest = (location: URL, tabId: number) => {
     client
       .query({
-        query: GET_ALL_NOTES,
+        query: GetAllNotesDocument,
         fetchPolicy: 'no-cache',
       })
       .then(({ data }) => {
@@ -39,7 +34,10 @@ export function initNotesPolling(client: ApolloClient<NormalizedCacheObject>): v
           console.log('Loaded all user notes:', location.origin, notes);
         }
 
-        timeoutId = setTimeout(() => makePollRequest(location, tabId), config.api.pollingIntervalMS);
+        timeoutId = setTimeout(
+          () => makePollRequest(location, tabId),
+          config.api.pollingIntervalMS,
+        );
       })
       .catch(console.error);
   };
