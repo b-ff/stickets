@@ -12,7 +12,11 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationDir": "src/types",
-    "typeRoots": ["./node_modules/@types", "./src/common/types"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/common/types",
+      "./src/common/graphql/__generated__"
+    ],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
