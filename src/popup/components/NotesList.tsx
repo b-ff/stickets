@@ -74,7 +74,7 @@ export const NotesList: FC<NotesListProps> = ({
 
   return (
     <StyledNotesList {...props}>
-      <TitledColumn title={`${title}`} actions={<StyledIconSort />}>
+      <TitledColumn columnTitle={`${title}`} actions={<StyledIconSort />}>
         <SearchField ref={ref} placeholder="Search note" onChange={handleSearchChanges} />
         {Boolean(notesToDisplay.length) ? (
           notesToDisplay.map((note) => (

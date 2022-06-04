@@ -35,6 +35,7 @@ const StyledAvatar = styled(Avatar)`
   width: 56px;
   height: 56px;
   margin-right: var(--fontSmallSize);
+  border: 1px solid var(--controlSecondaryColor);
 `;
 
 const StyledProfileInfo = styled.div`

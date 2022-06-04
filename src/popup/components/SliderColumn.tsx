@@ -38,7 +38,7 @@ const StyledSliderColumnRow = styled.section<StyledSliderColumnRowProps>`
   width: calc(100% * ${({ length }) => length || 1});
   height: 100%;
   margin-left: ${({ currentSlideIndex }) => `${0 - currentSlideIndex * 100}%`};
-  transition: margin-left 0.2s ease-in-out;
+  transition: margin-left 0.1s ease-in-out;
 `;
 
 const StyledSlide = styled.div`

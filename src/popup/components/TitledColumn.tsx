@@ -2,13 +2,13 @@ import React, { FC, HTMLAttributes, ReactElement, ReactNode } from 'react';
 import { styled } from '@linaria/react';
 
 type TitledColumnProps = HTMLAttributes<HTMLElement> & {
-  title?: ReactNode;
+  columnTitle: ReactNode;
   actions?: ReactNode;
   footer?: ReactNode;
 };
 
 export const TitledColumn: FC<TitledColumnProps> = ({
-  title,
+  columnTitle,
   actions,
   footer,
   children,
@@ -16,7 +16,7 @@ export const TitledColumn: FC<TitledColumnProps> = ({
 }): ReactElement => (
   <StyledTitledColumn {...props}>
     <StyledToolbar>
-      <StyledTitle>{title}</StyledTitle>
+      <StyledTitle>{columnTitle}</StyledTitle>
       {actions}
     </StyledToolbar>
     {children}
