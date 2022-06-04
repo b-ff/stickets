@@ -1,13 +1,13 @@
-import { NotesContainer } from './containers/NotesContainer';
-import { NotFound } from '../common/containers/NotFound.jsx';
+import { NotFound } from '../common/containers/NotFound';
 import { PAGE_QUERY_PARAM_NAME } from '../common/constants/page-query-param-name';
 import { ROUTES } from './constants/routes';
-import { PageSettings } from './containers/PageSettings';
+import { PageSettings } from './pages/PageSettings';
+import { PageNotes } from './pages/PageNotes';
 
 export const PAGES = {
   [ROUTES.NOTES]: {
     title: 'Notes',
-    component: NotesContainer,
+    component: PageNotes,
   },
   [ROUTES.SETTINGS]: {
     title: 'Settins',
