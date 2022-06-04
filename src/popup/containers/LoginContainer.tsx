@@ -8,8 +8,14 @@ type LoginContainerProps = {
   onLoginSuccess: (token: string) => void;
 };
 
-export const LoginContainer: FC<LoginContainerProps> = ({ onLoginSuccess = noop }): ReactElement => {
+export const LoginContainer: FC<LoginContainerProps> = ({
+  onLoginSuccess = noop,
+}): ReactElement => {
   const [doLogin, { loading, error, data }] = useLoginMutation();
+
+  if (error) {
+    throw error;
+  }
 
   const handleSignIn = useCallback(() => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {
@@ -25,5 +31,9 @@ export const LoginContainer: FC<LoginContainerProps> = ({ onLoginSuccess = noop 
     onLoginSuccess(data.login.token);
   }
 
-  return loading ? <ContentCenter>Signing in...</ContentCenter> : <LoginForm onSubmit={handleSignIn} />;
+  return loading ? (
+    <ContentCenter>Signing in...</ContentCenter>
+  ) : (
+    <LoginForm onSubmit={handleSignIn} />
+  );
 };

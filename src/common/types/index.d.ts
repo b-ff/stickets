@@ -1,3 +1,6 @@
+declare type CurrentLocationContextValue = URL | null;
+declare type AuthContextValue = [boolean, () => void];
+
 declare interface IEntityWithId {
   _id: string;
 }

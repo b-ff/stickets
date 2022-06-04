@@ -49,9 +49,17 @@ export const themeStyles = css`
       font-weight: 600;
     }
 
+    a {
+      color: var(--textPrimaryColor);
+    }
+
     html,
     body {
       ${lightCSSVariables}
+
+      --fontBigSize: 16px;
+      --fontRegularSize: 14px;
+      --fontSmallSize: 12px;
 
       background-color: var(--backgroundPrimaryColor);
       color: var(--textPrimaryColor);

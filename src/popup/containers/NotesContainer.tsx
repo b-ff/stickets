@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { styled } from '@linaria/react';
 import { groupNotesByScope } from '../../common/utils';
 import { useCurrentLocation } from '../hooks/useCurrentLocation';
-import { PopupLayout } from '../components/PopupLayout';
 import { AddNoteForm } from '../components/AddNoteForm';
 import { RadioSwitch } from '../components/RadioSwitch';
 import { NotesList } from '../components/NotesList';
@@ -24,20 +23,23 @@ export function NotesContainer() {
 
   const [displayScope, setDisplayScope] = useState(NoteScope.Page);
 
-  const getAllNotesRequest = useGetAllNotesQuery();
+  const getRequest = useGetAllNotesQuery();
   const [addNote] = useCreateNoteMutation(refetchGetAllNotes);
   const [updateNote] = useUpdateNoteMutation(refetchGetAllNotes);
   const [deleteNote] = useDeleteNoteMutation(refetchGetAllNotes);
 
-  const handleNoteUpdate = useCallback(({ _id: updateId, note }: Note) => {
-    updateNote({
-      variables: {
-        updateId,
-        note,
-      },
-    });
-    getAllNotesRequest.refetch();
-  }, []);
+  const handleNoteUpdate = useCallback(
+    ({ _id: updateId, note }: Note) => {
+      updateNote({
+        variables: {
+          updateId,
+          note,
+        },
+      });
+      getRequest.refetch();
+    },
+    [updateNote, getRequest],
+  );
 
   const handleNoteDelete = useCallback(
     (deleteId: string) => {
@@ -46,14 +48,14 @@ export function NotesContainer() {
           deleteId,
         },
       });
-      getAllNotesRequest.refetch();
+      getRequest.refetch();
     },
-    [deleteNote],
+    [deleteNote, getRequest],
   );
 
   const handleNoteAdd = useCallback(
     ({ note = '', scope = NoteScope.Global }: Partial<Note>) => {
-      let url = scope !== NoteScope.Global && location ? location.href : '';
+      const url = scope !== NoteScope.Global && location ? location.href : '';
 
       addNote({
         variables: {
@@ -62,16 +64,14 @@ export function NotesContainer() {
           url,
         },
       });
-      getAllNotesRequest.refetch();
+      getRequest.refetch();
     },
-    [location, addNote],
+    [location, addNote, getRequest],
   );
 
-  const footer = Boolean(location) && <AddNoteForm onSubmit={handleNoteAdd} />;
+  const isOK = !getRequest.loading && !getRequest.error && getRequest.data;
 
-  const isOK = !getAllNotesRequest.loading && !getAllNotesRequest.error && getAllNotesRequest.data;
-
-  const notes = isOK ? getAllNotesRequest.data?.allNotes : [];
+  const notes = isOK ? getRequest.data?.allNotes : [];
   const groupedNotes = groupNotesByScope(notes as Note[], location);
 
   const switchOptions = [
@@ -93,7 +93,7 @@ export function NotesContainer() {
   ];
 
   return (
-    <PopupLayout footer={footer}>
+    <>
       <RadioSwitch
         name="notes-display"
         options={switchOptions}
@@ -101,18 +101,19 @@ export function NotesContainer() {
         onChange={(value) => setDisplayScope(value as NoteScope)}
       />
       <StyledNotesContainer>
-        {Boolean(getAllNotesRequest.error) ? (
+        {getRequest.error ? (
           <ContentCenter>Oops! Something went wrong!</ContentCenter>
         ) : (
           <NotesList
-            isLoading={getAllNotesRequest.loading}
+            isLoading={getRequest.loading}
             notes={groupedNotes[displayScope]}
             onUpdate={handleNoteUpdate}
             onDelete={handleNoteDelete}
           />
         )}
       </StyledNotesContainer>
-    </PopupLayout>
+      {Boolean(location) && <AddNoteForm onSubmit={handleNoteAdd} />}
+    </>
   );
 }
 

@@ -1,3 +1,3 @@
-import { Context, createContext } from 'react';
+import { createContext } from 'react';
 
-export const CurrentLocationContext: Context<URL | null> = createContext<URL | null>(null);
+export const CurrentLocationContext = createContext<CurrentLocationContextValue>(null);
