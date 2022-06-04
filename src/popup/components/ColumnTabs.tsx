@@ -77,7 +77,12 @@ export const ColumnTabs: FC<ColumnTabsProps> = ({
         </StyledTabNav>
         {footer}
       </StyledColumn>
-      <StyledColumn>{tabs[activeTabIndex].tab}</StyledColumn>
+      <StyledColumn>
+        {tabs.map(({ title, tab }, idx) => {
+          const key = `${title}-${idx}`;
+          return idx === activeTabIndex && tab;
+        })}
+      </StyledColumn>
     </StyledColumnTabsContainer>
   );
 };

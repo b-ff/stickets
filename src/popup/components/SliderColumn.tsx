@@ -8,6 +8,7 @@ type SliderColumnProps = HTMLAttributes<HTMLElement> & {
 
 type StyledSliderColumnRowProps = HTMLAttributes<HTMLElement> & {
   length: number;
+  currentSlideIndex: number;
 };
 
 export const SliderColumn: FC<SliderColumnProps> = ({
@@ -16,7 +17,7 @@ export const SliderColumn: FC<SliderColumnProps> = ({
   ...props
 }): ReactElement => (
   <StyledSliderColumnContainer {...props}>
-    <StyledSliderColumnRow length={slides.length}>
+    <StyledSliderColumnRow length={slides.length} currentSlideIndex={currentSlideIndex}>
       {slides.map((slide, idx) => {
         const key = `slide-${idx}`;
         return <StyledSlide key={key}>{slide}</StyledSlide>;
@@ -36,6 +37,8 @@ const StyledSliderColumnRow = styled.section<StyledSliderColumnRowProps>`
   flex-wrap: nowrap;
   width: calc(100% * ${({ length }) => length || 1});
   height: 100%;
+  margin-left: ${({ currentSlideIndex }) => `${0 - currentSlideIndex * 100}%`};
+  transition: margin-left 0.2s ease-in-out;
 `;
 
 const StyledSlide = styled.div`

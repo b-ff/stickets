@@ -135,19 +135,20 @@ const StyledSmartTextarea = styled(SmartTextarea)`
 `;
 
 const StyledButton = styled<any>(Button)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  padding: 0;
-  margin-left: auto;
-  margin-right: var(--fontBigSize);
+  &[type='submit'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 0;
+    margin-left: auto;
+    margin-right: var(--fontBigSize);
+  }
 `;
 
 const StyledIconCheckmark = styled(IconCheckmark)`
   width: 16px;
   height: 11px;
-  stroke: #ffffff;
 `;

@@ -3,6 +3,7 @@ import React, {
   ReactElement,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -38,6 +39,8 @@ export const Notes: FC<NotesProps> = ({
 }): ReactElement => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [selectedSlide, setSelectedSlide] = useState(SLIDES.LIST);
+
+  useEffect(() => () => console.log('notes bang'), []);
 
   const handleSelect = useCallback(
     (note: Note): void => {

@@ -13,10 +13,10 @@ import { applyStyleIfHasProperty, noop, stripTags, urlify } from '../../common/u
 import { SmartTextarea } from './SmartTextarea';
 import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
 
-type NotesListItemProps = {
+type NotesListItemProps = HTMLAttributes<HTMLElement> & {
   note: Note;
-  onUpdate: (note: Note) => void;
-  onDelete: (id: string) => void;
+  onUpdate?: (note: Note) => void;
+  onDelete?: (id: string) => void;
 };
 
 type StyledNoteActionProps = HTMLAttributes<HTMLButtonElement> & {
@@ -27,6 +27,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
   note,
   onUpdate = noop,
   onDelete = noop,
+  ...props
 }): ReactElement => {
   const noteTextRef: Ref<HTMLParagraphElement> = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -79,7 +80,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
   }, [note]);
 
   return (
-    <StyledNoteContainer>
+    <StyledNoteContainer {...props}>
       <SmartTextarea
         ref={noteTextRef}
         isEditing={isEditing}
@@ -120,24 +121,9 @@ export const NotesListItem: FC<NotesListItemProps> = ({
   );
 };
 
-const StyledNoteContainer = styled.article`
-  padding: 5px;
-  background-color: var(--inputPrimaryColor);
-  border-radius: 3px;
-  margin-bottom: 10px;
-`;
+const StyledNoteContainer = styled.article``;
 
-const StyledNoteText = styled.p`
-  font-size: 14px;
-  padding: 5px;
-  margin: 0 0 5px;
-  box-sizing: border-box;
-  border-radius: 2px;
-
-  &[contenteditable='true'] {
-    outline: 1px solid var(--borderPrimaryColor);
-  }
-`;
+const StyledNoteText = styled.p``;
 
 const StyledNoteInfo = styled.div`
   display: flex;

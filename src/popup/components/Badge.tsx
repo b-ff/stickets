@@ -15,7 +15,7 @@ const StyledBadge = styled.span`
   line-height: 20px;
   padding: 0 5px;
   font-size: var(--fontRegularSize);
-  color: var(--textTertiaryColor);
+  color: var(--textSecondaryColor);
   background-color: var(--controlSecondaryColor);
   border-radius: 10px;
   box-sizing: border-box;

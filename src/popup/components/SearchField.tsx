@@ -1,22 +1,28 @@
-import React, { FC, HTMLAttributes, ReactElement } from 'react';
+import React, {
+  FC,
+  ForwardedRef,
+  forwardRef,
+  InputHTMLAttributes,
+  ReactElement,
+} from 'react';
 import { styled } from '@linaria/react';
 import { IconSearch } from '../icons/IconSearch';
 
-type SearchFieldProps = HTMLAttributes<HTMLInputElement>;
+type SearchFieldProps = InputHTMLAttributes<HTMLInputElement>;
 
-export const SearchField: FC<SearchFieldProps> = ({
-  placeholder,
-  style,
-  className,
-  ...props
-}): ReactElement => (
-  <StyledSearchFieldContainer style={style} className={className}>
-    <StyledSearchInput placeholder=" " {...props} />
-    <StyledSearchPlaceholder>
-      <StyledIconSearch />
-      {placeholder}
-    </StyledSearchPlaceholder>
-  </StyledSearchFieldContainer>
+export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(
+  (
+    { placeholder, style, className, ...props },
+    ref: ForwardedRef<HTMLInputElement>,
+  ): ReactElement => (
+    <StyledSearchFieldContainer style={style} className={className}>
+      <StyledSearchInput placeholder=" " ref={ref} {...props} />
+      <StyledSearchPlaceholder>
+        <StyledIconSearch />
+        {placeholder}
+      </StyledSearchPlaceholder>
+    </StyledSearchFieldContainer>
+  ),
 );
 
 const StyledSearchFieldContainer = styled.div`

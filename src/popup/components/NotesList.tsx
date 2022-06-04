@@ -3,7 +3,11 @@ import React, {
   FormEventHandler,
   ReactElement,
   ReactNode,
+  Ref,
   useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
   useState,
 } from 'react';
 import { styled } from '@linaria/react';
@@ -11,8 +15,8 @@ import { Note } from '../../common/graphql/__generated__/graphql';
 import { IconSort } from '../icons/IconSort';
 import { ContentCenter } from './ContentCenter';
 import { SearchField } from './SearchField';
-import { NoteUser } from '../../common/graphql/__generated__';
 import { TitledColumn } from './TitledColumn';
+import { NotesListItem } from './NotesListItem';
 
 type NotesListProps = {
   title: ReactNode;
@@ -30,13 +34,13 @@ export const NotesList: FC<NotesListProps> = ({
   onDelete,
   ...props
 }): ReactElement => {
+  const ref: Ref<HTMLInputElement> = useRef(null);
   const [displayNotes, setDisplayNotes] = useState(notes);
-
-  console.log(131, title);
+  const [currentSearch, setCurrentSearch] = useState('');
 
   const handleSearchChanges: FormEventHandler = useCallback(
     (event) => {
-      const search = (event.target as HTMLInputElement).value.toLocaleLowerCase();
+      const search = (event.target as HTMLInputElement).value;
       const filteredNotes = notes.filter(({ note, url, sharedWith }) => {
         const filterFields = [note, url];
 
@@ -46,27 +50,48 @@ export const NotesList: FC<NotesListProps> = ({
           );
         }
 
-        console.log(132, { filterFields });
+        return filterFields.find((field) =>
+          field.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+        );
       });
 
-      console.log(133, search);
+      setDisplayNotes(filteredNotes);
+      setCurrentSearch(search);
     },
     [notes],
   );
 
+  useLayoutEffect(() => {
+    const searchInputElement = ref.current as HTMLInputElement;
+
+    if (searchInputElement.value !== currentSearch) {
+      const pseudoEvent: any = { target: searchInputElement };
+      handleSearchChanges(pseudoEvent);
+    }
+  }, [ref, handleSearchChanges]);
+
+  const notesToDisplay = currentSearch.length ? displayNotes : notes;
+
   return (
     <StyledNotesList {...props}>
       <TitledColumn title={`${title}`} actions={<StyledIconSort />}>
-        <SearchField
-          placeholder="Search note"
-          onChange={handleSearchChanges}
-          defaultValue={' '}
-        />
-        {notes.length ? (
-          <span>NotesList</span>
+        <SearchField ref={ref} placeholder="Search note" onChange={handleSearchChanges} />
+        {Boolean(notesToDisplay.length) ? (
+          notesToDisplay.map((note) => (
+            <NotesListItem
+              note={note}
+              key={note._id}
+              onClick={() => onSelect(note)}
+              onDelete={onDelete}
+            />
+          ))
         ) : (
           <ContentCenter {...props}>
-            <StyledEmptyText>{emptyText}</StyledEmptyText>
+            {notes.length ? (
+              <StyledEmptyText>No notes found</StyledEmptyText>
+            ) : (
+              <StyledEmptyText>{emptyText}</StyledEmptyText>
+            )}
           </ContentCenter>
         )}
       </TitledColumn>
@@ -81,18 +106,6 @@ const StyledNotesList = styled.section`
   height: 100%;
   padding: 0 var(--fontBigSize);
   box-sizing: border-box;
-`;
-
-const StyledToolbar = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: calc(var(--fontBigSize) * 2) 0 calc(var(--fontBigSize) * 1.5);
-`;
-
-const StyledTitle = styled.h1`
-  font-size: var(--fontBigSize);
 `;
 
 const StyledIconSort = styled(IconSort)`

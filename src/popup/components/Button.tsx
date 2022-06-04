@@ -34,4 +34,18 @@ const StyledButton = styled.button`
   border: none;
   box-sizing: border-box;
   cursor: pointer;
+
+  & svg {
+    stroke: #ffffff;
+  }
+
+  &:disabled {
+    background: var(--textTertiaryColor);
+    color: var(--backgroundPrimaryColor);
+    cursor: default;
+    pointer-events: none;
+    & svg {
+      stroke: var(--backgroundPrimaryColor);
+    }
+  }
 `;
