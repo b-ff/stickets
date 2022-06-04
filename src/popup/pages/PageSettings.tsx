@@ -5,7 +5,7 @@ import { ROUTES } from '../constants/routes';
 
 export const PageSettings: FC<HTMLAttributes<HTMLElement>> = (props): ReactElement => (
   <ContentCenter {...props}>
-    <p>Settings Page</p>
+    <p>Sorry. Settings page is currently under development.</p>
     <br />
     <AppLink to={ROUTES.NOTES}>Back</AppLink>
   </ContentCenter>

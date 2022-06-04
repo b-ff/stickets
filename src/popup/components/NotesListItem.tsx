@@ -1,13 +1,21 @@
-import React, { FC, ForwardedRef, HTMLAttributes, ReactElement, Ref, useCallback, useRef, useState } from 'react';
+import React, {
+  FC,
+  HTMLAttributes,
+  ReactElement,
+  Ref,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import { styled } from '@linaria/react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { applyStyleIfHasProperty, noop, stripTags, urlify } from '../../common/utils';
 import { SmartTextarea } from './SmartTextarea';
-import { Note as NoteType, NoteScope } from '../../common/graphql/__generated__/graphql';
+import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
 
-type NoteProps = {
-  note: NoteType;
-  onUpdate: (note: NoteType) => void;
+type NotesListItemProps = {
+  note: Note;
+  onUpdate: (note: Note) => void;
   onDelete: (id: string) => void;
 };
 
@@ -15,7 +23,11 @@ type StyledNoteActionProps = HTMLAttributes<HTMLButtonElement> & {
   negative?: boolean;
 };
 
-export const Note: FC<NoteProps> = ({ note, onUpdate = noop, onDelete = noop }): ReactElement => {
+export const NotesListItem: FC<NotesListItemProps> = ({
+  note,
+  onUpdate = noop,
+  onDelete = noop,
+}): ReactElement => {
   const noteTextRef: Ref<HTMLParagraphElement> = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
@@ -53,7 +65,9 @@ export const Note: FC<NoteProps> = ({ note, onUpdate = noop, onDelete = noop }):
   const handleOnUpdate = useCallback(() => {
     onUpdate({
       ...note,
-      note: noteTextRef.current ? stripTags(noteTextRef.current.innerHTML.trim()) : note.note,
+      note: noteTextRef.current
+        ? stripTags(noteTextRef.current.innerHTML.trim())
+        : note.note,
     });
     setIsEditing(false);
   }, [note, noteTextRef, setIsEditing]);
@@ -87,7 +101,9 @@ export const Note: FC<NoteProps> = ({ note, onUpdate = noop, onDelete = noop }):
                 </StyledNoteAction>
               )}
               <StyledNoteAction onClick={handleStartEditing}>Edit</StyledNoteAction>
-              <StyledNoteAction onClick={() => onDelete(note._id)}>Delete</StyledNoteAction>
+              <StyledNoteAction onClick={() => onDelete(note._id)}>
+                Delete
+              </StyledNoteAction>
             </span>
           </>
         )}
@@ -140,7 +156,11 @@ const StyledNoteAction = styled.button<StyledNoteActionProps>`
   outline: none;
   font-size: 11px;
   color: var(--fontPrimaryColor);
-  background-color: ${applyStyleIfHasProperty('negative', 'var(--brandColor)', 'var(--borderPrimaryColor)')};
+  background-color: ${applyStyleIfHasProperty(
+    'negative',
+    'var(--brandColor)',
+    'var(--borderPrimaryColor)',
+  )};
   border-radius: 10px;
   cursor: pointer;
   transition: opacity 0.2s ease-in-out;

@@ -1,5 +1,5 @@
-import { styled } from '@linaria/react';
 import React, { FC, ReactElement } from 'react';
+import { styled } from '@linaria/react';
 
 type ContentCenterProps = React.HTMLAttributes<HTMLElement>;
 
@@ -14,7 +14,7 @@ const StyledAuthContainer = styled.section`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   padding: var(--fontBigSize);
   text-align: center;
   font-size: var(--fontBigSize);

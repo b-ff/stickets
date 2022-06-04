@@ -24,7 +24,16 @@ type SmartTextareaProps = HTMLAttributes<HTMLParagraphElement> & {
 
 export const SmartTextarea = forwardRef<HTMLParagraphElement, SmartTextareaProps>(
   (
-    { name, placeholder, isEditing, className, style = {}, onKeyUp = noop, onChange = noop, ...props },
+    {
+      name,
+      placeholder,
+      isEditing,
+      className,
+      style = {},
+      onKeyUp = noop,
+      onChange = noop,
+      ...props
+    },
     ref: ForwardedRef<HTMLParagraphElement>,
   ): ReactElement => {
     const inputRef: Ref<HTMLInputElement> = useRef(null);
@@ -103,7 +112,7 @@ const StyledContainer = styled.div`
   }
 
   p:empty ~ p {
-    opacity: 0.5;
+    opacity: 1;
   }
 `;
 
@@ -113,32 +122,34 @@ const StyledPlaceholder = styled.p`
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 5px;
+  padding: calc(var(--fontBigSize) / 2) var(--fontBigSize);
   margin: 0;
-  font-size: 14px;
+  font-family: 'Helvetica';
+  font-size: var(--fontRegularSize);
+  color: var(--textTertiaryColor);
   box-sizing: border-box;
-  opacity: 0.5;
+  opacity: 1;
   pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
 `;
 
 const StyledNoteText = styled.p`
   position: relative;
   max-width: 100%;
   flex: 1;
-  font-size: 14px;
+  font-family: 'Helvetica';
+  font-size: var(--fontRegularSize);
   white-space: pre-wrap;
   word-break: break-word;
-  padding: 5px;
+  padding: calc(var(--fontBigSize) / 2) var(--fontBigSize);
   margin: 0;
   box-sizing: border-box;
-  border-radius: 3px;
+  border: none;
+  outline: none;
   z-index: 2;
 
   &[contenteditable='true'] {
     overflow: auto;
-    background-color: var(--inputPrimaryColor);
-    outline: 1px solid var(--borderPrimaryColor);
   }
 
   & a {

@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { PAGE_QUERY_PARAM_NAME } from './constants/page-query-param-name';
 import { Note, NoteScope } from './graphql/__generated__/graphql';
 
@@ -31,7 +32,10 @@ export const makeHrefToPage = (
   return `${window.location.pathname}?${p.toString()}`;
 };
 
-export const groupNotesByScope = (notes: Note[], location?: URL | null): TNotesGroupedByScope => {
+export const groupNotesByScope = (
+  notes: Note[],
+  location?: URL | null,
+): TNotesGroupedByScope => {
   const groupedNotes: TNotesGroupedByScope = {
     [NoteScope.Global]: [],
     [NoteScope.Site]: [],
@@ -94,4 +98,12 @@ export const getCSSVariablesDefinitionFromTheme = (themeColors: IThemeColors): s
   return colorEntries
     .map(([name, value]: [keyof IThemeColors, string]): string => `--${name}: ${value};`)
     .join(' ');
+};
+
+export const throwIfError = (...errors: Array<Error | ApolloError | undefined>): void => {
+  errors.map((error) => {
+    if (error) {
+      throw error;
+    }
+  });
 };

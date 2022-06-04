@@ -36,8 +36,13 @@ export const AuthContainer: FC<HTMLAttributes<Element>> = (): ReactElement => {
     [setStoredToken],
   );
 
+  const handleLogout = useCallback(() => {
+    chrome.storage.sync.remove('token');
+    setStoredToken('');
+  }, [setStoredToken]);
+
   const authContextValue = useMemo(
-    () => [Boolean(storedToken), () => setStoredToken('')],
+    () => [Boolean(storedToken), handleLogout],
     [storedToken, setStoredToken],
   ) as AuthContextValue;
 

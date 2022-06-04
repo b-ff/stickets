@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useCallback } from 'react';
-import { noop } from '../../common/utils';
+import { noop, throwIfError } from '../../common/utils';
 import { ContentCenter } from '../components/ContentCenter';
 import { LoginForm } from '../components/LoginForm';
 import { useLoginMutation } from '../../common/graphql/__generated__/graphql';
@@ -13,9 +13,7 @@ export const LoginContainer: FC<LoginContainerProps> = ({
 }): ReactElement => {
   const [doLogin, { loading, error, data }] = useLoginMutation();
 
-  if (error) {
-    throw error;
-  }
+  throwIfError(error);
 
   const handleSignIn = useCallback(() => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {

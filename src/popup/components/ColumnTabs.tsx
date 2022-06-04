@@ -1,4 +1,3 @@
-import { styled } from '@linaria/react';
 import React, {
   FC,
   ReactNode,
@@ -7,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { styled } from '@linaria/react';
 import { applyStyleIfHasProperty, noop } from '../../common/utils';
 
 type TabButtonProps = HTMLAttributes<HTMLButtonElement> & { active: boolean };
@@ -133,6 +133,7 @@ const StyledTabButton = styled.button<TabButtonProps>`
     'var(--controlSecondaryColor)',
     'transparent',
   )};
+  font-family: 'Helvetica';
   color: var(--textPrimaryColor);
   box-sizing: border-box;
   border: none;

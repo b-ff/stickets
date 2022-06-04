@@ -1,14 +1,24 @@
-import React, { FC, ReactElement, Ref, useCallback, useRef, useState } from 'react';
+import React, {
+  FC,
+  FormEventHandler,
+  ReactElement,
+  Ref,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import { styled } from '@linaria/react';
 import { useCurrentLocation } from '../hooks/useCurrentLocation';
 import { noop } from '../../common/utils';
 import { SmartTextarea } from './SmartTextarea';
 import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
+import { IconCheckmark } from '../icons/IconCheckmark';
+import { Button } from './Button';
 
 const SCOPE_OPTIONS = {
-  [NoteScope.Global]: 'All web-sites',
-  [NoteScope.Site]: 'This web-site {host}',
-  [NoteScope.Page]: 'Current page only',
+  [NoteScope.Page]: 'This page',
+  [NoteScope.Site]: 'This web-site',
+  [NoteScope.Global]: 'Visible everywhere',
 };
 
 type AddNoteFormProps = {
@@ -32,10 +42,15 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactEle
     }
   }, [formRef, textareaRef]);
 
-  const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      const formData = Object.fromEntries(new FormData(event.target as HTMLFormElement) as any);
-      onSubmit(formData);
+  const handleSubmit: FormEventHandler = useCallback(
+    (event) => {
+      const formData = Object.fromEntries(
+        new FormData(event.target as HTMLFormElement) as any,
+      );
+      onSubmit({
+        ...formData,
+        url: location?.href || '',
+      });
       event.preventDefault();
       handleReset();
     },
@@ -46,7 +61,12 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactEle
     (event: React.KeyboardEvent) => {
       const isTextaeraEmpty = !(event.target as HTMLInputElement).value.length;
 
-      if (event.ctrlKey && event.key.toLowerCase() === 'enter' && !isTextaeraEmpty && submitRef.current) {
+      if (
+        event.ctrlKey &&
+        event.key.toLowerCase() === 'enter' &&
+        !isTextaeraEmpty &&
+        submitRef.current
+      ) {
         submitRef.current.click();
       }
 
@@ -57,69 +77,53 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactEle
 
   return (
     <StyledForm ref={formRef} onSubmit={handleSubmit}>
-      <StyledFormRow>
-        <StyledSelect name="scope">
-          {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
-            <option value={value} key={value}>
-              {text.replace('{host}', location ? `(${location.host})` : '')}
-            </option>
-          ))}
-        </StyledSelect>
-      </StyledFormRow>
-      <StyledFormRow>
-        <StyledSmartTextarea
-          isEditing
-          name="note"
-          placeholder="Your note..."
-          onKeyUp={handleKeyUp}
-          ref={textareaRef}
-        ></StyledSmartTextarea>
-      </StyledFormRow>
-      <StyledFormRow>
-        <StyledButton type="reset" onClick={handleReset} disabled={noteEmpty}>
-          Reset
-        </StyledButton>
-        <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
-          Add note
-        </StyledButton>
-      </StyledFormRow>
+      <StyledSelect name="scope">
+        {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
+          <option value={value} key={value}>
+            {text}
+          </option>
+        ))}
+      </StyledSelect>
+
+      <StyledSmartTextarea
+        isEditing
+        name="note"
+        placeholder="Your note..."
+        onKeyUp={handleKeyUp}
+        ref={textareaRef}
+      ></StyledSmartTextarea>
+      <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
+        <StyledIconCheckmark />
+      </StyledButton>
     </StyledForm>
   );
 };
 
 const StyledForm = styled.form`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-row-gap: 10px;
-`;
-
-const StyledFormRow = styled.div`
   display: flex;
-  flex-direction: row;
-
-  & > * {
-    margin-right: 10px;
-  }
-
-  & > *:last-of-type {
-    margin-right: 0;
-  }
+  flex-direction: column;
+  align-items: flex-start;
+  padding: calc(var(--fontBigSize) / 2) 0 calc(var(--fontBigSize) * 1.5);
+  border-top: 1px solid var(--controlPrimaryColor);
 `;
 
 const StyledSelect = styled.select`
-  width: 100%;
+  height: calc(var(--fontSmallText) * 3);
+  line-height: calc(var(--fontSmallText) * 3);
+  background-color: transparent;
   color: var(--fontPrimaryColor);
-  background-color: var(--inputPrimaryColor);
-  border: 1px solid var(--borderPrimaryColor);
-  border-radius: 3px;
-  padding: 5px 10px;
-  box-sizing: border-box;
+  font-size: var(--fontRegularSize);
+  font-family: 'Helvetica';
+  font-weight: normal;
+  border: none;
   outline: none;
+  padding: calc(var(--fontBigSize) / 2) calc(var(--fontRegularSize) - 1px);
+  box-sizing: border-box;
 `;
 
 const StyledSmartTextarea = styled(SmartTextarea)`
   width: 100%;
-  min-height: 70px;
+  min-height: 75px;
   max-height: 200px;
   border-radius: 3px;
   box-sizing: border-box;
@@ -130,23 +134,20 @@ const StyledSmartTextarea = styled(SmartTextarea)`
   }
 `;
 
-const StyledButton = styled.button`
-  width: 100%;
-  height: 50px;
-  resize: none;
-  color: var(--fontPrimaryColor);
-  background-color: var(--inputPrimaryColor);
-  border: 1px solid var(--borderPrimaryColor);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: opacity 0.2s ease-in-out;
+const StyledButton = styled<any>(Button)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  margin-left: auto;
+  margin-right: var(--fontBigSize);
+`;
 
-  &:disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  &[type='submit'] {
-    background-color: var(--brandColor);
-  }
+const StyledIconCheckmark = styled(IconCheckmark)`
+  width: 16px;
+  height: 11px;
+  stroke: #ffffff;
 `;

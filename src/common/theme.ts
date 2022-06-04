@@ -36,7 +36,8 @@ export const themeStyles = css`
     h2,
     h3,
     h4,
-    h5 {
+    h5,
+    figure {
       margin: 0;
       padding: 0;
     }

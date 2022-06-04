@@ -4,7 +4,7 @@ import { groupNotesByScope } from '../../common/utils';
 import { useCurrentLocation } from '../hooks/useCurrentLocation';
 import { AddNoteForm } from '../components/AddNoteForm';
 import { RadioSwitch } from '../components/RadioSwitch';
-import { NotesList } from '../components/NotesList';
+import { Notes } from '../components/Notes';
 import { ContentCenter } from '../components/ContentCenter';
 
 import {
@@ -104,7 +104,7 @@ export function OldNotesContainer() {
         {getRequest.error ? (
           <ContentCenter>Oops! Something went wrong!</ContentCenter>
         ) : (
-          <NotesList
+          <Notes
             isLoading={getRequest.loading}
             notes={groupedNotes[displayScope]}
             onUpdate={handleNoteUpdate}
