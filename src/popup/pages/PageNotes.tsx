@@ -41,7 +41,7 @@ const TAB_TEXTS = {
 const getNotesTab = (
   loading: boolean,
   notes: Note[],
-  onUpdate: (note: Note) => void,
+  onUpdate: (note: Partial<Note>) => void,
   onDelete: (id: string) => void,
   title?: string,
   emptyText?: string,
@@ -87,12 +87,12 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
   );
 
   const handleNoteUpdate = useCallback(
-    ({ _id: updateId, note }: Note) => {
+    ({ _id: updateId, note }: Partial<Note>) => {
       updateNote({
         variables: {
           updateId,
           note,
-        },
+        } as { updateId: string; note: string },
       });
     },
     [updateNote],

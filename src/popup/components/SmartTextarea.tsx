@@ -10,8 +10,7 @@ import React, {
   MutableRefObject,
 } from 'react';
 import { styled } from '@linaria/react';
-import { noop, stripTags } from '../../common/utils';
-import DOMPurify from 'dompurify';
+import { noop, stripTags, urlify } from '../../common/utils';
 
 type SmartTextareaProps = HTMLAttributes<HTMLParagraphElement> & {
   name?: string;
@@ -40,9 +39,7 @@ export const SmartTextarea = forwardRef<HTMLParagraphElement, SmartTextareaProps
 
     if (typeof props.children === 'string') {
       props.dangerouslySetInnerHTML = {
-        __html: DOMPurify.sanitize(props.children, {
-          ADD_ATTR: ['target'],
-        }),
+        __html: urlify(stripTags(props.children)),
       };
       props.children = undefined;
     }

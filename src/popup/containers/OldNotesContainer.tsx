@@ -29,7 +29,7 @@ export function OldNotesContainer() {
   const [deleteNote] = useDeleteNoteMutation(refetchGetAllNotes);
 
   const handleNoteUpdate = useCallback(
-    ({ _id: updateId, note }: Note) => {
+    ({ _id: updateId, note }: any) => {
       updateNote({
         variables: {
           updateId,

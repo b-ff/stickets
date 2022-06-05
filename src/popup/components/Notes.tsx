@@ -21,7 +21,7 @@ const SLIDES = {
 
 type NotesProps = {
   notes: Note[];
-  onUpdate: (note: Note) => void;
+  onUpdate: (note: Partial<Note>) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
   title?: ReactNode;

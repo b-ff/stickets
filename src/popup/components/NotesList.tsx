@@ -77,14 +77,16 @@ export const NotesList: FC<NotesListProps> = ({
       <TitledColumn columnTitle={`${title}`} actions={<StyledIconSort />}>
         <SearchField ref={ref} placeholder="Search note" onChange={handleSearchChanges} />
         {Boolean(notesToDisplay.length) ? (
-          notesToDisplay.map((note) => (
-            <NotesListItem
-              note={note}
-              key={note._id}
-              onClick={() => onSelect(note)}
-              onDelete={onDelete}
-            />
-          ))
+          <StyledNotesWrapper>
+            {notesToDisplay.map((note) => (
+              <StyledNotesListItem
+                note={note}
+                key={note._id}
+                onClick={() => onSelect(note)}
+                onDelete={onDelete}
+              />
+            ))}
+          </StyledNotesWrapper>
         ) : (
           <ContentCenter {...props}>
             {notes.length ? (
@@ -103,7 +105,7 @@ const StyledNotesList = styled.section`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 0 var(--fontBigSize);
   box-sizing: border-box;
 `;
@@ -112,6 +114,21 @@ const StyledIconSort = styled(IconSort)`
   width: 20px;
   height: 20px;
   stroke: var(--iconPrimaryColor);
+`;
+
+const StyledNotesWrapper = styled.div`
+  width: 100%;
+  height: calc(100% - 40px);
+  padding: 0 0 calc(var(--fontBigSize) / 2);
+  margin: calc(var(--fontBigSize) / 2) 0 40px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+`;
+
+const StyledNotesListItem = styled(NotesListItem)`
+  margin-bottom: calc(var(--fontBigSize) / 2);
+  border-bottom: 1px solid var(--controlPrimaryColor);
 `;
 
 const StyledEmptyText = styled.span`

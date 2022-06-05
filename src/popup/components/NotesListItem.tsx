@@ -1,26 +1,14 @@
-import React, {
-  FC,
-  HTMLAttributes,
-  ReactElement,
-  Ref,
-  useCallback,
-  useRef,
-  useState,
-} from 'react';
+import React, { FC, HTMLAttributes, ReactElement, useCallback } from 'react';
 import { styled } from '@linaria/react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { applyStyleIfHasProperty, noop, stripTags, urlify } from '../../common/utils';
-import { SmartTextarea } from './SmartTextarea';
-import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
+import { noop, urlify } from '../../common/utils';
+import { Note } from '../../common/graphql/__generated__/graphql';
+import { IconDots } from '../icons/IconDots';
 
 type NotesListItemProps = HTMLAttributes<HTMLElement> & {
   note: Note;
   onUpdate?: (note: Note) => void;
   onDelete?: (id: string) => void;
-};
-
-type StyledNoteActionProps = HTMLAttributes<HTMLButtonElement> & {
-  negative?: boolean;
 };
 
 export const NotesListItem: FC<NotesListItemProps> = ({
@@ -29,10 +17,6 @@ export const NotesListItem: FC<NotesListItemProps> = ({
   onDelete = noop,
   ...props
 }): ReactElement => {
-  const noteTextRef: Ref<HTMLParagraphElement> = useRef(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [noteEmpty, setNoteEmpty] = useState(!note.note.length);
-
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
   const latestDate = updated.getTime() > created.getTime() ? updated : created;
@@ -40,38 +24,6 @@ export const NotesListItem: FC<NotesListItemProps> = ({
     addSuffix: true,
     includeSeconds: true,
   });
-
-  const handleStartEditing = useCallback(() => {
-    setIsEditing(true);
-    setTimeout(() => noteTextRef.current?.focus());
-  }, [noteTextRef, setIsEditing]);
-
-  const handleNoteTextChange = useCallback(
-    (event: React.KeyboardEvent<HTMLParagraphElement>) => {
-      if (isEditing) {
-        const isEmpty = !(event.target as HTMLParagraphElement).innerHTML.length;
-        setNoteEmpty(isEmpty);
-      }
-    },
-    [isEditing, setNoteEmpty],
-  );
-
-  const handleCancelEdit = useCallback(() => {
-    if (noteTextRef.current) {
-      noteTextRef.current.innerHTML = note.note;
-    }
-    setIsEditing(false);
-  }, [note, noteTextRef, setIsEditing]);
-
-  const handleOnUpdate = useCallback(() => {
-    onUpdate({
-      ...note,
-      note: noteTextRef.current
-        ? stripTags(noteTextRef.current.innerHTML.trim())
-        : note.note,
-    });
-    setIsEditing(false);
-  }, [note, noteTextRef, setIsEditing]);
 
   const handleOpenNoteURL = useCallback(() => {
     if (note.url) {
@@ -81,78 +33,70 @@ export const NotesListItem: FC<NotesListItemProps> = ({
 
   return (
     <StyledNoteContainer {...props}>
-      <SmartTextarea
-        ref={noteTextRef}
-        isEditing={isEditing}
-        onDoubleClick={handleStartEditing}
-        onKeyUp={handleNoteTextChange}
-        placeholder="Your note..."
-        style={{ maxHeight: isEditing ? '200px' : 'auto' }}
-      >
-        {urlify(note.note)}
-      </SmartTextarea>
-      <StyledNoteInfo>
-        {!isEditing && (
-          <>
-            <span>{displayedDate}</span>
-            <span>
-              {note.scope !== NoteScope.Page && note.url && (
-                <StyledNoteAction title={note.url} onClick={handleOpenNoteURL}>
-                  Open URL
-                </StyledNoteAction>
-              )}
-              <StyledNoteAction onClick={handleStartEditing}>Edit</StyledNoteAction>
-              <StyledNoteAction onClick={() => onDelete(note._id)}>
-                Delete
-              </StyledNoteAction>
-            </span>
-          </>
-        )}
-        {isEditing && (
+      <StyledNoteMain>
+        <StyledNoteTextWrapper>
+          <StyledNoteText>{note.note}</StyledNoteText>
+        </StyledNoteTextWrapper>
+        <StyledNoteInfo>
           <span>
-            <StyledNoteAction onClick={handleCancelEdit}>Cancel</StyledNoteAction>
-            <StyledNoteAction onClick={handleOnUpdate} disabled={noteEmpty} negative>
-              Save
-            </StyledNoteAction>
+            {displayedDate}
+            {Boolean(note.shared && note.creator) ? ` by ${note.creator?.name}` : null}
           </span>
-        )}
-      </StyledNoteInfo>
+        </StyledNoteInfo>
+      </StyledNoteMain>
+      <StyledNoteActions />
     </StyledNoteContainer>
   );
 };
 
-const StyledNoteContainer = styled.article``;
+const StyledNoteContainer = styled.article`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  padding: calc(var(--fontBigSize) / 2) 0;
+  box-sizing: border-box;
 
-const StyledNoteText = styled.p``;
+  &:last-of-type {
+    border-bottom: none;
+  }
+`;
+
+const StyledNoteMain = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 var(--fontBigSize) 0 calc(var(--fontBigSize) / 2);
+`;
+
+const StyledNoteTextWrapper = styled.div`
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+`;
+
+const StyledNoteText = styled.p`
+  display: table-cell;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 20px;
+  overflow: hidden;
+`;
 
 const StyledNoteInfo = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  font-size: 10px;
-  padding: 5px;
-  opacity: 0.8;
+  justify-content: space-between;
+  font-size: var(--fontSmallSize);
+  line-height: 20px;
+  color: var(--textSecondaryColor);
 `;
 
-const StyledNoteAction = styled.button<StyledNoteActionProps>`
-  padding: 4px 7px;
-  margin: 0 0 0 5px;
-  border: none;
-  outline: none;
-  font-size: 11px;
-  color: var(--fontPrimaryColor);
-  background-color: ${applyStyleIfHasProperty(
-    'negative',
-    'var(--brandColor)',
-    'var(--borderPrimaryColor)',
-  )};
-  border-radius: 10px;
+const StyledNoteActions = styled(IconDots)`
+  width: 20px;
+  height: 20px;
+  fill: var(--textTertiaryColor);
   cursor: pointer;
-  transition: opacity 0.2s ease-in-out;
-
-  &:disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
 `;
