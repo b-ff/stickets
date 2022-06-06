@@ -21,8 +21,17 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
 }): ReactElement => {
   const [isEditing, setIsEditing] = useState(false);
 
+  console.log(133, note.note);
+
   const handleEdit = useCallback(() => setIsEditing(true), [setIsEditing]);
   const handleCancelEdit = useCallback(() => setIsEditing(false), [setIsEditing]);
+  const handleUpdate = useCallback(
+    (data: Partial<Note>) => {
+      onChange(data);
+      handleCancelEdit();
+    },
+    [onChange, handleCancelEdit],
+  );
 
   const backButton = useMemo(
     () => <BackButton type="button" onClick={onBack} />,
@@ -49,7 +58,7 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
         <StyledAddNoteForm
           note={note}
           textareaProps={{ className: StyledTextareaClass }}
-          onSubmit={onChange}
+          onSubmit={handleUpdate}
           readonly={!isEditing}
         />
       </TitledColumn>

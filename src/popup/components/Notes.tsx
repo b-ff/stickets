@@ -37,31 +37,21 @@ export const Notes: FC<NotesProps> = ({
   emptyText = null,
   ...props
 }): ReactElement => {
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [selectedSlide, setSelectedSlide] = useState(SLIDES.LIST);
-
-  useEffect(() => () => console.log('notes bang'), []);
 
   const handleSelect = useCallback(
     (note: Note): void => {
-      setSelectedNote(note);
+      setSelectedNoteId(note._id);
       setSelectedSlide(SLIDES.DETAILS);
     },
-    [setSelectedNote, setSelectedSlide],
+    [setSelectedNoteId, setSelectedSlide],
   );
 
   const handleGoBack = useCallback(() => {
-    setSelectedNote(null);
+    setSelectedNoteId(null);
     setSelectedSlide(SLIDES.LIST);
-  }, [setSelectedNote, setSelectedSlide]);
-
-  const handleUpdate = useCallback(
-    (data: Partial<Note>) => {
-      onUpdate(data);
-      handleGoBack();
-    },
-    [onUpdate, handleGoBack],
-  );
+  }, [setSelectedNoteId, setSelectedSlide]);
 
   const loading = useMemo(
     () => <ContentCenter {...props}>Loading...</ContentCenter>,
@@ -81,13 +71,14 @@ export const Notes: FC<NotesProps> = ({
     [title, notes, handleSelect, onDelete],
   );
 
-  const noteDetails = useMemo(
-    () =>
+  const noteDetails = useMemo(() => {
+    const selectedNote = selectedNoteId && notes.find((n) => n._id === selectedNoteId);
+    return (
       selectedNote && (
-        <NoteDetails note={selectedNote} onChange={handleUpdate} onBack={handleGoBack} />
-      ),
-    [selectedNote, onUpdate, handleGoBack],
-  );
+        <NoteDetails note={selectedNote} onChange={onUpdate} onBack={handleGoBack} />
+      )
+    );
+  }, [notes, selectedNoteId, onUpdate, handleGoBack]);
 
   return isLoading ? (
     loading
