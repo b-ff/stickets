@@ -21,8 +21,6 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
 }): ReactElement => {
   const [isEditing, setIsEditing] = useState(false);
 
-  console.log(133, note.note);
-
   const handleEdit = useCallback(() => setIsEditing(true), [setIsEditing]);
   const handleCancelEdit = useCallback(() => setIsEditing(false), [setIsEditing]);
   const handleUpdate = useCallback(
