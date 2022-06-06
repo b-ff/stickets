@@ -55,6 +55,14 @@ export const Notes: FC<NotesProps> = ({
     setSelectedSlide(SLIDES.LIST);
   }, [setSelectedNote, setSelectedSlide]);
 
+  const handleUpdate = useCallback(
+    (data: Partial<Note>) => {
+      onUpdate(data);
+      handleGoBack();
+    },
+    [onUpdate, handleGoBack],
+  );
+
   const loading = useMemo(
     () => <ContentCenter {...props}>Loading...</ContentCenter>,
     [props],
@@ -76,7 +84,7 @@ export const Notes: FC<NotesProps> = ({
   const noteDetails = useMemo(
     () =>
       selectedNote && (
-        <NoteDetails note={selectedNote} onChange={onUpdate} onBack={handleGoBack} />
+        <NoteDetails note={selectedNote} onChange={handleUpdate} onBack={handleGoBack} />
       ),
     [selectedNote, onUpdate, handleGoBack],
   );

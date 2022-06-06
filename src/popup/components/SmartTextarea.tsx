@@ -37,9 +37,9 @@ export const SmartTextarea = forwardRef<HTMLParagraphElement, SmartTextareaProps
   ): ReactElement => {
     const inputRef: Ref<HTMLInputElement> = useRef(null);
 
-    if (typeof props.children === 'string') {
+    if (props.children && typeof props.children === 'string') {
       props.dangerouslySetInnerHTML = {
-        __html: urlify(stripTags(props.children)),
+        __html: isEditing ? stripTags(props.children) : urlify(stripTags(props.children)),
       };
       props.children = undefined;
     }

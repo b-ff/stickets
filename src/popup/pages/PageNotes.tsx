@@ -1,4 +1,5 @@
 import React, { FC, HTMLAttributes, ReactElement, useCallback, useMemo } from 'react';
+import { styled } from '@linaria/react';
 import {
   Note,
   NoteScope,
@@ -166,7 +167,14 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
     [loading, notes, groupedNotes, handleNoteUpdate, handleNoteDelete],
   );
 
-  const footer = useMemo(() => <AddNoteForm onSubmit={handleNoteAdd} />, [handleNoteAdd]);
+  const footer = useMemo(
+    () => <StyledAddNotesForm onSubmit={handleNoteAdd} />,
+    [handleNoteAdd],
+  );
 
   return <ColumnTabs header={header} footer={footer} tabs={tabs} />;
 };
+
+const StyledAddNotesForm = styled<any>(AddNoteForm)`
+  border-top: 1px solid var(--controlPrimaryColor);
+`;

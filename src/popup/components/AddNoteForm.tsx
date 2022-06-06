@@ -1,15 +1,17 @@
 import React, {
   FC,
   FormEventHandler,
+  HTMLAttributes,
   ReactElement,
   Ref,
   useCallback,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
 import { styled } from '@linaria/react';
 import { useCurrentLocation } from '../hooks/useCurrentLocation';
-import { noop } from '../../common/utils';
+import { noop, setEndOfContenteditable } from '../../common/utils';
 import { SmartTextarea } from './SmartTextarea';
 import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
 import { IconCheckmark } from '../icons/IconCheckmark';
@@ -22,17 +24,36 @@ const SCOPE_OPTIONS = {
 };
 
 type AddNoteFormProps = {
+  note?: Note;
+  textareaProps?: HTMLAttributes<HTMLParagraphElement>;
+  readonly?: boolean;
   onSubmit: (note: Partial<Note>) => void;
 };
 
-export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactElement => {
+export const AddNoteForm: FC<AddNoteFormProps> = ({
+  note = {},
+  textareaProps = {},
+  readonly = false,
+  onSubmit = noop,
+  ...props
+}): ReactElement => {
   const formRef: Ref<HTMLFormElement> = useRef(null);
   const textareaRef: Ref<HTMLParagraphElement> = useRef(null);
   const submitRef: Ref<HTMLButtonElement> = useRef(null);
 
   const location = useCurrentLocation();
 
-  const [noteEmpty, setNoteEmpty] = useState(true);
+  const [noteEmpty, setNoteEmpty] = useState(!note.note);
+
+  useLayoutEffect(() => {
+    if (!readonly && textareaRef.current) {
+      const textarea = textareaRef.current as HTMLParagraphElement &
+        HTMLTextAreaElement & { createTextRange: () => any };
+
+      textarea.focus();
+      setEndOfContenteditable(textarea);
+    }
+  }, [readonly]);
 
   const handleReset = useCallback(() => {
     formRef.current?.reset();
@@ -48,13 +69,14 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactEle
         new FormData(event.target as HTMLFormElement) as any,
       );
       onSubmit({
+        ...note,
         ...formData,
         url: location?.href || '',
       });
       event.preventDefault();
       handleReset();
     },
-    [onSubmit, handleReset],
+    [note, onSubmit, handleReset],
   );
 
   const handleKeyUp = useCallback(
@@ -76,25 +98,32 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({ onSubmit = noop }): ReactEle
   );
 
   return (
-    <StyledForm ref={formRef} onSubmit={handleSubmit}>
-      <StyledSelect name="scope">
-        {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
-          <option value={value} key={value}>
-            {text}
-          </option>
-        ))}
-      </StyledSelect>
+    <StyledForm ref={formRef} onSubmit={handleSubmit} {...props}>
+      {!note.scope && (
+        <StyledSelect name="scope">
+          {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
+            <option value={value} key={value}>
+              {text}
+            </option>
+          ))}
+        </StyledSelect>
+      )}
 
       <StyledSmartTextarea
-        isEditing
+        isEditing={!readonly}
         name="note"
         placeholder="Your note..."
         onKeyUp={handleKeyUp}
         ref={textareaRef}
-      ></StyledSmartTextarea>
-      <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
-        <StyledIconCheckmark />
-      </StyledButton>
+        {...textareaProps}
+      >
+        {note.note ? `${note.note}` : null}
+      </StyledSmartTextarea>
+      {!readonly && (
+        <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
+          <StyledIconCheckmark />
+        </StyledButton>
+      )}
     </StyledForm>
   );
 };
@@ -104,7 +133,6 @@ const StyledForm = styled.form`
   flex-direction: column;
   align-items: flex-start;
   padding: calc(var(--fontBigSize) / 2) 0 calc(var(--fontBigSize) * 1.5);
-  border-top: 1px solid var(--controlPrimaryColor);
 `;
 
 const StyledSelect = styled.select`

@@ -1,7 +1,13 @@
-import React, { FC, HTMLAttributes, ReactElement, useCallback } from 'react';
+import React, {
+  FC,
+  HTMLAttributes,
+  MouseEventHandler,
+  ReactElement,
+  useCallback,
+} from 'react';
 import { styled } from '@linaria/react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { noop, urlify } from '../../common/utils';
+import { noop } from '../../common/utils';
 import { Note } from '../../common/graphql/__generated__/graphql';
 import { IconDots } from '../icons/IconDots';
 
@@ -31,6 +37,11 @@ export const NotesListItem: FC<NotesListItemProps> = ({
     }
   }, [note]);
 
+  const handleNotaActionsClick: MouseEventHandler = useCallback((event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
+
   return (
     <StyledNoteContainer {...props}>
       <StyledNoteMain>
@@ -44,7 +55,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
           </span>
         </StyledNoteInfo>
       </StyledNoteMain>
-      <StyledNoteActions />
+      <StyledNoteActions onClick={handleNotaActionsClick} />
     </StyledNoteContainer>
   );
 };
