@@ -1,5 +1,6 @@
 import React, {
   FC,
+  forwardRef,
   MouseEventHandler,
   MutableRefObject,
   ReactElement,
@@ -15,8 +16,12 @@ type ButtonProps = {
   disabled?: boolean;
 };
 
-export const Button: FC<ButtonProps> = ({ children, ...props }): ReactElement => (
-  <StyledButton {...props}>{children}</StyledButton>
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, ...props }, ref): ReactElement => (
+    <StyledButton ref={ref} {...props}>
+      {children}
+    </StyledButton>
+  ),
 );
 
 const StyledButton = styled.button`

@@ -55,14 +55,6 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
     }
   }, [readonly]);
 
-  const handleReset = useCallback(() => {
-    formRef.current?.reset();
-
-    if (textareaRef.current) {
-      textareaRef.current.innerHTML = '';
-    }
-  }, [formRef, textareaRef]);
-
   const handleSubmit: FormEventHandler = useCallback(
     (event) => {
       const formData = Object.fromEntries(
@@ -74,14 +66,15 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
         url: location?.href || '',
       });
       event.preventDefault();
-      handleReset();
     },
-    [note, onSubmit, handleReset],
+    [note, onSubmit],
   );
 
   const handleKeyUp = useCallback(
     (event: React.KeyboardEvent) => {
-      const isTextaeraEmpty = !(event.target as HTMLInputElement).value.length;
+      const isTextaeraEmpty = !(event.target as HTMLParagraphElement).innerHTML.length;
+
+      console.log(133, { isTextaeraEmpty, event, submitRef });
 
       if (
         event.ctrlKey &&
@@ -94,7 +87,7 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
 
       setNoteEmpty(isTextaeraEmpty);
     },
-    [submitRef, setNoteEmpty],
+    [readonly, submitRef.current, setNoteEmpty],
   );
 
   return (
@@ -117,7 +110,7 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
         ref={textareaRef}
         {...textareaProps}
       >
-        {note.note ? `${note.note}` : null}
+        {note.note || null}
       </StyledSmartTextarea>
       {!readonly && (
         <StyledButton type="submit" ref={submitRef} disabled={noteEmpty}>
