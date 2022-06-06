@@ -43,10 +43,10 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
             Cancel
           </StyledCancelButton>
         )}
-        {!isEditing && <StyledIconEdit onClick={handleEdit} />}
+        {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
       </StyledNoteActions>
     ),
-    [isEditing, handleEdit],
+    [isEditing, note, handleEdit],
   );
 
   return (
