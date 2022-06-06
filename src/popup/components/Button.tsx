@@ -25,7 +25,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 const StyledButton = styled.button`
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
   padding: calc(var(--fontBigSize) / 2) var(--fontBigSize);
   font-family: 'Helvetica';
   font-size: var(--fontRegularSize);
