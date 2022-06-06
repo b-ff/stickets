@@ -96,8 +96,6 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
     (event: React.KeyboardEvent) => {
       const isTextaeraEmpty = !(event.target as HTMLParagraphElement).innerHTML.length;
 
-      console.log(133, { isTextaeraEmpty, event, submitRef });
-
       if (
         event.ctrlKey &&
         event.key.toLowerCase() === 'enter' &&
