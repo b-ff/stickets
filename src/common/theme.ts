@@ -90,6 +90,7 @@ export const themeStyles = css`
     #app-popup {
       width: 800px;
       height: 600px;
+      overflow: hidden;
     }
 
     #app-options {

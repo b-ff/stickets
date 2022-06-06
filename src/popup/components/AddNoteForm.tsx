@@ -11,7 +11,11 @@ import React, {
 } from 'react';
 import { styled } from '@linaria/react';
 import { useCurrentLocation } from '../hooks/useCurrentLocation';
-import { noop, setEndOfContenteditable } from '../../common/utils';
+import {
+  applyStyleIfHasProperty,
+  noop,
+  setEndOfContenteditable,
+} from '../../common/utils';
 import { SmartTextarea } from './SmartTextarea';
 import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
 import { IconCheckmark } from '../icons/IconCheckmark';
@@ -27,6 +31,7 @@ type AddNoteFormProps = {
   note?: Note;
   textareaProps?: HTMLAttributes<HTMLParagraphElement>;
   readonly?: boolean;
+  fullSize?: boolean;
   onSubmit: (note: Partial<Note>) => void;
 };
 
@@ -34,6 +39,7 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
   note = {},
   textareaProps = {},
   readonly = false,
+  fullSize = false,
   onSubmit = noop,
   ...props
 }): ReactElement => {
@@ -46,14 +52,30 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
   const [noteEmpty, setNoteEmpty] = useState(!note.note);
 
   useLayoutEffect(() => {
+    if (fullSize && textareaRef.current) {
+      const textarea = textareaRef.current;
+      const html = textarea.innerHTML;
+
+      textarea.style.maxHeight = '100%';
+      textarea.style.height = '100%';
+      textarea.innerHTML = '';
+
+      const { height } = textarea.getBoundingClientRect();
+
+      textarea.style.height = '';
+      textarea.style.maxHeight = `${height}px`;
+      textarea.innerHTML = html;
+    }
+
     if (!readonly && textareaRef.current) {
       const textarea = textareaRef.current as HTMLParagraphElement &
         HTMLTextAreaElement & { createTextRange: () => any };
 
       textarea.focus();
       setEndOfContenteditable(textarea);
+      textarea.scrollTop = textarea.scrollHeight;
     }
-  }, [readonly]);
+  }, [readonly, fullSize, textareaRef]);
 
   const handleSubmit: FormEventHandler = useCallback(
     (event) => {
@@ -108,6 +130,7 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
         placeholder="Your note..."
         onKeyUp={handleKeyUp}
         ref={textareaRef}
+        fullSize={fullSize}
         {...textareaProps}
       >
         {note.note || null}
@@ -142,13 +165,15 @@ const StyledSelect = styled.select`
   box-sizing: border-box;
 `;
 
-const StyledSmartTextarea = styled(SmartTextarea)`
+const StyledSmartTextarea = styled<any>(SmartTextarea)`
   width: 100%;
-  min-height: 75px;
-  max-height: 200px;
-  border-radius: 3px;
+  min-height: calc(75px - var(--fontBigSize));
+  height: ${applyStyleIfHasProperty('fullSize', '100%', '')};
+  max-height: ${applyStyleIfHasProperty('fullSize', '100%', '200px')};
+  margin: 0 0 var(--fontBigSize);
   box-sizing: border-box;
   outline: none;
+  overflow-y: auto;
 
   &[contenteditable='true'] {
     outline: none;
@@ -162,6 +187,7 @@ const StyledButton = styled<any>(Button)`
     justify-content: center;
     width: 32px;
     height: 32px;
+    min-height: 32px;
     border-radius: 50%;
     padding: 0;
     margin-left: auto;

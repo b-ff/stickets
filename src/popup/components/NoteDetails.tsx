@@ -4,7 +4,6 @@ import { Note } from '../../common/graphql/__generated__/graphql';
 import { TitledColumn } from './TitledColumn';
 import { BackButton } from './BackButton';
 import { AddNoteForm } from './AddNoteForm';
-import { css } from '@linaria/core';
 import { IconEdit } from '../icons/IconEdit';
 
 type NoteDetailsProps = {
@@ -55,9 +54,9 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
       <TitledColumn columnTitle={backButton} actions={noteActions}>
         <StyledAddNoteForm
           note={note}
-          textareaProps={{ className: StyledTextareaClass }}
           onSubmit={handleUpdate}
           readonly={!isEditing}
+          fullSize
         />
       </TitledColumn>
     </StyledNote>
@@ -77,12 +76,6 @@ const StyledAddNoteForm = styled<any>(AddNoteForm)`
   height: 100%;
   margin-left: calc(0px - var(--fontBigSize));
   margin-right: calc(0px - var(--fontBigSize));
-`;
-
-const StyledTextareaClass = css`
-  flex: 1;
-  max-height: 100%;
-  overflow-y: auto;
 `;
 
 const StyledNoteActions = styled.div`
