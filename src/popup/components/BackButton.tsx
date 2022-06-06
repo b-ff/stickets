@@ -12,6 +12,9 @@ export const BackButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = (
 );
 
 const StyledBackButton = styled.button`
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
   margin: 0;
   padding: 0;
   border: none;
