@@ -1,6 +1,6 @@
 {
   "name": "stickets",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Chrome Extension that allows you to add a notes to any webpage you visit as well as share it with whoever you want",
   "main": "",
   "scripts": {
