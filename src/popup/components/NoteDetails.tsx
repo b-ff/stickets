@@ -1,11 +1,12 @@
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { styled } from '@linaria/react';
-import { Note } from '../../common/graphql/__generated__/graphql';
+import { Note, NoteUser } from '../../common/graphql/__generated__/graphql';
 import { TitledColumn } from './TitledColumn';
 import { BackButton } from './BackButton';
 import { AddNoteForm } from './AddNoteForm';
 import { IconEdit } from '../icons/IconEdit';
 import { IconShare } from '../icons/IconShare';
+import { ProfilePreviews } from './ProfilePreviews';
 
 type NoteDetailsProps = {
   note: Note;
@@ -46,6 +47,9 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
           <StyledCancelButton type="button" onClick={handleCancelEdit}>
             Cancel
           </StyledCancelButton>
+        )}
+        {Boolean(note.sharedWith?.length) && (
+          <ProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
         )}
         {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
         {!isEditing && !note.shared && <StyledIconShare onClick={handleShare} />}
