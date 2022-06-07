@@ -91,7 +91,7 @@ const StyledColumnTabsContainer = styled.section`
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 50% 50%;
   grid-template-rows: 1fr;
 `;
 
