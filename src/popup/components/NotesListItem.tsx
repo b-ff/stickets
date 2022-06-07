@@ -110,7 +110,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
           <span>
             {displayedDate}
             {Boolean(note.shared && note.creator) && ` by ${note.creator?.name}`}
-            {Boolean(note.sharedWith?.length) && (
+            {Boolean(!note.shared && note.sharedWith?.length) && (
               <StyledProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
             )}
           </span>

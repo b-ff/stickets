@@ -48,7 +48,7 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
             Cancel
           </StyledCancelButton>
         )}
-        {Boolean(note.sharedWith?.length) && (
+        {Boolean(note.sharedWith?.length) && !note.shared && (
           <ProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
         )}
         {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
