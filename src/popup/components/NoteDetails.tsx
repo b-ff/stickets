@@ -43,13 +43,13 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
   const noteActions = useMemo(
     () => (
       <StyledNoteActions>
+        {Boolean(note.sharedWith?.length) && !note.shared && (
+          <ProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
+        )}
         {Boolean(isEditing) && (
           <StyledCancelButton type="button" onClick={handleCancelEdit}>
             Cancel
           </StyledCancelButton>
-        )}
-        {Boolean(note.sharedWith?.length) && !note.shared && (
-          <ProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
         )}
         {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
         {!isEditing && !note.shared && <StyledIconShare onClick={handleShare} />}
@@ -112,7 +112,7 @@ const StyledIconShare = styled(IconShare)`
 `;
 
 const StyledCancelButton = styled.button`
-  margin: 0;
+  margin: 0 0 0 calc(var(--fontBigSize) / 2);
   padding: 0;
   border: none;
   outline: none;
