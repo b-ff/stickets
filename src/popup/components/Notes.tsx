@@ -3,7 +3,6 @@ import React, {
   ReactElement,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -23,6 +22,7 @@ type NotesProps = {
   notes: Note[];
   onUpdate: (note: Partial<Note>) => void;
   onDelete: (id: string) => void;
+  onShare: (note: Note) => void;
   isLoading: boolean;
   title?: ReactNode;
   emptyText?: ReactNode;
@@ -30,8 +30,9 @@ type NotesProps = {
 
 export const Notes: FC<NotesProps> = ({
   notes = [],
-  onUpdate = noop,
-  onDelete = noop,
+  onUpdate,
+  onDelete,
+  onShare,
   isLoading = false,
   title = null,
   emptyText = null,
@@ -66,6 +67,7 @@ export const Notes: FC<NotesProps> = ({
         notes={notes}
         onSelect={handleSelect}
         onDelete={onDelete}
+        onShare={onShare}
       />
     ),
     [title, notes, handleSelect, onDelete],
@@ -75,7 +77,12 @@ export const Notes: FC<NotesProps> = ({
     const selectedNote = selectedNoteId && notes.find((n) => n._id === selectedNoteId);
     return (
       selectedNote && (
-        <NoteDetails note={selectedNote} onChange={onUpdate} onBack={handleGoBack} />
+        <NoteDetails
+          note={selectedNote}
+          onChange={onUpdate}
+          onShare={onShare}
+          onBack={handleGoBack}
+        />
       )
     );
   }, [notes, selectedNoteId, onUpdate, handleGoBack]);

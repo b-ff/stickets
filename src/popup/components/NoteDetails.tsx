@@ -10,12 +10,14 @@ import { IconShare } from '../icons/IconShare';
 type NoteDetailsProps = {
   note: Note;
   onChange: (note: Partial<Note>) => void;
+  onShare: (note: Note) => void;
   onBack: () => void;
 };
 
 export const NoteDetails: FC<NoteDetailsProps> = ({
   note,
   onChange,
+  onShare,
   onBack,
   ...props
 }): ReactElement => {
@@ -23,6 +25,7 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
 
   const handleEdit = useCallback(() => setIsEditing(true), [setIsEditing]);
   const handleCancelEdit = useCallback(() => setIsEditing(false), [setIsEditing]);
+  const handleShare = useCallback(() => onShare(note), [onShare, note]);
   const handleUpdate = useCallback(
     (data: Partial<Note>) => {
       onChange(data);
@@ -45,10 +48,10 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
           </StyledCancelButton>
         )}
         {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
-        {!isEditing && !note.shared && <StyledIconShare onClick={console.log} />}
+        {!isEditing && !note.shared && <StyledIconShare onClick={handleShare} />}
       </StyledNoteActions>
     ),
-    [isEditing, note, handleEdit],
+    [isEditing, note, handleEdit, onShare],
   );
 
   return (

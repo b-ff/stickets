@@ -26,6 +26,7 @@ type NotesListProps = {
   notes: Note[];
   onSelect: (note: Note) => void;
   onDelete: (id: string) => void;
+  onShare: (note: Note) => void;
 };
 
 export const NotesList: FC<NotesListProps> = ({
@@ -34,6 +35,7 @@ export const NotesList: FC<NotesListProps> = ({
   notes,
   onSelect,
   onDelete,
+  onShare,
   ...props
 }): ReactElement => {
   const ref: Ref<HTMLInputElement> = useRef(null);
@@ -113,6 +115,7 @@ export const NotesList: FC<NotesListProps> = ({
                 key={note._id}
                 onClick={() => onSelect(note)}
                 onDelete={onDelete}
+                onShare={onShare}
               />
             ))}
           </StyledNotesWrapper>

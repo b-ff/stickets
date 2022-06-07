@@ -22,15 +22,15 @@ type NoteActionOption = {
 type NotesListItemProps = HTMLAttributes<HTMLElement> & {
   note: Note;
   onClick?: (note: Note) => void;
-  onUpdate?: (note: Note) => void;
-  onDelete?: (id: string) => void;
+  onDelete: (id: string) => void;
+  onShare: (note: Note) => void;
 };
 
 export const NotesListItem: FC<NotesListItemProps> = ({
   note,
   onClick = noop,
-  onUpdate = noop,
-  onDelete = noop,
+  onDelete,
+  onShare,
   ...props
 }): ReactElement => {
   const created = new Date(note.createdAt);
@@ -54,7 +54,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
       }
 
       if (action === NoteActions.Share) {
-        // @todo...
+        onShare(note);
       }
 
       if (action === NoteActions.GoToWebsite) {
