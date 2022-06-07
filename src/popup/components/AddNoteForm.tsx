@@ -20,6 +20,7 @@ import { SmartTextarea } from './SmartTextarea';
 import { Note, NoteScope } from '../../common/graphql/__generated__/graphql';
 import { IconCheckmark } from '../icons/IconCheckmark';
 import { Button } from './Button';
+import { CustomSelect } from './CustomSelect';
 
 const SCOPE_OPTIONS = {
   [NoteScope.Page]: 'This page',
@@ -44,6 +45,7 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
   ...props
 }): ReactElement => {
   const formRef: Ref<HTMLFormElement> = useRef(null);
+  const scopeRef: Ref<HTMLInputElement> = useRef(null);
   const textareaRef: Ref<HTMLParagraphElement> = useRef(null);
   const submitRef: Ref<HTMLButtonElement> = useRef(null);
 
@@ -77,11 +79,21 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
     }
   }, [readonly, fullSize, textareaRef]);
 
+  const handleScopeChange = useCallback(
+    ({ value }: any) => {
+      if (scopeRef.current) {
+        scopeRef.current.value = value;
+      }
+    },
+    [scopeRef],
+  );
+
   const handleSubmit: FormEventHandler = useCallback(
     (event) => {
       const formData = Object.fromEntries(
         new FormData(event.target as HTMLFormElement) as any,
       );
+
       onSubmit({
         ...note,
         ...formData,
@@ -110,16 +122,29 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
     [readonly, submitRef.current, setNoteEmpty],
   );
 
+  const options = Object.entries(SCOPE_OPTIONS).map(([value, label]) => ({
+    value,
+    label,
+  }));
+
   return (
     <StyledForm ref={formRef} onSubmit={handleSubmit} {...props}>
       {!note.scope && (
-        <StyledSelect name="scope">
-          {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
-            <option value={value} key={value}>
-              {text}
-            </option>
-          ))}
-        </StyledSelect>
+        <>
+          <input type="hidden" name="scope" ref={scopeRef} />
+          <CustomSelect
+            options={options}
+            defaultValue={options[0]}
+            onChange={handleScopeChange}
+          />
+          {/* <StyledSelect name="scope">
+            {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
+              <option value={value} key={value}>
+                {text}
+              </option>
+            ))}
+          </StyledSelect> */}
+        </>
       )}
 
       <StyledSmartTextarea
@@ -161,6 +186,7 @@ const StyledSelect = styled.select`
   outline: none;
   padding: calc(var(--fontBigSize) / 2) calc(var(--fontRegularSize) - 1px);
   box-sizing: border-box;
+  border: 1px solid #ccc;
 `;
 
 const StyledSmartTextarea = styled<any>(SmartTextarea)`
