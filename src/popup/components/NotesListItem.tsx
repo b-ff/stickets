@@ -1,14 +1,4 @@
-import React, {
-  FC,
-  HTMLAttributes,
-  MouseEventHandler,
-  ReactElement,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { FC, HTMLAttributes, ReactElement, useCallback, useMemo } from 'react';
 import { styled } from '@linaria/react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { noop } from '../../common/utils';
@@ -52,27 +42,6 @@ export const NotesListItem: FC<NotesListItemProps> = ({
     addSuffix: true,
     includeSeconds: true,
   });
-
-  // useLayoutEffect(() => {
-  //   const body = document.querySelector('body');
-  //   const handler = (event: MouseEvent) => {
-  //     if (menuIsOpen && actionsRef.current) {
-  //       console.log(
-  //         133,
-  //         actionsRef.current.contains(event.target as Node),
-  //         actionsRef.current,
-  //         event.target,
-  //       );
-  //       if (!actionsRef.current.contains(event.target as Node)) {
-  //         setMenuIsOpen(false);
-  //       }
-  //     }
-  //   };
-
-  //   body?.addEventListener('click', handler);
-
-  //   return () => body?.removeEventListener('click', handler);
-  // }, [actionsRef, menuIsOpen, setMenuIsOpen]);
 
   const handleOpenNoteURL = useCallback(() => {
     if (note.url) {
