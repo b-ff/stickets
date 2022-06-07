@@ -109,7 +109,8 @@ export const NotesListItem: FC<NotesListItemProps> = ({
       },
     ];
 
-    if (!note.shared) {
+    // @todo remove && !!0 after share feature will be implemented
+    if (!note.shared && !!0) {
       actions.push({
         label: 'Share',
         value: NoteActions.Share,
