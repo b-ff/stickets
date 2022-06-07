@@ -4,7 +4,9 @@ import React, {
   MouseEventHandler,
   ReactElement,
   useCallback,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { styled } from '@linaria/react';
@@ -14,6 +16,7 @@ import { Note } from '../../common/graphql/__generated__/graphql';
 import { IconDots } from '../icons/IconDots';
 import { CustomSelect } from './CustomSelect';
 import { StylesConfig } from 'react-select';
+import { IconWithDropdown } from './IconWithDropdown';
 
 const enum NoteActions {
   Edit = 'edit',
@@ -42,8 +45,6 @@ export const NotesListItem: FC<NotesListItemProps> = ({
   onDelete = noop,
   ...props
 }): ReactElement => {
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
-
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
   const latestDate = updated.getTime() > created.getTime() ? updated : created;
@@ -52,21 +53,35 @@ export const NotesListItem: FC<NotesListItemProps> = ({
     includeSeconds: true,
   });
 
+  // useLayoutEffect(() => {
+  //   const body = document.querySelector('body');
+  //   const handler = (event: MouseEvent) => {
+  //     if (menuIsOpen && actionsRef.current) {
+  //       console.log(
+  //         133,
+  //         actionsRef.current.contains(event.target as Node),
+  //         actionsRef.current,
+  //         event.target,
+  //       );
+  //       if (!actionsRef.current.contains(event.target as Node)) {
+  //         setMenuIsOpen(false);
+  //       }
+  //     }
+  //   };
+
+  //   body?.addEventListener('click', handler);
+
+  //   return () => body?.removeEventListener('click', handler);
+  // }, [actionsRef, menuIsOpen, setMenuIsOpen]);
+
   const handleOpenNoteURL = useCallback(() => {
     if (note.url) {
       window.open(note.url);
     }
   }, [note]);
 
-  const handleNotaActionsClick: MouseEventHandler = useCallback(
-    () => setMenuIsOpen(!menuIsOpen),
-    [menuIsOpen, setMenuIsOpen],
-  );
-
   const handleActionSelected = useCallback(
     ({ value: action }: any) => {
-      setMenuIsOpen(false);
-
       if (action === NoteActions.Edit) {
         onClick(note);
       }
@@ -83,7 +98,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
         onDelete(note._id);
       }
     },
-    [setMenuIsOpen, onClick, handleOpenNoteURL, onDelete],
+    [onClick, handleOpenNoteURL, onDelete],
   );
 
   const noteActions = useMemo(() => {
@@ -118,8 +133,8 @@ export const NotesListItem: FC<NotesListItemProps> = ({
   }, [note]);
 
   return (
-    <StyledNoteContainer onClick={onClick} {...props}>
-      <StyledNoteMain>
+    <StyledNoteContainer {...props}>
+      <StyledNoteMain onClick={onClick}>
         <StyledNoteTextWrapper>
           <StyledNoteText>{note.note}</StyledNoteText>
         </StyledNoteTextWrapper>
@@ -130,31 +145,11 @@ export const NotesListItem: FC<NotesListItemProps> = ({
           </span>
         </StyledNoteInfo>
       </StyledNoteMain>
-      <div onClick={(event) => event.stopPropagation()}>
-        <CustomSelect
+      <div>
+        <IconWithDropdown
+          icon={<StyledNoteActions />}
           options={noteActions}
-          menuIsOpen={menuIsOpen}
           onChange={handleActionSelected}
-          menuShouldScrollIntoView
-          closeMenuOnSelect
-          isOptionSelected={() => false}
-          components={{
-            Control: () => <StyledNoteActions onClick={handleNotaActionsClick} />,
-          }}
-          styles={
-            {
-              menu: (provided) => ({
-                ...provided,
-                minWidth: '130px !important',
-                transform: 'translateX(-100%)',
-                marginLeft: '20px !important',
-              }),
-              option: (provided, state) => ({
-                ...provided,
-                color: (state.data as any).negative ? '#ed0000 !important' : 'inherit',
-              }),
-            } as StylesConfig
-          }
         />
       </div>
     </StyledNoteContainer>

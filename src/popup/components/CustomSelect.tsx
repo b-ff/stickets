@@ -111,7 +111,7 @@ const Menu = styled(components.Menu)`
     border-radius: 6px;
     box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.25);
     overflow: auto;
-    z-index: 3;
+    z-index: 5;
   }
 `;
 
