@@ -4,25 +4,46 @@ import React, {
   MouseEventHandler,
   ReactElement,
   useCallback,
+  useMemo,
+  useState,
 } from 'react';
 import { styled } from '@linaria/react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { noop } from '../../common/utils';
 import { Note } from '../../common/graphql/__generated__/graphql';
 import { IconDots } from '../icons/IconDots';
+import { CustomSelect } from './CustomSelect';
+import { StylesConfig } from 'react-select';
+
+const enum NoteActions {
+  Edit = 'edit',
+  Share = 'share',
+  GoToWebsite = 'website',
+  Delete = 'delete',
+}
+
+type NoteActionOption = {
+  label: string;
+  value: NoteActions;
+  negative?: boolean;
+};
 
 type NotesListItemProps = HTMLAttributes<HTMLElement> & {
   note: Note;
+  onClick?: (note: Note) => void;
   onUpdate?: (note: Note) => void;
   onDelete?: (id: string) => void;
 };
 
 export const NotesListItem: FC<NotesListItemProps> = ({
   note,
+  onClick = noop,
   onUpdate = noop,
   onDelete = noop,
   ...props
 }): ReactElement => {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+
   const created = new Date(note.createdAt);
   const updated = new Date(note.updatedAt);
   const latestDate = updated.getTime() > created.getTime() ? updated : created;
@@ -37,13 +58,67 @@ export const NotesListItem: FC<NotesListItemProps> = ({
     }
   }, [note]);
 
-  const handleNotaActionsClick: MouseEventHandler = useCallback((event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  }, []);
+  const handleNotaActionsClick: MouseEventHandler = useCallback(
+    () => setMenuIsOpen(!menuIsOpen),
+    [menuIsOpen, setMenuIsOpen],
+  );
+
+  const handleActionSelected = useCallback(
+    ({ value: action }: any) => {
+      setMenuIsOpen(false);
+
+      if (action === NoteActions.Edit) {
+        onClick(note);
+      }
+
+      if (action === NoteActions.Share) {
+        // @todo...
+      }
+
+      if (action === NoteActions.GoToWebsite) {
+        handleOpenNoteURL();
+      }
+
+      if (action === NoteActions.Delete) {
+        onDelete(note._id);
+      }
+    },
+    [setMenuIsOpen, onClick, handleOpenNoteURL, onDelete],
+  );
+
+  const noteActions = useMemo(() => {
+    const actions: NoteActionOption[] = [
+      {
+        label: note.shared ? 'View' : 'Edit',
+        value: NoteActions.Edit,
+      },
+    ];
+
+    if (!note.shared) {
+      actions.push({
+        label: 'Share',
+        value: NoteActions.Share,
+      });
+    }
+
+    if (note.url) {
+      actions.push({
+        label: 'Go to website',
+        value: NoteActions.GoToWebsite,
+      });
+    }
+
+    actions.push({
+      label: 'Delete',
+      value: NoteActions.Delete,
+      negative: true,
+    });
+
+    return actions;
+  }, [note]);
 
   return (
-    <StyledNoteContainer {...props}>
+    <StyledNoteContainer onClick={onClick} {...props}>
       <StyledNoteMain>
         <StyledNoteTextWrapper>
           <StyledNoteText>{note.note}</StyledNoteText>
@@ -55,7 +130,33 @@ export const NotesListItem: FC<NotesListItemProps> = ({
           </span>
         </StyledNoteInfo>
       </StyledNoteMain>
-      <StyledNoteActions onClick={handleNotaActionsClick} />
+      <div onClick={(event) => event.stopPropagation()}>
+        <CustomSelect
+          options={noteActions}
+          menuIsOpen={menuIsOpen}
+          onChange={handleActionSelected}
+          menuShouldScrollIntoView
+          closeMenuOnSelect
+          isOptionSelected={() => false}
+          components={{
+            Control: () => <StyledNoteActions onClick={handleNotaActionsClick} />,
+          }}
+          styles={
+            {
+              menu: (provided) => ({
+                ...provided,
+                minWidth: '130px !important',
+                transform: 'translateX(-100%)',
+                marginLeft: '20px !important',
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                color: (state.data as any).negative ? '#ed0000 !important' : 'inherit',
+              }),
+            } as StylesConfig
+          }
+        />
+      </div>
     </StyledNoteContainer>
   );
 };

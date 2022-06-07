@@ -6,7 +6,6 @@ import { IconChevronDown } from '../icons/IconChevronDown';
 export const CustomSelect = ({ components, ...props }: Props) => (
   <StyledSelect
     components={{
-      ...components,
       Control,
       IndicatorSeparator,
       DropdownIndicator,
@@ -17,6 +16,7 @@ export const CustomSelect = ({ components, ...props }: Props) => (
       Menu,
       MenuList,
       Option,
+      ...components,
     }}
     classNamePrefix="stickets-select"
     {...props}
@@ -38,7 +38,6 @@ const textStyle = `
 
 const StyledSelect = styled(Select)`
   position: relative;
-  z-index: 3;
 `;
 
 const Control = styled(components.Control)`
@@ -108,7 +107,9 @@ const Menu = styled(components.Menu)`
     min-width: 250px;
     background-color: var(--backgroundPrimaryColor);
     margin: calc(var(--fontBigSize) / 4) 0;
+    border: 1px solid #303135;
     border-radius: 6px;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.25);
     overflow: auto;
     z-index: 3;
   }
