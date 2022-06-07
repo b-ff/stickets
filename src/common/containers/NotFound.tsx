@@ -1,14 +1,14 @@
 import React from 'react';
 import { styled } from '@linaria/react';
 import { AppLink } from '../components/AppLink';
-import { ROUTES } from '../../popup/constants/routes';
+import { Routes } from '../../popup/enums/Routes';
 
 export function NotFound() {
   return (
     <StyledNotFoundContainer>
       <StyledHeading>Hmmm...</StyledHeading>
       <StyledText>You definitely shouldn&apos;t be there...</StyledText>
-      <StyledLink to={ROUTES.DEFAULT}>Go to Main</StyledLink>
+      <StyledLink to={Routes.Default}>Go to Main</StyledLink>
     </StyledNotFoundContainer>
   );
 }

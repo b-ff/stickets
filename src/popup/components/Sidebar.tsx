@@ -11,14 +11,14 @@ import { IconSettings } from '../icons/IconSettings';
 import { IconLogout } from '../icons/IconLogout';
 import { useAuth } from '../hooks/useAuth';
 import { useAppNavigate } from '../../common/hooks/useAppNavigate';
-import { ROUTES } from '../constants/routes';
+import { Routes } from '../enums/Routes';
 
 export const Sidebar: FC<HTMLAttributes<HTMLElement>> = (props): ReactElement => {
   const [isLoggedIn, doLogout] = useAuth();
   const navigate = useAppNavigate();
 
   const handleSettingsClick: MouseEventHandler = useCallback(() => {
-    navigate(ROUTES.SETTINGS);
+    navigate(Routes.Settings);
   }, [navigate]);
 
   const handleLogoutClick: MouseEventHandler = useCallback(() => {
