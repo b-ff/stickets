@@ -142,13 +142,6 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
             defaultValue={options[0]}
             onChange={handleScopeChange}
           />
-          {/* <StyledSelect name="scope">
-            {Object.entries(SCOPE_OPTIONS).map(([value, text]) => (
-              <option value={value} key={value}>
-                {text}
-              </option>
-            ))}
-          </StyledSelect> */}
         </>
       )}
 
