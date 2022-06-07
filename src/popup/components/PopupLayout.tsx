@@ -1,46 +1,37 @@
-import React, { FC, ReactElement, ReactNode } from 'react';
+import React, { FC, ReactElement } from 'react';
 import { styled } from '@linaria/react';
-import { AppLink } from '../../common/components/AppLink';
+import { Sidebar } from './Sidebar';
 
-type PopupLayoutProps = React.HTMLAttributes<HTMLElement> & {
-  footer: ReactNode;
-};
+type PopupLayoutProps = React.HTMLAttributes<HTMLElement>;
 
-export const PopupLayout: FC<PopupLayoutProps> = ({ children, footer }): ReactElement => (
-  <>
-    <StyledHeader>
-      <StyledIcon>#</StyledIcon>Stickets
-    </StyledHeader>
+export const PopupLayout: FC<PopupLayoutProps> = ({ children }): ReactElement => (
+  <StyledPopupLayout>
+    <StyledAside>
+      <Sidebar />
+    </StyledAside>
     <StyledMain>{children}</StyledMain>
-    <StyledFooter>{footer}</StyledFooter>
-  </>
+  </StyledPopupLayout>
 );
 
-const StyledHeader = styled.header`
+const StyledPopupLayout = styled.section`
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
   width: 100%;
-  padding: 5px 10px;
-  font-size: 12px;
-  box-sizing: border-box;
+  height: 100%;
 `;
 
-const StyledIcon = styled.span`
-  display: inline-block;
-  color: var(--brandColor);
-  font-weight: bold;
-  margin-right: 2px;
+const StyledAside = styled.aside`
+  position: relative;
+  width: 40px;
+  height: 100%;
+  border-right: 1px solid var(--controlPrimaryColor);
 `;
 
 const StyledMain = styled.main`
-  flex: 1;
+  position: relative;
+  width: 100%;
   height: 100%;
-  overflow: hidden;
-`;
-const StyledFooter = styled.footer`
-  padding: 10px;
-`;
-
-const StyledLink = styled(AppLink)`
-  display: inline-block;
-  margin-left: auto;
-  color: var(--fontPrimaryColor);
+  flex: 1;
 `;

@@ -1,0 +1,11 @@
+query GetProfile {
+  profile {
+    _id
+    googleId
+    name
+    email
+    avatar
+    createdAt
+    updatedAt
+  }
+}

@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useCallback } from 'react';
-import { noop } from '../../common/utils';
+import { noop, throwIfError } from '../../common/utils';
 import { ContentCenter } from '../components/ContentCenter';
 import { LoginForm } from '../components/LoginForm';
 import { useLoginMutation } from '../../common/graphql/__generated__/graphql';
@@ -8,8 +8,12 @@ type LoginContainerProps = {
   onLoginSuccess: (token: string) => void;
 };
 
-export const LoginContainer: FC<LoginContainerProps> = ({ onLoginSuccess = noop }): ReactElement => {
+export const LoginContainer: FC<LoginContainerProps> = ({
+  onLoginSuccess = noop,
+}): ReactElement => {
   const [doLogin, { loading, error, data }] = useLoginMutation();
+
+  throwIfError(error);
 
   const handleSignIn = useCallback(() => {
     chrome.identity.getAuthToken({ interactive: true }, (token) => {
@@ -25,5 +29,9 @@ export const LoginContainer: FC<LoginContainerProps> = ({ onLoginSuccess = noop 
     onLoginSuccess(data.login.token);
   }
 
-  return loading ? <ContentCenter>Signing in...</ContentCenter> : <LoginForm onSubmit={handleSignIn} />;
+  return loading ? (
+    <ContentCenter>Signing in...</ContentCenter>
+  ) : (
+    <LoginForm onSubmit={handleSignIn} />
+  );
 };

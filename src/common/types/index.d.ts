@@ -1,3 +1,6 @@
+declare type CurrentLocationContextValue = URL | null;
+declare type AuthContextValue = [boolean, () => void];
+
 declare interface IEntityWithId {
   _id: string;
 }
@@ -12,4 +15,21 @@ declare interface ISwitchOption {
   value: string;
   label: string;
   count?: number;
+}
+
+declare interface IThemeColors {
+  backgroundPrimaryColor: string;
+  textPrimaryColor: string;
+  textSecondaryColor: string;
+  textTertiaryColor: string;
+  controlPrimaryColor: string;
+  controlSecondaryColor: string;
+  buttonPrimaryColor: string;
+  buttonSecondaryColor: string;
+  iconPrimaryColor: string;
+}
+
+declare interface IThemeObject {
+  light: IThemeColors;
+  dark: IThemeColors;
 }

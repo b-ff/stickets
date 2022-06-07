@@ -1,3 +1,5 @@
+import { ApolloError } from '@apollo/client';
+import DOMPurify from 'dompurify';
 import { PAGE_QUERY_PARAM_NAME } from './constants/page-query-param-name';
 import { Note, NoteScope } from './graphql/__generated__/graphql';
 
@@ -31,7 +33,10 @@ export const makeHrefToPage = (
   return `${window.location.pathname}?${p.toString()}`;
 };
 
-export const groupNotesByScope = (notes: Note[], location?: URL | null): TNotesGroupedByScope => {
+export const groupNotesByScope = (
+  notes: Note[],
+  location?: URL | null,
+): TNotesGroupedByScope => {
   const groupedNotes: TNotesGroupedByScope = {
     [NoteScope.Global]: [],
     [NoteScope.Site]: [],
@@ -76,12 +81,55 @@ export const stripTags = (html: string, allowed: string[] = []): string => {
   });
 };
 
+/* eslint-disable */
 export const urlify = (text: string): string => {
   const urlRegex =
     /((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi;
-  return text.replace(urlRegex, (url: string) => {
+  const html = text.replace(urlRegex, (url: string) => {
     const hasProtocol = /\:\/{2}/gi.test(url);
     const safeUrl = hasProtocol ? url : `http://${url}`;
     return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
   });
+
+  return DOMPurify.sanitize(html, {
+    ADD_ATTR: ['target'],
+  });
+};
+/* eslint-enable */
+
+export const getCSSVariablesDefinitionFromTheme = (themeColors: IThemeColors): string => {
+  const colorEntries = Object.entries(themeColors) as [keyof IThemeColors, string][];
+
+  return colorEntries
+    .map(([name, value]: [keyof IThemeColors, string]): string => `--${name}: ${value};`)
+    .join(' ');
+};
+
+export const throwIfError = (...errors: Array<Error | ApolloError | undefined>): void => {
+  errors.map((error) => {
+    if (error) {
+      throw error;
+    }
+  });
+};
+
+export const setEndOfContenteditable = (contentEditableElement: HTMLElement) => {
+  let range, selection;
+  if (document.createRange) {
+    //Firefox, Chrome, Opera, Safari, IE 9+
+    range = document.createRange(); //Create a range (a range is a like the selection but invisible)
+    range.selectNodeContents(contentEditableElement); //Select the entire contents of the element with the range
+    range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
+    selection = window.getSelection(); //get the selection object (allows you to change selection)
+    selection?.removeAllRanges(); //remove any selections already made
+    selection?.addRange(range); //make the range you have just created the visible selection
+  } else if ((document as Document & { selection: any }).selection) {
+    //IE 8 and lower
+    range = (
+      document.body as HTMLElement & { createTextRange: () => any }
+    ).createTextRange(); //Create a range (a range is a like the selection but invisible)
+    range.moveToElementText(contentEditableElement); //Select the entire contents of the element with the range
+    range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
+    range.select(); //Select the range (make it the visible selection
+  }
 };

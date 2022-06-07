@@ -7,7 +7,7 @@ export function NotFound() {
   return (
     <StyledNotFoundContainer>
       <StyledHeading>Hmmm...</StyledHeading>
-      <StyledText>You definitely shouldn't be there...</StyledText>
+      <StyledText>You definitely shouldn&apos;t be there...</StyledText>
       <StyledLink to={ROUTES.DEFAULT}>Go to Main</StyledLink>
     </StyledNotFoundContainer>
   );
