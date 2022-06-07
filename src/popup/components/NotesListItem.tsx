@@ -4,8 +4,6 @@ import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { noop } from '../../common/utils';
 import { Note } from '../../common/graphql/__generated__/graphql';
 import { IconDots } from '../icons/IconDots';
-import { CustomSelect } from './CustomSelect';
-import { StylesConfig } from 'react-select';
 import { IconWithDropdown } from './IconWithDropdown';
 
 const enum NoteActions {
