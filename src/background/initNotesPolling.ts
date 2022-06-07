@@ -3,14 +3,6 @@ import { GetAllNotesDocument, NoteScope } from '../common/graphql/__generated__/
 import { groupNotesByScope } from '../common/utils';
 import { config } from '../config';
 
-const drawBadgeCount = (tabId: number, count: number): void => {
-  const color = '#ff006f';
-  const text = (count && (count >= 1000 ? '999+' : `${count}`)) || '';
-
-  chrome.action.setBadgeBackgroundColor({ tabId, color });
-  chrome.action.setBadgeText({ tabId, text });
-};
-
 export function initNotesPolling(client: ApolloClient<NormalizedCacheObject>): void {
   let timeoutId: NodeJS.Timeout;
 
@@ -25,11 +17,16 @@ export function initNotesPolling(client: ApolloClient<NormalizedCacheObject>): v
 
         if (notes) {
           const groupedNotes = groupNotesByScope(notes, location);
-          const count = groupedNotes[NoteScope.Page].length + groupedNotes[NoteScope.Site].length;
+          const count =
+            groupedNotes[NoteScope.Page].length + groupedNotes[NoteScope.Site].length;
 
-          chrome.storage.local.set({ notes });
-
-          drawBadgeCount(tabId, count);
+          chrome.storage.local.set({
+            notes,
+            totalNotesCount: notes.length,
+            globalNotesCount: groupedNotes[NoteScope.Global].length,
+            siteNotesCount: groupedNotes[NoteScope.Site].length,
+            pageNotesCount: groupedNotes[NoteScope.Page].length,
+          });
 
           console.log('Loaded all user notes:', location.origin, notes);
         }

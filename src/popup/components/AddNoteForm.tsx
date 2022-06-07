@@ -131,7 +131,12 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
     <StyledForm ref={formRef} onSubmit={handleSubmit} {...props}>
       {!note.scope && (
         <>
-          <input type="hidden" name="scope" ref={scopeRef} />
+          <input
+            type="hidden"
+            name="scope"
+            ref={scopeRef}
+            defaultValue={options[0].value}
+          />
           <CustomSelect
             options={options}
             defaultValue={options[0]}

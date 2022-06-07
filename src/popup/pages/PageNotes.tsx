@@ -162,6 +162,14 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
   const notes = (data?.allNotes || []) as Note[];
   const groupedNotes = groupNotesByScope(notes, location);
 
+  chrome.storage.local.set({
+    notes,
+    totalNotesCount: notes.length,
+    globalNotesCount: groupedNotes[NoteScope.Global].length,
+    siteNotesCount: groupedNotes[NoteScope.Site].length,
+    pageNotesCount: groupedNotes[NoteScope.Page].length,
+  });
+
   if (noteToShare) {
     const updatedNote = notes.find((n) => n._id === noteToShare._id);
 
