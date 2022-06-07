@@ -181,5 +181,7 @@ const StyledNoteActions = styled(IconDots)`
 `;
 
 const StyledProfilePreviews = styled(ProfilePreviews)`
-  margin: 0 calc(var(--fontBigSize) / 2);
+  &.profile-previews {
+    margin: 0 calc(var(--fontBigSize) / 2);
+  }
 `;
