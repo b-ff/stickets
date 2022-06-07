@@ -5,8 +5,6 @@ import React, {
   ReactNode,
   Ref,
   useCallback,
-  useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -60,15 +58,6 @@ export const NotesList: FC<NotesListProps> = ({
     },
     [notes],
   );
-
-  useLayoutEffect(() => {
-    const searchInputElement = ref.current as HTMLInputElement;
-
-    if (searchInputElement.value !== currentSearch) {
-      const pseudoEvent: any = { target: searchInputElement };
-      handleSearchChanges(pseudoEvent);
-    }
-  }, [ref, handleSearchChanges]);
 
   const notesToDisplay = currentSearch.length ? displayNotes : notes;
 
