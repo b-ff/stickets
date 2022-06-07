@@ -1,0 +1,6 @@
+mutation Share($shareId: String!, $email: String!) {
+  share(id: $shareId, email: $email) {
+    message
+    code
+  }
+}
