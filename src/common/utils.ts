@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import DOMPurify from 'dompurify';
+import { NotesSortTypes } from '../popup/enums/NotesSortTypes';
 import { PAGE_QUERY_PARAM_NAME } from './constants/page-query-param-name';
 import { Note, NoteScope } from './graphql/__generated__/graphql';
 
@@ -132,4 +133,49 @@ export const setEndOfContenteditable = (contentEditableElement: HTMLElement) => 
     range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
     range.select(); //Select the range (make it the visible selection
   }
+};
+
+export const sortNotes = (notes: Note[], sortType: NotesSortTypes): Note[] => {
+  return notes.sort((a: Note, b: Note): number => {
+    let valueA: number | string = '';
+    let valueB: number | string = '';
+
+    if (sortType === NotesSortTypes.Latest) {
+      [valueA, valueB] = [b, a].map(({ updatedAt }) => new Date(updatedAt).getTime());
+    }
+
+    if (sortType === NotesSortTypes.Oldest) {
+      [valueA, valueB] = [a, b].map(({ updatedAt }) => new Date(updatedAt).getTime());
+    }
+
+    if (sortType === NotesSortTypes.AZText) {
+      [valueA, valueB] = [a, b].map(({ note }) => note);
+    }
+
+    if (sortType === NotesSortTypes.ZAText) {
+      [valueA, valueB] = [b, a].map(({ note }) => note);
+    }
+
+    if (sortType === NotesSortTypes.My) {
+      [valueA, valueB] = [a, b].map(({ shared }) => (shared ? 1 : 0));
+    }
+
+    if (sortType === NotesSortTypes.SharedWithMe) {
+      [valueA, valueB] = [a, b].map(({ shared }) => (shared ? 0 : 1));
+    }
+
+    if (sortType === NotesSortTypes.SharedByMe) {
+      [valueA, valueB] = [a, b].map(({ shared, sharedWith }) =>
+        !shared && sharedWith?.length ? 0 : 1,
+      );
+    }
+
+    if (sortType === NotesSortTypes.NotShared) {
+      [valueA, valueB] = [a, b].map(({ shared, sharedWith }) =>
+        shared || sharedWith?.length ? 1 : 0,
+      );
+    }
+
+    return valueA > valueB ? 1 : valueA === valueB ? 0 : -1;
+  });
 };

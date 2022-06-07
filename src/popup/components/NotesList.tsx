@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   Ref,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -15,6 +16,9 @@ import { ContentCenter } from './ContentCenter';
 import { SearchField } from './SearchField';
 import { TitledColumn } from './TitledColumn';
 import { NotesListItem } from './NotesListItem';
+import { IconWithDropdown } from './IconWithDropdown';
+import { NotesSortTypes } from '../enums/NotesSortTypes';
+import { sortNotes } from '../../common/utils';
 
 type NotesListProps = {
   title: ReactNode;
@@ -35,6 +39,7 @@ export const NotesList: FC<NotesListProps> = ({
   const ref: Ref<HTMLInputElement> = useRef(null);
   const [displayNotes, setDisplayNotes] = useState(notes);
   const [currentSearch, setCurrentSearch] = useState('');
+  const [sortType, setSortType] = useState(NotesSortTypes.Latest);
 
   const handleSearchChanges: FormEventHandler = useCallback(
     (event) => {
@@ -59,11 +64,47 @@ export const NotesList: FC<NotesListProps> = ({
     [notes],
   );
 
-  const notesToDisplay = currentSearch.length ? displayNotes : notes;
+  const handleSortChanged = useCallback(
+    ({ value }: any) => {
+      setSortType(value);
+    },
+    [setSortType],
+  );
+
+  const notesToDisplay = useMemo(
+    () => sortNotes(currentSearch.length ? displayNotes : notes, sortType),
+    [currentSearch, displayNotes, notes, sortType],
+  );
+
+  const sortOptions = useMemo(
+    () => [
+      { label: 'Latest first', value: NotesSortTypes.Latest },
+      { label: 'Oldest first', value: NotesSortTypes.Oldest },
+      { label: 'A-Z by text', value: NotesSortTypes.AZText },
+      { label: 'Z-A by text', value: NotesSortTypes.ZAText },
+      // @todo uncomment once share feature will be implemented
+      // { label: 'My notes first', value: NotesSortTypes.My },
+      // { label: 'Shared with me first', value: NotesSortTypes.SharedWithMe },
+      // { label: 'Shared by me first', value: NotesSortTypes.SharedByMe },
+      // { label: 'Not Shared first', value: NotesSortTypes.NotShared },
+    ],
+    [],
+  );
+
+  const actions = useMemo(
+    () => (
+      <IconWithDropdown
+        icon={<StyledIconSort />}
+        options={sortOptions}
+        onChange={handleSortChanged}
+      />
+    ),
+    [],
+  );
 
   return (
     <StyledNotesList {...props}>
-      <TitledColumn columnTitle={`${title}`} actions={<StyledIconSort />}>
+      <TitledColumn columnTitle={`${title}`} actions={actions}>
         <SearchField ref={ref} placeholder="Search note" onChange={handleSearchChanges} />
         {Boolean(notesToDisplay.length) ? (
           <StyledNotesWrapper>

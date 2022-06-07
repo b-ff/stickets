@@ -76,7 +76,7 @@ export const IconWithDropdown: FC<IconWithDropdownType> = ({
             {
               menu: (provided) => ({
                 ...provided,
-                minWidth: '130px !important',
+                minWidth: '150px !important',
                 transform: 'translateX(-100%)',
                 marginLeft: '20px !important',
               }),
