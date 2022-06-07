@@ -10,7 +10,6 @@ import React, {
 } from 'react';
 import { CustomSelect } from './CustomSelect';
 import { Props, StylesConfig } from 'react-select';
-import { styled } from '@linaria/react';
 
 type IconWithDropdownType = Props & { icon: ReactNode };
 
@@ -60,7 +59,6 @@ export const IconWithDropdown: FC<IconWithDropdownType> = ({
 
   return (
     <>
-      {/* {Boolean(menuIsOpen) && <StyledCloseOverlay onClick={() => setMenuIsOpen(false)} />} */}
       <div ref={containerRef}>
         <CustomSelect
           menuIsOpen={menuIsOpen}
@@ -95,12 +93,3 @@ export const IconWithDropdown: FC<IconWithDropdownType> = ({
     </>
   );
 };
-
-// const StyledCloseOverlay = styled.section`
-//   position: fixed;
-//   width: 100vw;
-//   height: 100vh;
-//   top: 0;
-//   left: 0;
-//   z-index: 2;
-// `;
