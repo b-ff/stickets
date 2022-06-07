@@ -5,6 +5,7 @@ import { TitledColumn } from './TitledColumn';
 import { BackButton } from './BackButton';
 import { AddNoteForm } from './AddNoteForm';
 import { IconEdit } from '../icons/IconEdit';
+import { IconShare } from '../icons/IconShare';
 
 type NoteDetailsProps = {
   note: Note;
@@ -44,6 +45,7 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
           </StyledCancelButton>
         )}
         {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
+        {!isEditing && !note.shared && <StyledIconShare onClick={console.log} />}
       </StyledNoteActions>
     ),
     [isEditing, note, handleEdit],
@@ -80,7 +82,7 @@ const StyledAddNoteForm = styled<any>(AddNoteForm)`
 
 const StyledNoteActions = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 
   & > * {
     margin-left: calc(var(--fontBigSize) / 2);
@@ -93,6 +95,11 @@ const StyledNoteActions = styled.div`
 `;
 
 const StyledIconEdit = styled(IconEdit)`
+  stroke: var(--iconPrimaryColor);
+  cursor: pointer;
+`;
+
+const StyledIconShare = styled(IconShare)`
   stroke: var(--iconPrimaryColor);
   cursor: pointer;
 `;
