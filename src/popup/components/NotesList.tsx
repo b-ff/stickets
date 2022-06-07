@@ -82,11 +82,10 @@ export const NotesList: FC<NotesListProps> = ({
       { label: 'Oldest first', value: NotesSortTypes.Oldest },
       { label: 'A-Z by text', value: NotesSortTypes.AZText },
       { label: 'Z-A by text', value: NotesSortTypes.ZAText },
-      // @todo uncomment once share feature will be implemented
-      // { label: 'My notes first', value: NotesSortTypes.My },
-      // { label: 'Shared with me first', value: NotesSortTypes.SharedWithMe },
-      // { label: 'Shared by me first', value: NotesSortTypes.SharedByMe },
-      // { label: 'Not Shared first', value: NotesSortTypes.NotShared },
+      { label: 'My notes first', value: NotesSortTypes.My },
+      { label: 'Shared with me first', value: NotesSortTypes.SharedWithMe },
+      { label: 'Shared by me first', value: NotesSortTypes.SharedByMe },
+      { label: 'Not Shared first', value: NotesSortTypes.NotShared },
     ],
     [],
   );
