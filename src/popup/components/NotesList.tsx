@@ -26,6 +26,7 @@ type NotesListProps = {
   notes: Note[];
   onSelect: (note: Note) => void;
   onDelete: (id: string) => void;
+  onShare: (note: Note) => void;
 };
 
 export const NotesList: FC<NotesListProps> = ({
@@ -34,6 +35,7 @@ export const NotesList: FC<NotesListProps> = ({
   notes,
   onSelect,
   onDelete,
+  onShare,
   ...props
 }): ReactElement => {
   const ref: Ref<HTMLInputElement> = useRef(null);
@@ -82,11 +84,10 @@ export const NotesList: FC<NotesListProps> = ({
       { label: 'Oldest first', value: NotesSortTypes.Oldest },
       { label: 'A-Z by text', value: NotesSortTypes.AZText },
       { label: 'Z-A by text', value: NotesSortTypes.ZAText },
-      // @todo uncomment once share feature will be implemented
-      // { label: 'My notes first', value: NotesSortTypes.My },
-      // { label: 'Shared with me first', value: NotesSortTypes.SharedWithMe },
-      // { label: 'Shared by me first', value: NotesSortTypes.SharedByMe },
-      // { label: 'Not Shared first', value: NotesSortTypes.NotShared },
+      { label: 'My notes first', value: NotesSortTypes.My },
+      { label: 'Shared with me first', value: NotesSortTypes.SharedWithMe },
+      { label: 'Shared by me first', value: NotesSortTypes.SharedByMe },
+      { label: 'Not Shared first', value: NotesSortTypes.NotShared },
     ],
     [],
   );
@@ -114,6 +115,7 @@ export const NotesList: FC<NotesListProps> = ({
                 key={note._id}
                 onClick={() => onSelect(note)}
                 onDelete={onDelete}
+                onShare={onShare}
               />
             ))}
           </StyledNotesWrapper>

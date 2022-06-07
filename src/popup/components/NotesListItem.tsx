@@ -2,9 +2,10 @@ import React, { FC, HTMLAttributes, ReactElement, useCallback, useMemo } from 'r
 import { styled } from '@linaria/react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { noop } from '../../common/utils';
-import { Note } from '../../common/graphql/__generated__/graphql';
+import { Note, NoteUser } from '../../common/graphql/__generated__/graphql';
 import { IconDots } from '../icons/IconDots';
 import { IconWithDropdown } from './IconWithDropdown';
+import { ProfilePreviews } from './ProfilePreviews';
 
 const enum NoteActions {
   Edit = 'edit',
@@ -22,15 +23,15 @@ type NoteActionOption = {
 type NotesListItemProps = HTMLAttributes<HTMLElement> & {
   note: Note;
   onClick?: (note: Note) => void;
-  onUpdate?: (note: Note) => void;
-  onDelete?: (id: string) => void;
+  onDelete: (id: string) => void;
+  onShare: (note: Note) => void;
 };
 
 export const NotesListItem: FC<NotesListItemProps> = ({
   note,
   onClick = noop,
-  onUpdate = noop,
-  onDelete = noop,
+  onDelete,
+  onShare,
   ...props
 }): ReactElement => {
   const created = new Date(note.createdAt);
@@ -54,7 +55,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
       }
 
       if (action === NoteActions.Share) {
-        // @todo...
+        onShare(note);
       }
 
       if (action === NoteActions.GoToWebsite) {
@@ -76,8 +77,7 @@ export const NotesListItem: FC<NotesListItemProps> = ({
       },
     ];
 
-    // @todo remove && !!0 after share feature will be implemented
-    if (!note.shared && !!0) {
+    if (!note.shared) {
       actions.push({
         label: 'Share',
         value: NoteActions.Share,
@@ -109,7 +109,10 @@ export const NotesListItem: FC<NotesListItemProps> = ({
         <StyledNoteInfo>
           <span>
             {displayedDate}
-            {Boolean(note.shared && note.creator) ? ` by ${note.creator?.name}` : null}
+            {Boolean(note.shared && note.creator) && ` by ${note.creator?.name}`}
+            {Boolean(note.sharedWith?.length) && (
+              <StyledProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
+            )}
           </span>
         </StyledNoteInfo>
       </StyledNoteMain>
@@ -164,6 +167,7 @@ const StyledNoteInfo = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding-top: 4px;
   font-size: var(--fontSmallSize);
   line-height: 20px;
   color: var(--textSecondaryColor);
@@ -174,4 +178,8 @@ const StyledNoteActions = styled(IconDots)`
   height: 20px;
   fill: var(--textTertiaryColor);
   cursor: pointer;
+`;
+
+const StyledProfilePreviews = styled(ProfilePreviews)`
+  margin: 0 calc(var(--fontBigSize) / 2);
 `;

@@ -1,20 +1,24 @@
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { styled } from '@linaria/react';
-import { Note } from '../../common/graphql/__generated__/graphql';
+import { Note, NoteUser } from '../../common/graphql/__generated__/graphql';
 import { TitledColumn } from './TitledColumn';
 import { BackButton } from './BackButton';
 import { AddNoteForm } from './AddNoteForm';
 import { IconEdit } from '../icons/IconEdit';
+import { IconShare } from '../icons/IconShare';
+import { ProfilePreviews } from './ProfilePreviews';
 
 type NoteDetailsProps = {
   note: Note;
   onChange: (note: Partial<Note>) => void;
+  onShare: (note: Note) => void;
   onBack: () => void;
 };
 
 export const NoteDetails: FC<NoteDetailsProps> = ({
   note,
   onChange,
+  onShare,
   onBack,
   ...props
 }): ReactElement => {
@@ -22,6 +26,7 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
 
   const handleEdit = useCallback(() => setIsEditing(true), [setIsEditing]);
   const handleCancelEdit = useCallback(() => setIsEditing(false), [setIsEditing]);
+  const handleShare = useCallback(() => onShare(note), [onShare, note]);
   const handleUpdate = useCallback(
     (data: Partial<Note>) => {
       onChange(data);
@@ -43,10 +48,14 @@ export const NoteDetails: FC<NoteDetailsProps> = ({
             Cancel
           </StyledCancelButton>
         )}
+        {Boolean(note.sharedWith?.length) && (
+          <ProfilePreviews profiles={note.sharedWith as NoteUser[]} limit={3} />
+        )}
         {!isEditing && !note.shared && <StyledIconEdit onClick={handleEdit} />}
+        {!isEditing && !note.shared && <StyledIconShare onClick={handleShare} />}
       </StyledNoteActions>
     ),
-    [isEditing, note, handleEdit],
+    [isEditing, note, handleEdit, onShare],
   );
 
   return (
@@ -80,7 +89,7 @@ const StyledAddNoteForm = styled<any>(AddNoteForm)`
 
 const StyledNoteActions = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 
   & > * {
     margin-left: calc(var(--fontBigSize) / 2);
@@ -93,6 +102,11 @@ const StyledNoteActions = styled.div`
 `;
 
 const StyledIconEdit = styled(IconEdit)`
+  stroke: var(--iconPrimaryColor);
+  cursor: pointer;
+`;
+
+const StyledIconShare = styled(IconShare)`
   stroke: var(--iconPrimaryColor);
   cursor: pointer;
 `;

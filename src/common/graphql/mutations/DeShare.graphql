@@ -1,0 +1,6 @@
+mutation DeShare($deshareId: String!, $email: String!) {
+  deshare(id: $deshareId, email: $email) {
+    message
+    code
+  }
+}
