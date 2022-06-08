@@ -46,6 +46,13 @@ export function initNotesPolling(client: ApolloClient<NormalizedCacheObject>): v
     });
   });
 
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (tab.status === 'complete') {
+      clearTimeout(timeoutId);
+      makePollRequest(new URL((tab.url || tab.pendingUrl) as string), tabId);
+    }
+  });
+
   chrome.runtime.onSuspend.addListener(() => {
     clearTimeout(timeoutId);
   });
