@@ -99,6 +99,11 @@ export const AddNoteForm: FC<AddNoteFormProps> = ({
         ...formData,
         url: location?.href || '',
       });
+
+      if (textareaRef.current && !note._id) {
+        textareaRef.current.innerHTML = '';
+      }
+
       event.preventDefault();
     },
     [note, onSubmit],
