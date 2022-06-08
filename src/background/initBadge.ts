@@ -21,7 +21,7 @@ export function initBadge() {
         siteNotesCount = parseInt(siteNotesCount);
         pageNotesCount = parseInt(pageNotesCount);
 
-        if (tab.id && (siteNotesCount || pageNotesCount)) {
+        if (tab && tab.id) {
           drawBadgeCount(tab.id, siteNotesCount + pageNotesCount);
         }
       });
