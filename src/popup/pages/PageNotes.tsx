@@ -25,25 +25,26 @@ import { Notes } from '../components/Notes';
 import { SharePopup } from '../components/SharePopup';
 import { ProfileContainer } from '../containers/ProfileContainer';
 import { useCurrentLocation } from '../hooks/useCurrentLocation';
+import { Tabs } from '../enums/Tabs';
 
 const header = <ProfileContainer />;
 
 const refetchGetAllNotes = { refetchQueries: ['GetAllNotes'] };
 
 const TAB_TEXTS = {
-  PAGE: {
+  [Tabs.Page]: {
     title: 'Notes on this page',
     placeholder: 'You have no notes on this page',
   },
-  SITE: {
+  [Tabs.Site]: {
     title: 'Notes on this website',
     placeholder: 'You have no notes on this website',
   },
-  GLOBAL: {
+  [Tabs.Global]: {
     title: 'Notes visisble everywhere',
     placeholder: 'You have no notes visible everywhere',
   },
-  ALL: {
+  [Tabs.All]: {
     title: 'All notes',
     placeholder: 'You have no notes',
   },
@@ -181,7 +182,7 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
   const tabs = useMemo(
     () => [
       {
-        title: TAB_TEXTS.PAGE.title,
+        title: TAB_TEXTS[Tabs.Page].title,
         badge: !loading && <Badge>{groupedNotes[NoteScope.Page].length}</Badge>,
         tab: getNotesTab(
           loading,
@@ -189,12 +190,12 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
           handleNoteUpdate,
           handleNoteDelete,
           initShareDialog,
-          TAB_TEXTS.PAGE.title,
-          TAB_TEXTS.PAGE.placeholder,
+          TAB_TEXTS[Tabs.Page].title,
+          TAB_TEXTS[Tabs.Page].placeholder,
         ),
       },
       {
-        title: TAB_TEXTS.SITE.title,
+        title: TAB_TEXTS[Tabs.Site].title,
         badge: !loading && <Badge>{groupedNotes[NoteScope.Site].length}</Badge>,
         tab: getNotesTab(
           loading,
@@ -202,12 +203,12 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
           handleNoteUpdate,
           handleNoteDelete,
           initShareDialog,
-          TAB_TEXTS.SITE.title,
-          TAB_TEXTS.SITE.placeholder,
+          TAB_TEXTS[Tabs.Site].title,
+          TAB_TEXTS[Tabs.Site].placeholder,
         ),
       },
       {
-        title: TAB_TEXTS.GLOBAL.title,
+        title: TAB_TEXTS[Tabs.Global].title,
         badge: !loading && <Badge>{groupedNotes[NoteScope.Global].length}</Badge>,
         tab: getNotesTab(
           loading,
@@ -215,12 +216,12 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
           handleNoteUpdate,
           handleNoteDelete,
           initShareDialog,
-          TAB_TEXTS.GLOBAL.title,
-          TAB_TEXTS.GLOBAL.placeholder,
+          TAB_TEXTS[Tabs.Global].title,
+          TAB_TEXTS[Tabs.Global].placeholder,
         ),
       },
       {
-        title: TAB_TEXTS.ALL.title,
+        title: TAB_TEXTS[Tabs.All].title,
         badge: !loading && <Badge>{notes.length}</Badge>,
         tab: getNotesTab(
           loading,
@@ -228,8 +229,8 @@ export const PageNotes: FC<HTMLAttributes<HTMLElement>> = (): ReactElement => {
           handleNoteUpdate,
           handleNoteDelete,
           initShareDialog,
-          TAB_TEXTS.ALL.title,
-          TAB_TEXTS.ALL.placeholder,
+          TAB_TEXTS[Tabs.All].title,
+          TAB_TEXTS[Tabs.All].placeholder,
         ),
       },
     ],

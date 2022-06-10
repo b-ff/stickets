@@ -13,7 +13,7 @@ import { ContentCenter } from '../components/ContentCenter';
 import AppRoute from '../../common/containers/AppRoute';
 import { useAPIClient } from '../../common/hooks/useAPIClient';
 import { PopupLayout } from '../components/PopupLayout';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 
 export const AuthContainer: FC<HTMLAttributes<Element>> = (): ReactElement => {
   const [storedToken, setStoredToken] = useState<string>('');

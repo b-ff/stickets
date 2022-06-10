@@ -1,5 +1,7 @@
 declare type CurrentLocationContextValue = URL | null;
 declare type AuthContextValue = [boolean, () => void];
+declare type SettingsFormChangeHandler = (data: { [key: string]: any }) => void;
+declare type SettingsFormElement = { onChange: SettingsFormChangeHandler };
 
 declare interface IEntityWithId {
   _id: string;
@@ -32,4 +34,10 @@ declare interface IThemeColors {
 declare interface IThemeObject {
   light: IThemeColors;
   dark: IThemeColors;
+}
+
+declare interface ITab {
+  title: ReactNode;
+  badge?: ReactNode;
+  tab: ReactNode;
 }

@@ -11,20 +11,14 @@ import { applyStyleIfHasProperty, noop } from '../../common/utils';
 
 type TabButtonProps = HTMLAttributes<HTMLButtonElement> & { active: boolean };
 
-type Tab = {
-  title: ReactNode;
-  badge: ReactNode;
-  tab: ReactNode;
-};
-
 type ColumnTabsProps = HTMLAttributes<HTMLElement> & {
   header?: ReactNode;
   footer?: ReactNode;
-  tabs: Tab[];
+  tabs: ITab[];
 };
 
 type TabLinkProps = HTMLAttributes<HTMLElement> & {
-  tab: Tab;
+  tab: ITab;
   active?: boolean;
   onClick: React.MouseEventHandler;
 };

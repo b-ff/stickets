@@ -12,6 +12,7 @@ import { IconLogout } from '../icons/IconLogout';
 import { useAuth } from '../hooks/useAuth';
 import { useAppNavigate } from '../../common/hooks/useAppNavigate';
 import { Routes } from '../enums/Routes';
+import { AppLink } from '../../common/components/AppLink';
 
 export const Sidebar: FC<HTMLAttributes<HTMLElement>> = (props): ReactElement => {
   const [isLoggedIn, doLogout] = useAuth();
@@ -28,7 +29,9 @@ export const Sidebar: FC<HTMLAttributes<HTMLElement>> = (props): ReactElement =>
   return (
     <StyledSidebar {...props}>
       <StyledTopIcons>
-        <StyledIconLogo />
+        <AppLink to={Routes.Notes}>
+          <StyledIconLogo />
+        </AppLink>
         <StyledIconSettins onClick={handleSettingsClick} />
       </StyledTopIcons>
       {Boolean(isLoggedIn) && <StyledIconLogout onClick={handleLogoutClick} />}

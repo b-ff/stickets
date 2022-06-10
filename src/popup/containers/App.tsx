@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { CurrentLocationContext } from './CurrentLocationContext';
+import { CurrentLocationContext } from '../contexts/CurrentLocationContext';
 import { AuthContainer } from './AuthContainer';
 import { themeStyles } from '../../common/theme';
 import { ErrorCatcherContainer } from './ErrorCatcherContainer';
+import { SettingsContainer } from './SettingsContainer';
+import { CurrentLocationContainer } from './CurrentLocationContainer';
 
 export function App() {
   const [currentLocation, setCurrentLocation] = useState<URL | null>(null);
@@ -19,11 +21,13 @@ export function App() {
 
   return (
     <ErrorCatcherContainer>
-      <CurrentLocationContext.Provider value={currentLocation}>
-        <BrowserRouter>
-          <AuthContainer className={themeStyles} />
-        </BrowserRouter>
-      </CurrentLocationContext.Provider>
+      <SettingsContainer>
+        <CurrentLocationContainer>
+          <BrowserRouter>
+            <AuthContainer className={themeStyles} />
+          </BrowserRouter>
+        </CurrentLocationContainer>
+      </SettingsContainer>
     </ErrorCatcherContainer>
   );
 }
